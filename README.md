@@ -1,1 +1,73 @@
-# CSL
+## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
+
+### Why
+Modern hardware programs span CAD, CAE, CAM, BOM, sourcing, factory automation, and project management. Designs change rapidly; syncing geometry, constraints, analyses, and manufacturing outputs across tools is fragile and manual. CSL exists to make complex, multi-domain engineering agent-friendly, reproducible, and automated.
+
+### What
+CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry, constraints, selections, assemblies, and exports in a deterministic, parametric way. It’s designed for AI agents and humans to co-author designs that are portable across backends. The companion “Triple Lindy” agent converts natural language into CSL, plans across backends, and realizes results in target tools.
+
+### Key capabilities
+- Meta-parametric design: parameters with units, ranges, and expressions; deterministic evaluation order.
+- Robust selections: query by geometry/topology/tags/lineage for stable edits over time.
+- Assemblies and joints: mate connectors/LCS, joints; stable instance IDs.
+- Export and visualization: STEP/STL/… and thumbnails for downstream workflows.
+- Backend capabilities: adapters declare feature support; the agent plans fallbacks.
+
+### Fusion-first, multi-backend
+- Initial backend: Fusion 360 (default) via Python API (`adsk.core`, `adsk.fusion`).
+- Additional backends: Onshape (FeatureScript/API), SolidWorks (.NET/COM), FreeCAD (Python), Blender (`bpy`/Geometry Nodes).
+- Adapters publish capabilities so the agent can pick the highest-fidelity route with graceful degradation.
+
+### Beyond CAD: end-to-end program automation
+- CAE: link meshing/solvers and optimization runs to design parameters.
+- CAM: export manufacturable geometry with tolerance/finish metadata.
+- BOM and sourcing: extract parameters and materials for structured BOM lines.
+- Project/PLM: emit milestones, traceability, and build artifacts per revision.
+- Factory automation: generate fixtures/tooling geometry and export to downstream.
+
+### Architecture (high level)
+- Natural language → Triple Lindy agent → CSL (text) → JSON IR.
+- JSON IR → Backend adapter (Fusion/Onshape/SolidWorks/FreeCAD/Blender).
+- Adapter executes features, applies selections, exports files and thumbnails.
+- Capabilities and diagnostics guide planning, fallbacks, and error reporting.
+
+### Quick start (Fusion 360 default)
+```bash
+# 1) Clone
+git clone https://github.com/ricfulop/CSL.git
+cd CSL
+
+# 2) Install Triple Lindy as a Fusion add-in (macOS example)
+cp -r triple_lindy "$HOME/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/triple_lindy"
+
+# 3) Enable and run the add-in in Fusion 360
+
+# 4) Try the examples in CSL_v1_1/examples/*.csl (L-bracket, assembly, etc.)
+```
+
+Optional backends
+- FreeCAD workbench: copy `triple_lindy/` to `~/.FreeCAD/Mod/` and select “Triple Lindy”.
+- Onshape: configure API keys and use FeatureScript/API pipeline.
+- SolidWorks: install add-in or IPC shim; Windows host.
+- Blender: `bpy`/Geometry Nodes realization; render/export for visualization.
+
+### Language and schema
+- Spec: `CSL_v1_1/csl_v1_1_spec.md`
+- JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`
+- Conformance kit: `CSL_v1_1/conformance/README.md`
+- Examples: `CSL_v1_1/examples/`
+
+### Gap analysis and roadmap
+- Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md` (includes proposed v1.2 features such as splines, text, variable fillet/chamfer, G2 continuity, richer joints and predicates, materials/PMI).
+- Roadmap priorities: Fusion 360 adapter completeness, robust selection predicates, assembly/joint limits, and manufacturing exports.
+
+### Contributing
+- Issues and proposals welcome. For large changes, start with a short design note.
+- Adapters should implement a minimal interface and publish capabilities for planning.
+
+### License
+MIT (see `LICENSE`).
+
+### Learn more
+- Documentation index: `DOC_INDEX.md`
+- Triple Lindy implementation guide: `triple_lindy_complete with CSL.md`

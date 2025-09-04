@@ -4,8 +4,8 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 
 ### Root
 - [README.md](README.md)
-  - Summary: Top-level project readme (placeholder).
-  - Keywords: CSL, overview
+  - Summary: AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.
+  - Keywords: CSL, AI agent, meta-parametric, Fusion 360, Onshape, SolidWorks, FreeCAD, Blender
 
 - [LICENSE](LICENSE)
   - Summary: MIT License (c) 2025 Ric Fulop.

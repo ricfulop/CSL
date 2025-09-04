@@ -4,15 +4,14 @@
     {
       "path": "README.md",
       "title": "CSL",
-      "summary": "Top-level project readme (placeholder).",
-      "keywords": ["CSL", "overview"],
+      "summary": "AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.",
+      "keywords": ["CSL", "AI agent", "meta-parametric", "Fusion 360", "Onshape", "SolidWorks", "FreeCAD", "Blender"],
       "type": "markdown"
     },
     {
       "path": "LICENSE",
       "title": "MIT License",
-      "summary": "MIT License (c) 2025 Ric Fulop.
-",
+      "summary": "MIT License (c) 2025 Ric Fulop.\n",
       "keywords": ["license", "MIT"],
       "type": "text"
     },
@@ -26,8 +25,8 @@
     {
       "path": "BACKEND_GAP_ANALYSIS.md",
       "title": "CSL v1.1 ↔ CAD Backend Gap Analysis",
-      "summary": "Coverage comparison and gaps between CSL v1.1 and Fusion 360, Onshape, SolidWorks, Blender with fallbacks and roadmap.",
-      "keywords": ["gap analysis", "Fusion 360", "Onshape", "SolidWorks", "Blender", "capabilities"],
+      "summary": "Coverage comparison and gaps between CSL v1.1 and Fusion 360, Onshape, SolidWorks, FreeCAD, Blender with fallbacks and roadmap.",
+      "keywords": ["gap analysis", "Fusion 360", "Onshape", "SolidWorks", "FreeCAD", "Blender", "capabilities"],
       "type": "markdown"
     },
     {
