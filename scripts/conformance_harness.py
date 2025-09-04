@@ -131,6 +131,44 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Sketch construction geometry: ensure construction flags do not error
+    cases.append({
+        "id": "sketch_construction",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Sketch Construction", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "line", "id": "l1", "p1": "0,0", "p2": "20 mm,0", "construction": True},
+                    {"kind": "circle", "id": "c1", "center": "10 mm,10 mm", "d": "8 mm", "is_construction": True}
+                ]}
+            ]
+        }
+    })
+
+    # Reference (driven) dimensions across kinds
+    cases.append({
+        "id": "reference_dimensions",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Reference Dims", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "point", "id": "pA", "at": "0,0"},
+                    {"kind": "point", "id": "pB", "at": "30 mm,0"},
+                    {"kind": "circle", "id": "c1", "center": "15 mm,10 mm", "d": "12 mm"}
+                ],
+                "constraints": [
+                    {"kind": "distance", "a": "pA", "b": "pB", "value": "30 mm", "reference": True},
+                    {"kind": "angle", "a": "pA", "b": "pB", "value": "0 deg", "driven": True}
+                ],
+                "dimensions": [
+                    {"kind": "diameter", "on": "c1", "value": "12 mm", "reference": True}
+                ]}
+            ]
+        }
+    })
+
     return cases
 
 

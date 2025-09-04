@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "cases": [
+    {
+      "id": "loft_g1",
+      "ok": true,
+      "errors": 2
+    },
+    {
+      "id": "loft_g2_with_rail",
+      "ok": true,
+      "errors": 3
+    },
+    {
+      "id": "variable_fillet_chamfer",
+      "ok": true,
+      "errors": 4
+    },
+    {
+      "id": "emboss_text",
+      "ok": true,
+      "errors": 5
+    },
+    {
+      "id": "joints_limits",
+      "ok": true,
+      "errors": 6
+    },
+    {
+      "id": "sketch_construction",
+      "ok": true,
+      "errors": 7
+    },
+    {
+      "id": "reference_dimensions",
+      "ok": true,
+      "errors": 8
+    }
+  ]
+}

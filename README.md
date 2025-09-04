@@ -1,5 +1,6 @@
 ## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
 
+![LOC](https://img.shields.io/badge/LOC-9330-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-3391-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-5577-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-447-informational)
 ### Why
 Modern hardware programs span CAD, CAE, CAM, BOM, sourcing, factory automation, and project management. Designs change rapidly; syncing geometry, constraints, analyses, and manufacturing outputs across tools is fragile and manual. CSL exists to make complex, multi-domain engineering agent-friendly, reproducible, and automated.
 
@@ -98,6 +99,28 @@ python scripts/run_fusion_example.py
 
 ### License
 MIT (see `LICENSE`).
+
+### Project size (LOC)
+- Current snapshot (approximate):
+  - Total lines: 9330,220
+  - Python lines: 3391,309
+  - Markdown/docs lines: 5577,553
+  - JSON lines: 447
+  - Fusion backend file `triple_lindy/transpilers/fusion360_backend.py`: 2931,931
+
+- Recompute locally (from repo root):
+```bash
+# Totals (excluding .git, out, __pycache__)
+find . -type f -not -path "./.git/*" -not -path "./out/*" -not -path "*/__pycache__/*" -print0 | xargs -0 wc -l | tail -n1
+
+# By type
+find . -type f -name "*.py" -not -path "*/__pycache__/*" -print0 | xargs -0 wc -l | tail -n1
+find . -type f -name "*.md" -print0 | xargs -0 wc -l | tail -n1
+find . -type f -name "*.json" -print0 | xargs -0 wc -l | tail -n1
+
+# Key file
+wc -l triple_lindy/transpilers/fusion360_backend.py
+```
 
 ### Learn more
 - Documentation index: `DOC_INDEX.md`

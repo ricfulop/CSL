@@ -146,6 +146,22 @@ class FusionBackend:
                                 adsk.core.Point3D.create(p1[0], p1[1], 0),
                                 adsk.core.Point3D.create(p2[0], p2[1], 0),
                             )
+                            try:
+                                if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                    # addTwoPointRectangle returns a collection of lines in many API versions
+                                    if hasattr(rect_obj, "count") and hasattr(rect_obj, "item"):
+                                        for i in range(getattr(rect_obj, "count", 0)):
+                                            try:
+                                                rect_obj.item(i).isConstruction = True
+                                            except Exception:
+                                                pass
+                                    else:
+                                        try:
+                                            rect_obj.isConstruction = True
+                                        except Exception:
+                                            pass
+                            except Exception:
+                                pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = rect_obj
                     elif kind == "circle":
@@ -156,12 +172,23 @@ class FusionBackend:
                             circle_obj = sketch.sketchCurves.sketchCircles.addByCenterRadius(
                                 adsk.core.Point3D.create(c[0], c[1], 0), r_cm
                             )
+                            try:
+                                if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                    circle_obj.isConstruction = True
+                            except Exception:
+                                pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = circle_obj
                     elif kind == "point":
                         at = self._parse_point(ent.get("at"))
                         if at:
                             pt_obj = sketch.sketchPoints.add(adsk.core.Point3D.create(at[0], at[1], 0))
+                            try:
+                                if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                    # SketchPoint may not support construction flag; best-effort
+                                    setattr(pt_obj, "isConstruction", True)  # may no-op on some versions
+                            except Exception:
+                                pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = pt_obj
                     elif kind == "line":
@@ -172,6 +199,11 @@ class FusionBackend:
                                 adsk.core.Point3D.create(p1[0], p1[1], 0),
                                 adsk.core.Point3D.create(p2[0], p2[1], 0),
                             )
+                            try:
+                                if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                    line_obj.isConstruction = True
+                            except Exception:
+                                pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = line_obj
                     elif kind == "arc":
@@ -185,6 +217,11 @@ class FusionBackend:
                                     adsk.core.Point3D.create(ps[0], ps[1], 0),
                                     adsk.core.Point3D.create(pe[0], pe[1], 0),
                                 )
+                                try:
+                                    if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                        arc_obj.isConstruction = True
+                                except Exception:
+                                    pass
                                 if ent.get("id") is not None:
                                     ent_objects[ent.get("id")] = arc_obj
                             except Exception:
@@ -200,6 +237,11 @@ class FusionBackend:
                                         col.add(adsk.core.Point3D.create(pp[0], pp[1], 0))
                                 if col.count >= 2:
                                     spline_obj = sketch.sketchCurves.sketchFittedSplines.add(col)
+                                    try:
+                                        if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                            spline_obj.isConstruction = True
+                                    except Exception:
+                                        pass
                                     if ent.get("id") is not None:
                                         ent_objects[ent.get("id")] = spline_obj
                             except Exception:
@@ -221,6 +263,11 @@ class FusionBackend:
                                 mr_cm = (minor_r_mm / 10.0)
                                 min_pt = adsk.core.Point3D.create(cpt.x + ux * mr_cm, cpt.y + uy * mr_cm, 0)
                                 ell_obj = sketch.sketchCurves.sketchEllipses.add(cpt, maj, min_pt)
+                                try:
+                                    if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                        ell_obj.isConstruction = True
+                                except Exception:
+                                    pass
                                 if ent.get("id") is not None:
                                     ent_objects[ent.get("id")] = ell_obj
                             except Exception:
@@ -256,6 +303,11 @@ class FusionBackend:
                                                               cpt.y + a * math.cos(ea) * uy + b * math.sin(ea) * my, 0)
                                 try:
                                     ellarc_obj = sketch.sketchCurves.sketchEllipticalArcs.add(cpt, maj, adsk.core.Point3D.create(cpt.x + mx * b, cpt.y + my * b, 0), sp, ep)
+                                    try:
+                                        if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                            ellarc_obj.isConstruction = True
+                                    except Exception:
+                                        pass
                                     if ent.get("id") is not None:
                                         ent_objects[ent.get("id")] = ellarc_obj
                                 except Exception:
@@ -268,6 +320,11 @@ class FusionBackend:
                                         py = cpt.y + a * math.cos(t) * uy + b * math.sin(t) * my
                                         col.add(adsk.core.Point3D.create(px, py, 0))
                                     spline_obj = sketch.sketchCurves.sketchFittedSplines.add(col)
+                                    try:
+                                        if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
+                                            spline_obj.isConstruction = True
+                                    except Exception:
+                                        pass
                                     if ent.get("id") is not None:
                                         ent_objects[ent.get("id")] = spline_obj
                             except Exception:
@@ -372,6 +429,30 @@ class FusionBackend:
                             try:
                                 dd = dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
                                 dd.parameter.value = (d_mm / 10.0)
+                                try:
+                                    driven = cst.get("driven")
+                                    if driven is None:
+                                        driven = cst.get("reference")
+                                    if driven is not None:
+                                        # Try multiple API variants
+                                        try:
+                                            dd.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
                             except Exception:
                                 pass
                         elif ckind == "angle" and a and b:
@@ -379,6 +460,29 @@ class FusionBackend:
                             try:
                                 ad = dims.addAngleDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
                                 ad.parameter.value = (ang_deg / 180.0) * 3.141592653589793
+                                try:
+                                    driven = cst.get("driven")
+                                    if driven is None:
+                                        driven = cst.get("reference")
+                                    if driven is not None:
+                                        try:
+                                            ad.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
                             except Exception:
                                 pass
                 except Exception:
@@ -398,10 +502,56 @@ class FusionBackend:
                                     dd.parameter.value = (val_mm / 10.0)
                                 except Exception:
                                     pass
+                                try:
+                                    driven = dim.get("driven")
+                                    if driven is None:
+                                        driven = dim.get("reference")
+                                    if driven is not None:
+                                        try:
+                                            dd.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
                             else:
                                 rd = dims.addRadialDimension(target, adsk.core.Point3D.create(0, 0, 0))
                                 try:
                                     rd.parameter.value = (val_mm / 10.0)
+                                except Exception:
+                                    pass
+                                try:
+                                    driven = dim.get("driven")
+                                    if driven is None:
+                                        driven = dim.get("reference")
+                                    if driven is not None:
+                                        try:
+                                            rd.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            rd.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            rd.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            rd.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
                                 except Exception:
                                     pass
                         elif dkind == "distance" and target is not None and isinstance(dim.get("to"), str):
@@ -412,6 +562,29 @@ class FusionBackend:
                                     dd.parameter.value = (val_mm / 10.0)
                                 except Exception:
                                     pass
+                                try:
+                                    driven = dim.get("driven")
+                                    if driven is None:
+                                        driven = dim.get("reference")
+                                    if driven is not None:
+                                        try:
+                                            dd.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            dd.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
                         elif dkind == "angle" and target is not None and isinstance(dim.get("to"), str):
                             t2 = ent_objects.get(dim.get("to"))
                             ang_deg = self._parse_length_mm(dim.get("value"))
@@ -419,6 +592,29 @@ class FusionBackend:
                                 ad = dims.addAngleDimension(target, t2, adsk.core.Point3D.create(0, 0, 0))
                                 try:
                                     ad.parameter.value = (ang_deg / 180.0) * 3.141592653589793
+                                except Exception:
+                                    pass
+                                try:
+                                    driven = dim.get("driven")
+                                    if driven is None:
+                                        driven = dim.get("reference")
+                                    if driven is not None:
+                                        try:
+                                            ad.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.isReference = bool(driven)
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                        try:
+                                            ad.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
                                 except Exception:
                                     pass
                 except Exception:
