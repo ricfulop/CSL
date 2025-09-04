@@ -63,6 +63,17 @@ Optional backends
 
 See Production-Grade Closure Plan in `BACKEND_GAP_ANALYSIS.md` for remaining items (loft continuity, fillet transitions/setbacks, native wrap/emboss, cross-session stable IDs, units parity tests, full joints, materials/PMI, APS hardening).
 
+### Conformance harness (Fusion backend)
+Run representative cases (loft continuity G1/G2 with rail, variable fillet/chamfer including angle, emboss/native where available, joints with revolute/slider limits) and emit a JSON report.
+
+```bash
+python scripts/conformance_harness.py
+```
+
+Outputs:
+- `out/conformance_report.json`: summary with per-case `ok`, `mapping_size`, and recent diagnostics.
+- Dry-run friendly: if Fusion API is unavailable, the adapter returns a stable mapping and diagnostics for CI.
+
 ### Contributing
 - Issues and proposals welcome. For large changes, start with a short design note.
 - Adapters should implement a minimal interface and publish capabilities for planning.

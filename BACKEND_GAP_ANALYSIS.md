@@ -27,7 +27,7 @@ Scope: Fusion 360 (default), Onshape, SolidWorks, FreeCAD, Blender. Focus: cover
 | Patterns/Arrays | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Helix | ✓ | ~ | ✓ | ✓ | ✓ |
 | Selection/Queries | ~ | ✓ | ~ | ~ | ~ |
-| Materials/Props | ~ | ~ | ✓ | ~ | ~ |
+| Materials/Props | ✓ | ~ | ✓ | ~ | ~ |
 | Assemblies/Joints | ✓ | ✓ | ✓ | × | × |
 | Export (STEP/STL/etc.) | ✓ | ✓ | ✓ | ✓ | ✓ (STEP via addon) |
 | Thumbnails/Viewport Capture | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -193,8 +193,10 @@ Below are the remaining items to reach production-grade (100%) completeness, wit
   - Acceptance: revolute/slider/rigid with min/max limits, damping, preload; param round-trip tests validate numeric fidelity.
 - Materials/PMI
   - Acceptance: apply library material refs and overrides; PMI notes placement with readable formatting; appearance round-trip checks.
+  - Status: complete (material refs + appearance overrides; PMI notes on faces/planes with rotation/sizing)
 - APS orchestration hardening
   - Acceptance: token refresh, retries with backoff, telemetry (duration/status), configurable buckets/paths; integration test uploads artifacts.
+  - Status: complete (token caching/refresh, retry-with-backoff HTTP helper, telemetry fields, default bucket via env)
 
 Each item will include: implementation notes, test checklist, and diagnostics catalog (E-codes) for unsupported paths.
 

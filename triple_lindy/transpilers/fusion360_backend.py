@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 import re
 from typing import Dict, List, Any, Optional
+import time
 
 
 class FusionBackend:
@@ -79,6 +80,11 @@ class FusionBackend:
         # Load APS env if provided (for future cloud ops)
         self.session_config.setdefault("aps_client_id", os.getenv("APS_CLIENT_ID"))
         self.session_config.setdefault("aps_client_secret", os.getenv("APS_CLIENT_SECRET"))
+        self.session_config.setdefault("aps_scopes", os.getenv("APS_SCOPES") or "data:read data:write")
+        # Optional APS bucket default
+        if not self.session_config.get("aps_bucket"):
+            env_suffix = (os.getenv("CSL_ENV") or "local").lower()
+            self.session_config["aps_bucket"] = f"csl-artifacts-{env_suffix}"
         # Default lineage path
         self.session_config.setdefault("lineage_path", os.path.abspath(self.session_config.get("lineage_path") or "csl_lineage.json"))
         # Load persisted lineage
@@ -1887,6 +1893,14 @@ class FusionBackend:
     # APS Helpers
     # ------------------------
     def _aps_token(self) -> Optional[str]:
+        # Token caching with naive expiry buffer
+        now = time.time()
+        cached = self.session_config.get("_aps_token_cache")
+        if isinstance(cached, dict):
+            tok = cached.get("token")
+            exp = cached.get("expires_at", 0)
+            if tok and now < (exp - 60):  # 60s buffer
+                return tok
         try:
             import requests  # type: ignore
             cid = self.session_config.get("aps_client_id")
@@ -1900,20 +1914,42 @@ class FusionBackend:
             if resp.status_code != 200:
                 self._diag("E3101", where="aps", message=f"Auth failed: {resp.status_code}")
                 return None
-            return resp.json().get("access_token")
+            js = resp.json()
+            tok = js.get("access_token")
+            expires_in = int(js.get("expires_in") or 1800)
+            self.session_config["_aps_token_cache"] = {"token": tok, "expires_at": now + expires_in}
+            return tok
         except Exception:
             return None
 
-    def _aps_ensure_bucket(self, token: str, bucket: str) -> None:
+    def _http_with_retries(self, method: str, url: str, *, headers: Dict[str, str] | None = None, json: Any | None = None, data: Any | None = None, timeout: int = 30, max_attempts: int = 4, backoff_base: float = 0.5) -> Optional[Any]:
         try:
             import requests  # type: ignore
+        except Exception:
+            return None
+        attempts = 0
+        while attempts < max_attempts:
+            attempts += 1
+            try:
+                resp = requests.request(method, url, headers=headers, json=json, data=data, timeout=timeout)
+                if resp.status_code >= 500 and attempts < max_attempts:
+                    time.sleep(backoff_base * (2 ** (attempts - 1)))
+                    continue
+                return resp
+            except Exception:
+                if attempts >= max_attempts:
+                    return None
+                time.sleep(backoff_base * (2 ** (attempts - 1)))
+        return None
+
+    def _aps_ensure_bucket(self, token: str, bucket: str) -> None:
+        try:
             hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
             base = "https://developer.api.autodesk.com/oss/v2/buckets"
-            # Try create; if exists, ignore
             payload = {"bucketKey": bucket, "policyKey": "transient"}
-            resp = requests.post(base, headers=hdr, json=payload, timeout=20)
-            if resp.status_code not in (200, 409):
-                self._diag("E3102", where="aps", message=f"Bucket ensure failed: {resp.status_code}")
+            resp = self._http_with_retries("POST", base, headers=hdr, json=payload, timeout=20)
+            if not resp or resp.status_code not in (200, 409):
+                self._diag("E3102", where="aps", message=f"Bucket ensure failed: {getattr(resp, 'status_code', 'no_resp')}")
         except Exception:
             pass
 
@@ -1924,16 +1960,15 @@ class FusionBackend:
             return
         self._aps_ensure_bucket(token, bucket)
         try:
-            import requests  # type: ignore
             hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/octet-stream"}
             import os as _os
             name = _os.path.basename(file_path)
             with open(file_path, "rb") as f:
                 data = f.read()
             url = f"https://developer.api.autodesk.com/oss/v2/buckets/{bucket}/objects/{name}"
-            resp = requests.put(url, headers=hdr, data=data, timeout=60)
-            if resp.status_code not in (200, 201):
-                self._diag("E3103", where="aps", message=f"Upload failed: {resp.status_code}")
+            resp = self._http_with_retries("PUT", url, headers=hdr, data=data, timeout=60)
+            if not resp or resp.status_code not in (200, 201):
+                self._diag("E3103", where="aps", message=f"Upload failed: {getattr(resp, 'status_code', 'no_resp')}")
         except Exception:
             pass
 
@@ -1952,7 +1987,8 @@ class FusionBackend:
 
         Returns { "ok": bool, "uploaded": [paths], "errors": [...] }
         """
-        results: Dict[str, Any] = {"ok": True, "uploaded": [], "errors": []}
+        results: Dict[str, Any] = {"ok": True, "uploaded": [], "errors": [], "telemetry": {}}
+        t0 = time.time()
         # Allow overriding bucket from plan
         if plan.get("aps_bucket"):
             self.session_config["aps_bucket"] = plan.get("aps_bucket")
@@ -1971,9 +2007,13 @@ class FusionBackend:
                         except Exception:
                             pass
         if plan.get("export"):
+            t = time.time()
             _try(self.export, plan.get("export"), "export")
+            results["telemetry"]["export_ms"] = int((time.time() - t) * 1000)
         if plan.get("thumbnail"):
+            t = time.time()
             _try(self.thumbnail, plan.get("thumbnail"), "thumbnail")
+            results["telemetry"]["thumbnail_ms"] = int((time.time() - t) * 1000)
         # If APS configured, report uploads were attempted by hooks
         try:
             if self.session_config.get("aps_bucket"):
@@ -1986,6 +2026,7 @@ class FusionBackend:
                         results["uploaded"].append(op.get("path"))
         except Exception:
             pass
+        results["telemetry"]["total_ms"] = int((time.time() - t0) * 1000)
         return results
 
     # ------------------------
@@ -2070,90 +2111,159 @@ class FusionBackend:
         return col
 
     def _apply_materials_and_pmi(self, csl_ir: Dict[str, Any]) -> None:
-        import adsk.core  # type: ignore
-        import adsk.fusion  # type: ignore
-        app, ui, design = self._ensure_design()
-        root_comp = design.rootComponent
-        # Materials
         try:
+            import adsk.core  # type: ignore
+            import adsk.fusion  # type: ignore
+            app, ui, design = self._ensure_design()
+            root_comp = design.rootComponent
+
+            # Materials: library refs + overrides (best-effort)
             mats = csl_ir.get("materials") or []
             if isinstance(mats, list):
-                # Build search across material libraries
-                libraries = []
+                # Cache library handles once
+                material_libs = []
+                appearance_libs = []
                 try:
                     for i in range(app.materialLibraries.count):
-                        libraries.append(app.materialLibraries.item(i))
+                        material_libs.append(app.materialLibraries.item(i))
                 except Exception:
-                    pass
+                    material_libs = []
+                try:
+                    for i in range(app.appearanceLibraries.count):
+                        appearance_libs.append(app.appearanceLibraries.item(i))
+                except Exception:
+                    appearance_libs = []
+
                 for m in mats:
                     if not isinstance(m, dict):
                         continue
+
+                    # Find material by ref: "Library:Material" or just name
+                    target_material = None
                     ref = m.get("ref") or m.get("name")
-                    target_mat = None
                     if ref:
-                        # Search in design materials first
+                        ref_lib = None
+                        ref_name = str(ref)
+                        if ":" in ref_name:
+                            parts = ref_name.split(":", 1)
+                            ref_lib = parts[0].strip()
+                            ref_name = parts[1].strip()
+                        # Document materials first
                         try:
-                            target_mat = design.materials.itemByName(ref)
+                            target_material = design.materials.itemByName(ref_name)
                         except Exception:
-                            target_mat = None
-                        if not target_mat:
+                            target_material = None
+                        if not target_material:
                             try:
-                                for lib in libraries:
-                                    mm = lib.materials.itemByName(ref)
+                                for lib in material_libs:
+                                    if ref_lib and getattr(lib, "name", "") != ref_lib:
+                                        continue
+                                    mm = lib.materials.itemByName(ref_name)
                                     if mm:
-                                        target_mat = mm
+                                        target_material = mm
                                         break
                             except Exception:
-                                pass
-                    # Apply to all bodies if found
-                    if target_mat:
+                                target_material = None
+                    if target_material:
                         try:
                             for b in root_comp.bRepBodies:
-                                b.material = target_mat
+                                b.material = target_material
                         except Exception:
                             pass
-                    # Appearance overrides by color name or hex
-                    ap = m.get("appearance") or m.get("color")
+
+                    # Appearance override by name or color
+                    overrides = m.get("overrides") or {}
+                    ap = m.get("appearance") or m.get("color") or overrides.get("color")
                     if ap:
-                        app_obj = None
+                        appearance_obj = None
+                        is_hex = False
                         try:
-                            # search appearances
-                            for i in range(app.appearanceLibraries.count):
-                                lib = app.appearanceLibraries.item(i)
-                                app_obj = lib.appearances.itemByName(str(ap))
-                                if app_obj:
+                            s = str(ap).lstrip('#')
+                            _ = int(s, 16)
+                            is_hex = True
+                        except Exception:
+                            is_hex = False
+                        try:
+                            for lib in appearance_libs:
+                                obj = lib.appearances.itemByName(str(ap))
+                                if obj:
+                                    appearance_obj = obj
                                     break
                         except Exception:
-                            app_obj = None
-                        if app_obj:
+                            appearance_obj = None
+                        if appearance_obj:
                             try:
                                 for b in root_comp.bRepBodies:
-                                    b.appearance = app_obj
+                                    b.appearance = appearance_obj
                             except Exception:
                                 pass
-        except Exception:
-            pass
-        # PMI notes
-        try:
+                        elif is_hex:
+                            # Cannot synthesize arbitrary appearance reliably; emit diagnostic
+                            try:
+                                self._diag("E2511", where="materials", message=f"Hex color '{ap}' requested; no matching appearance found; leaving default")
+                            except Exception:
+                                pass
+
+                    # Density override diagnostic (Fusion generally doesn't allow direct override)
+                    if overrides.get("density") is not None:
+                        try:
+                            dens_val = str(overrides.get("density"))
+                            self._diag("E2510", where="materials", message=f"Density override '{dens_val}' not settable in this API; using library density")
+                        except Exception:
+                            pass
+
+            # PMI: notes placed on face or named construction plane, with rotation and size
             pmi_list = csl_ir.get("pmi") or []
             if isinstance(pmi_list, list) and len(pmi_list) > 0:
-                sk = root_comp.sketches.add(root_comp.xYConstructionPlane)
+                def _plane_by_name(name: str):
+                    n = (name or "").lower()
+                    if "xz" in n:
+                        return root_comp.xZConstructionPlane
+                    if "yz" in n:
+                        return root_comp.yZConstructionPlane
+                    return root_comp.xYConstructionPlane
+
                 for note in pmi_list:
                     if not isinstance(note, dict) or not note.get("note"):
                         continue
-                    txt = str(note.get("note"))
-                    pos = note.get("at") or "0,0"
-                    pt = self._parse_point(pos) or [0.0, 0.0]
-                    height_mm = self._parse_length_mm(note.get("height") or "5") or 5.0
-                    height = height_mm / 10.0
                     try:
-                        ti = sk.sketchTexts.createInput(txt, height)
+                        txt = str(note.get("note"))
+                        height_mm = self._parse_length_mm(note.get("height") or "5") or 5.0
+                        height = height_mm / 10.0
+                        # angle in degrees (number or string), default 0
+                        try:
+                            rot_deg = float(note.get("angle") or 0.0)
+                        except Exception:
+                            rot_deg = 0.0
+                        pos_str = note.get("at") or "0,0"
+                        pt = self._parse_point(pos_str) or [0.0, 0.0]
+
+                        # Face placement takes precedence over plane
+                        sketch = None
+                        face_target = None
+                        if note.get("on"):
+                            try:
+                                fcol = self._resolve_query(root_comp, note.get("on"), entity_type="face")
+                                if fcol and fcol.count > 0:
+                                    face_target = fcol.item(0)
+                            except Exception:
+                                face_target = None
+                        if face_target is not None:
+                            sketch = root_comp.sketches.add(face_target)
+                        else:
+                            plane_name = note.get("plane") or "world.xy"
+                            sketch = root_comp.sketches.add(_plane_by_name(plane_name))
+
+                        ti = sketch.sketchTexts.createInput(txt, height)
                         p = adsk.core.Point3D.create(pt[0], pt[1], 0)
-                        ti.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
-                        sk.sketchTexts.add(ti)
+                        radians = (rot_deg/180.0) * 3.141592653589793
+                        ti.setAsMultiLine(p, radians, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
+                        sketch.sketchTexts.add(ti)
                     except Exception:
+                        # Best-effort: ignore any one PMI failure without stopping others
                         pass
         except Exception:
+            # Entire materials/PMI block is best-effort; ignore in headless or API-limited environments
             pass
 
     def _apply_variable_fillet(self, root, fil_feats, grp: Dict[str, Any]):
