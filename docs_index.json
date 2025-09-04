@@ -30,6 +30,13 @@
       "type": "markdown"
     },
     {
+      "path": "CSL_v1_2_proposal.md",
+      "title": "CSL v1.2 – Fusion Parity and Cross-Backend Extensions (Proposal)",
+      "summary": "Proposed v1.2 syntax and schema to reach Fusion parity and extend cross-backend features; includes APS Design Automation linkage.",
+      "keywords": ["v1.2", "Fusion parity", "schema", "APS", "Design Automation"],
+      "type": "markdown"
+    },
+    {
       "path": "CSL_v1_1/csl_v1_1_spec.md",
       "title": "CSL (CAD-Specific Language) – Version 1.1",
       "summary": "Full language spec covering goals, metadata, params, sketches, features, queries, assemblies, ECAD, exports/thumbnails, backend capabilities, and cheatsheet.",
