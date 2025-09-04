@@ -146,9 +146,59 @@ class FusionBackend:
                         const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
+                elif kind == "chamfer":
+                    d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
+                    d_cm = d_mm / 10.0
+                    edges = self._all_body_edges(root)
+                    if edges.count > 0:
+                        chf = root.features.chamferFeatures
+                        edge_col = adsk.core.ObjectCollection.create()
+                        for e in edges:
+                            edge_col.add(e)
+                        defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
+                        ch = chf.add(defn)
+                        mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
                 elif kind == "hole":
                     # Minimal: skip detailed hole types; placeholder for future expansion
                     mapping[feat_id] = f"fusion:hole:pending"
+                elif kind == "revolve":
+                    profile = self._first_profile(root)
+                    if profile is None:
+                        continue
+                    axis = root.zConstructionAxis
+                    rev_feats = root.features.revolveFeatures
+                    angle = adsk.core.ValueInput.createByReal(2 * 3.141592653589793)  # 360 rad units in cm space
+                    rev_input = rev_feats.createInput(profile, axis, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                    rev_input.setAngleExtent(False, angle)
+                    rev = rev_feats.add(rev_input)
+                    mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                elif kind == "pattern":
+                    # Simple linear pattern along +X using last body
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        obj_col = adsk.core.ObjectCollection.create()
+                        # Pattern the last body
+                        obj_col.add(bodies.item(bodies.count - 1))
+                        patt = root.features.rectangularPatternFeatures
+                        dir_vec = root.xConstructionAxis
+                        count = int(feat.get("count") or 2)
+                        spacing_mm = self._parse_length_mm(feat.get("spacing")) or 10.0
+                        spacing_cm = spacing_mm / 10.0
+                        qty = adsk.core.ValueInput.createByString(str(count))
+                        dist = adsk.core.ValueInput.createByReal(spacing_cm)
+                        input_def = patt.createInput(obj_col, dir_vec, qty, dist, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+                        pat = patt.add(input_def)
+                        mapping[feat_id] = f"fusion:pattern:{pat.entityToken}"
+                elif kind == "mirror":
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        obj_col = adsk.core.ObjectCollection.create()
+                        obj_col.add(bodies.item(bodies.count - 1))
+                        mirror = root.features.mirrorFeatures
+                        plane = root.yZConstructionPlane
+                        m_input = mirror.createInput(obj_col, plane)
+                        mf = mirror.add(m_input)
+                        mapping[feat_id] = f"fusion:mirror:{mf.entityToken}"
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):
@@ -285,5 +335,8 @@ class FusionBackend:
             for e in b.edges:
                 col.add(e)
         return col
+
+    def _all_bodies(self, root):
+        return root.bRepBodies
 
 
