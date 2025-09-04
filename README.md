@@ -65,6 +65,16 @@ Optional backends
 - Issues and proposals welcome. For large changes, start with a short design note.
 - Adapters should implement a minimal interface and publish capabilities for planning.
 
+#### Getting started for contributors (Fusion-first)
+1) Create a virtualenv and install dev tools (pytest optional).
+2) Review the adapter stub at `triple_lindy/transpilers/fusion360_backend.py`.
+3) Run the demo script:
+```bash
+python scripts/run_fusion_example.py
+```
+4) Implement real Fusion calls in `FusionBackend.realize/export/thumbnail`.
+5) Extend capabilities and add tests that validate exported artifacts.
+
 ### License
 MIT (see `LICENSE`).
 
