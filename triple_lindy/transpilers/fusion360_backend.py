@@ -862,6 +862,19 @@ class FusionBackend:
                                 face = fcol.item(0) if fcol and fcol.count > 0 else None
                         except Exception:
                             face = None
+                        if face is None:
+                            # Allow plane selection by name when no face query provided
+                            try:
+                                plane_key = (feat.get("plane") or "").lower()
+                                if plane_key:
+                                    if "xz" in plane_key:
+                                        face = root.xZConstructionPlane
+                                    elif "yz" in plane_key:
+                                        face = root.yZConstructionPlane
+                                    else:
+                                        face = root.xYConstructionPlane
+                            except Exception:
+                                face = None
                         face = face or self._first_planar_face(root)
                         if face is None:
                             mapping[feat_id] = "fusion:hole:skipped"
@@ -910,9 +923,49 @@ class FusionBackend:
                                     h_input.holeTipAngle = adsk.core.ValueInput.createByReal((drill_angle_deg / 180.0) * 3.141592653589793)
                                 except Exception:
                                     pass
+                            # Depth/extent handling: depth distance or through_all
+                            depth_spec = feat.get("depth")
+                            through_all = bool(feat.get("through_all") or (isinstance(depth_spec, str) and str(depth_spec).lower() == "through_all"))
+                            if through_all:
+                                for attr in ("isAllExtent", "isThroughAll"):
+                                    if hasattr(h_input, attr):
+                                        try:
+                                            setattr(h_input, attr, True)
+                                            break
+                                        except Exception:
+                                            continue
+                            else:
+                                depth_mm2 = self._parse_length_mm(depth_spec) if depth_spec is not None else None
+                                if depth_mm2 is not None:
+                                    val = adsk.core.ValueInput.createByReal((depth_mm2 / 10.0))
+                                    applied = False
+                                    # Try common properties/methods across versions
+                                    for attr in ("extentDistance", "distance", "holeDepth"):
+                                        if hasattr(h_input, attr):
+                                            try:
+                                                setattr(h_input, attr, val)
+                                                applied = True
+                                                break
+                                            except Exception:
+                                                continue
+                                    if not applied:
+                                        for meth in ("setDistanceExtent",):
+                                            if hasattr(h_input, meth):
+                                                try:
+                                                    getattr(h_input, meth)(val)
+                                                    applied = True
+                                                    break
+                                                except Exception:
+                                                    continue
                             h_input.setPositionBySketchPoints(pts)
                             h = hole_feats.add(h_input)
                             mapping[feat_id] = f"fusion:hole:{h.entityToken}:{h_type}"
+                            # Optional callout text (best-effort diagnostic)
+                            if isinstance(feat.get("callout"), str):
+                                try:
+                                    self._diag("E2300I", where="hole", message=f"Callout: {feat.get('callout')}")
+                                except Exception:
+                                    pass
                             try:
                                 self._record_lineage(feat_id, h, root)
                             except Exception:
@@ -1527,6 +1580,14 @@ class FusionBackend:
                                     j_in.setAsSliderJointMotion(axis_dir)
                                 elif jtype == "rigid":
                                     j_in.setAsRigidJointMotion()
+                                elif jtype == "cylindrical" and hasattr(j_in, "setAsCylindricalJointMotion"):
+                                    j_in.setAsCylindricalJointMotion(axis_dir)
+                                elif jtype == "planar" and hasattr(j_in, "setAsPlanarJointMotion"):
+                                    j_in.setAsPlanarJointMotion()
+                                elif jtype == "ball" and hasattr(j_in, "setAsBallJointMotion"):
+                                    j_in.setAsBallJointMotion()
+                                elif jtype in ("pinslot", "pin_slot") and hasattr(j_in, "setAsPinSlotJointMotion"):
+                                    j_in.setAsPinSlotJointMotion(axis_dir)
                                 else:
                                     j_in.setAsRevoluteJointMotion(axis_dir)
                                 # Limits/damping/preload
@@ -1562,6 +1623,31 @@ class FusionBackend:
                                                     jm.rotationLimits.maximumValue = (amax / 180.0) * 3.141592653589793
                                             except Exception:
                                                 self._diag("E2411", where="joint", message="Revolute limits not supported")
+                                        # Cylindrical: both slide and rotation if supported
+                                        if jtype == "cylindrical":
+                                            jm = j_in.jointMotion
+                                            try:
+                                                if lmin is not None or lmax is not None:
+                                                    jm.slideLimits.isRestValueRequired = False
+                                                    if lmin is not None:
+                                                        jm.slideLimits.isMinimumValueEnabled = True
+                                                        jm.slideLimits.minimumValue = (lmin / 10.0)
+                                                    if lmax is not None:
+                                                        jm.slideLimits.isMaximumValueEnabled = True
+                                                        jm.slideLimits.maximumValue = (lmax / 10.0)
+                                            except Exception:
+                                                pass
+                                            try:
+                                                if amin is not None or amax is not None:
+                                                    if hasattr(jm, "rotationLimits"):
+                                                        if amin is not None:
+                                                            jm.rotationLimits.isMinimumValueEnabled = True
+                                                            jm.rotationLimits.minimumValue = (amin / 180.0) * 3.141592653589793
+                                                        if amax is not None:
+                                                            jm.rotationLimits.isMaximumValueEnabled = True
+                                                            jm.rotationLimits.maximumValue = (amax / 180.0) * 3.141592653589793
+                                            except Exception:
+                                                pass
                                     # Damping/preload (best-effort)
                                     if feat.get("damping") is not None:
                                         try:
@@ -2029,6 +2115,34 @@ class FusionBackend:
                 for t in tokens.get(f"{type_key}s", []):
                     add_entity_by_token(t)
             return col
+
+        # by_material: filter by appearance/material name on faces/bodies
+        if by_material:
+            name = str(by_material)
+            try:
+                if kind == "body":
+                    bodies = self._all_bodies(root)
+                    for i in range(bodies.count):
+                        b = bodies.item(i)
+                        try:
+                            ap = getattr(b, "appearance", None)
+                            if ap and getattr(ap, "name", "") == name:
+                                col.add(b)
+                        except Exception:
+                            pass
+                    return col
+                if kind == "face":
+                    faces = self._get_all_faces(root)
+                    for f in faces:
+                        try:
+                            ap = getattr(f, "appearance", None)
+                            if ap and getattr(ap, "name", "") == name:
+                                col.add(f)
+                        except Exception:
+                            pass
+                    return col
+            except Exception:
+                pass
 
         # tangent_connected: flood neighboring faces tangent to seed
         if kind == "face" and tangent:

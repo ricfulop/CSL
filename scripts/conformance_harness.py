@@ -6,7 +6,8 @@ Runs a small battery of representative cases:
 - Wrap/Emboss (native where available, placeholder otherwise)
 - Joints with revolute and slider limits
 
-Outputs a JSON report to out/conformance_report.json.
+Outputs a JSON report to out/conformance_report.json and a short golden summary
+file out/golden_summary.json for CI gates.
 """
 from __future__ import annotations
 
@@ -164,6 +165,9 @@ def main() -> None:
             report["ok"] = False
         report["cases"].append(res)
     Path("out/conformance_report.json").write_text(json.dumps(report, indent=2))
+    # Golden summary: only ok/err counts by case id
+    golden = {"ok": report["ok"], "cases": [{"id": c["id"], "ok": c["ok"], "errors": len(c.get("errors") or [])} for c in report["cases"]]}
+    Path("out/golden_summary.json").write_text(json.dumps(golden, indent=2))
     print("Conformance report written to out/conformance_report.json")
 
 

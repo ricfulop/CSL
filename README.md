@@ -72,7 +72,15 @@ python scripts/conformance_harness.py
 
 Outputs:
 - `out/conformance_report.json`: summary with per-case `ok`, `mapping_size`, and recent diagnostics.
+- `out/golden_summary.json`: short summary for CI gates.
 - Dry-run friendly: if Fusion API is unavailable, the adapter returns a stable mapping and diagnostics for CI.
+
+### Export units/parity test
+Quickly exercise STL/STEP unit and resolution options.
+
+```bash
+python scripts/export_units_test.py
+```
 
 ### Contributing
 - Issues and proposals welcome. For large changes, start with a short design note.
