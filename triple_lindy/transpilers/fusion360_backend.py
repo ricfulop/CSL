@@ -1237,14 +1237,38 @@ class FusionBackend:
                             if cont in ("G1", "G2"):
                                 # Attempt to set continuity if API provides a mechanism; otherwise, hard fail with diagnostic
                                 applied = False
-                                for attr in ("sectionContinuity", "continuity", "edgeContinuity"):
-                                    if hasattr(lf_input, attr):
-                                        try:
-                                            setattr(lf_input, attr, cont)
-                                            applied = True
-                                            break
-                                        except Exception:
+                                try:
+                                    import adsk.fusion  # type: ignore
+                                    enum_val = None
+                                    for tname in ("SurfaceContinuityTypes", "ContinuityTypes", "LoftSectionContinuityTypes"):
+                                        enum_t = getattr(adsk.fusion, tname, None)
+                                        if not enum_t:
                                             continue
+                                        candidates = [n for n in dir(enum_t) if not n.startswith("_")]
+                                        pick = None
+                                        if cont == "G1":
+                                            for n in candidates:
+                                                if "G1" in n or "Tangent" in n:
+                                                    pick = n
+                                                    break
+                                        elif cont == "G2":
+                                            for n in candidates:
+                                                if "G2" in n or "Curvature" in n:
+                                                    pick = n
+                                                    break
+                                        if pick and hasattr(enum_t, pick):
+                                            enum_val = getattr(enum_t, pick)
+                                            break
+                                    for attr in ("sectionContinuity", "continuity", "edgeContinuity"):
+                                        if hasattr(lf_input, attr) and enum_val is not None:
+                                            try:
+                                                setattr(lf_input, attr, enum_val)
+                                                applied = True
+                                                break
+                                            except Exception:
+                                                continue
+                                except Exception:
+                                    applied = False
                                 if not applied:
                                     self._diag("E2315", where="loft", message=f"Requested continuity {cont} not supported by this Fusion version.")
                                     mapping[feat_id] = f"fusion:loft:E2315"
@@ -1253,30 +1277,76 @@ class FusionBackend:
                             try:
                                 sec_cont = feat.get("sections_continuity") or []
                                 if isinstance(sec_cont, list) and len(sec_cont) == sections.count:
-                                    for i, c in enumerate(sec_cont):
-                                        cc = (str(c) or "").upper()
-                                        if cc not in ("G0","G1","G2"):
-                                            continue
-                                        for attr in ("setSectionContinuity",):
-                                            if hasattr(lf_input, attr):
+                                    try:
+                                        import adsk.fusion  # type: ignore
+                                        for i, c in enumerate(sec_cont):
+                                            cc = (str(c) or "").upper()
+                                            if cc not in ("G0", "G1", "G2"):
+                                                continue
+                                            enum_val = None
+                                            for tname in ("SurfaceContinuityTypes", "ContinuityTypes", "LoftSectionContinuityTypes"):
+                                                enum_t = getattr(adsk.fusion, tname, None)
+                                                if not enum_t:
+                                                    continue
+                                                candidates = [n for n in dir(enum_t) if not n.startswith("_")]
+                                                pick = None
+                                                if cc == "G1":
+                                                    for n in candidates:
+                                                        if "G1" in n or "Tangent" in n:
+                                                            pick = n
+                                                            break
+                                                elif cc == "G2":
+                                                    for n in candidates:
+                                                        if "G2" in n or "Curvature" in n:
+                                                            pick = n
+                                                            break
+                                                else:
+                                                    for n in candidates:
+                                                        if "G0" in n or "Position" in n or n == "None":
+                                                            pick = n
+                                                            break
+                                                if pick and hasattr(enum_t, pick):
+                                                    enum_val = getattr(enum_t, pick)
+                                                    break
+                                            if hasattr(lf_input, "setSectionContinuity") and enum_val is not None:
                                                 try:
-                                                    getattr(lf_input, attr)(i, cc)
+                                                    lf_input.setSectionContinuity(i, enum_val)
                                                 except Exception:
                                                     pass
+                                    except Exception:
+                                        pass
                             except Exception:
                                 pass
                             orient = (feat.get("orientation") or "").lower()
                             if orient:
                                 # If orientation control is not supported on loft, hard fail when explicitly requested
                                 supported = False
-                                for attr in ("orientation", "loftOrientation"):
-                                    if hasattr(lf_input, attr):
-                                        try:
-                                            setattr(lf_input, attr, orient)
-                                            supported = True
-                                            break
-                                        except Exception:
+                                try:
+                                    import adsk.fusion  # type: ignore
+                                    enum_val = None
+                                    for tname in ("LoftOrientationTypes", "ProfileOrientationTypes", "SweepOrientationTypes"):
+                                        enum_t = getattr(adsk.fusion, tname, None)
+                                        if not enum_t:
                                             continue
+                                        if orient == "fixed_normal":
+                                            pick = "PathOrientationType"
+                                        elif orient == "binormal":
+                                            pick = "GuideRailOrientationType"
+                                        else:
+                                            pick = "PerpendicularOrientationType"
+                                        if hasattr(enum_t, pick):
+                                            enum_val = getattr(enum_t, pick)
+                                            break
+                                    for attr in ("orientation", "loftOrientation"):
+                                        if hasattr(lf_input, attr) and enum_val is not None:
+                                            try:
+                                                setattr(lf_input, attr, enum_val)
+                                                supported = True
+                                                break
+                                            except Exception:
+                                                continue
+                                except Exception:
+                                    supported = False
                                 if not supported:
                                     self._diag("E2316", where="loft", message=f"Requested orientation '{orient}' not supported by this Fusion version.")
                                     mapping[feat_id] = f"fusion:loft:E2316"
@@ -1285,21 +1355,24 @@ class FusionBackend:
                             pass
                         # Optional guide rails or centerline from queries/sketch
                         try:
-                            guides = feat.get("guides") or []
+                            guides = feat.get("guides") or feat.get("guides_query") or []
                             if isinstance(guides, list) and len(guides) > 0:
                                 rails = adsk.core.ObjectCollection.create()
                                 for g in guides:
-                                    if isinstance(g, dict):
-                                        gc = self._resolve_query(root, g, entity_type="edge")
+                                    if isinstance(g, (dict, str)):
+                                        try:
+                                            gc = self._resolve_query(root, g, entity_type="edge")
+                                        except Exception:
+                                            gc = None
                                         if gc and gc.count > 0:
                                             rails.add(gc.item(0))
                                 if rails.count > 0 and hasattr(lf_input, "centerLineOrRails"):
                                     lf_input.centerLineOrRails = rails
                             # Single rail/centerline via 'rail' or 'centerline' key
-                            single = feat.get("rail") or feat.get("centerline")
+                            single = feat.get("rail") or feat.get("centerline") or feat.get("rail_query") or feat.get("centerline_query")
                             if single:
                                 try:
-                                    scol = self._resolve_query(root, single, entity_type="edge") if isinstance(single, dict) else None
+                                    scol = self._resolve_query(root, single, entity_type="edge") if isinstance(single, (dict, str)) else None
                                 except Exception:
                                     scol = None
                                 if scol and scol.count > 0 and hasattr(lf_input, "centerLineOrRails"):

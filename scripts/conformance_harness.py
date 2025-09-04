@@ -64,6 +64,29 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Loft orientation with rail (binormal/fixed_normal variants)
+    cases.append({
+        "id": "loft_orientation",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Loft Orientation", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "c0", "center": "0,0", "d": "20 mm"}
+                ]},
+                {"id": "s1", "plane": "world.xz", "entities": [
+                    {"kind": "rect", "id": "r1", "p1": "-6 mm,-3 mm", "p2": "6 mm,3 mm"}
+                ]},
+                {"id": "rail2", "plane": "world.yz", "entities": [
+                    {"kind": "spline", "id": "path2", "points": ["0,0", "12 mm, 6 mm", "24 mm, 0"]}
+                ]}
+            ],
+            "features": [
+                {"kind": "loft", "id": "L3", "sections": ["s0.profile(c0)", "s1.profile(r1)"], "orientation": "binormal", "rail": "rail2.profile(path2)", "result": "body"}
+            ]
+        }
+    })
+
     # Variable fillet (points) and chamfer (points/angle) - best-effort
     cases.append({
         "id": "variable_fillet_chamfer",

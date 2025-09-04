@@ -12,29 +12,34 @@
       "errors": 3
     },
     {
-      "id": "variable_fillet_chamfer",
+      "id": "loft_orientation",
       "ok": true,
       "errors": 4
     },
     {
-      "id": "emboss_text",
+      "id": "variable_fillet_chamfer",
       "ok": true,
       "errors": 5
     },
     {
-      "id": "joints_limits",
+      "id": "emboss_text",
       "ok": true,
       "errors": 6
     },
     {
-      "id": "sketch_construction",
+      "id": "joints_limits",
       "ok": true,
       "errors": 7
     },
     {
-      "id": "reference_dimensions",
+      "id": "sketch_construction",
       "ok": true,
       "errors": 8
+    },
+    {
+      "id": "reference_dimensions",
+      "ok": true,
+      "errors": 9
     }
   ]
 }
