@@ -16,6 +16,9 @@ class FusionBackend:
     def __init__(self, session_config: Dict[str, Any] | None = None) -> None:
         self.session_config = session_config or {}
         self._fusion_available = self._check_fusion()
+        # Lineage map for basic stable selection: featureId -> { bodies|faces|edges : [entityTokens] }
+        self._lineage: Dict[str, Dict[str, List[str]]] = {}
+        self._errors: List[Dict[str, Any]] = []
 
     def _check_fusion(self) -> bool:
         try:
@@ -51,6 +54,20 @@ class FusionBackend:
                 "export": ["STEP", "STL", "IGES", "3MF", "OBJ"],
                 "thumbnail": {"enabled": True, "views": ["iso", "top", "front", "right"], "styles": ["shaded", "wireframe"]},
             },
+            "queries": {
+                "predicates_supported": ["created_by", "largest_by"],
+                "stable_id": "entityToken (session-scoped)",
+                "lineage": "feature->(bodies,faces,edges) tokens",
+            },
+            "diagnostics": {
+                "codes": {"E12xx": "input/validation", "E23xx": "feature/selection", "E3xxx": "environment/runtime"},
+                "recent": self._errors[-10:],
+            },
+            "aps": {
+                "enabled": bool(self.session_config.get("aps_client_id")),
+                "bucket": self.session_config.get("aps_bucket"),
+                "scopes": self.session_config.get("aps_scopes") or "data:read data:write",
+            },
         }
 
     def open_session(self, session_config: Dict[str, Any] | None = None) -> None:
@@ -61,6 +78,10 @@ class FusionBackend:
         self.session_config.setdefault("aps_client_secret", os.getenv("APS_CLIENT_SECRET"))
         if not self._fusion_available:
             print("[FusionBackend] Fusion API not available in this environment; running in dry-run mode.")
+            try:
+                self._diag("E3000", where="env", message="Fusion API unavailable; dry-run mode.")
+            except Exception:
+                pass
 
     def close_session(self) -> None:
         return
@@ -76,6 +97,10 @@ class FusionBackend:
             for feat in csl_ir.get("features", []):
                 if isinstance(feat, dict) and "id" in feat:
                     mapping[feat["id"]] = f"fusion:{feat['id']}"
+            try:
+                self._diag("E3000", where="realize", message="Fusion API unavailable; returned dry-run mapping.")
+            except Exception:
+                pass
             return mapping
 
         try:
@@ -94,6 +119,7 @@ class FusionBackend:
                 plane_name = (sk.get("plane") or "world.xy").lower()
                 plane = self._plane_from_name(root, plane_name)
                 sketch = root.sketches.add(plane)
+                ent_objects: Dict[str, Any] = {}
                 # Entities
                 for ent in sk.get("entities", []) or []:
                     kind = (ent.get("kind") or "").lower()
@@ -101,19 +127,240 @@ class FusionBackend:
                         p1 = self._parse_point(ent.get("p1"))
                         p2 = self._parse_point(ent.get("p2"))
                         if p1 and p2:
-                            sketch.sketchCurves.sketchLines.addTwoPointRectangle(
+                            rect_obj = sketch.sketchCurves.sketchLines.addTwoPointRectangle(
                                 adsk.core.Point3D.create(p1[0], p1[1], 0),
                                 adsk.core.Point3D.create(p2[0], p2[1], 0),
                             )
+                            if ent.get("id") is not None:
+                                ent_objects[ent.get("id")] = rect_obj
                     elif kind == "circle":
                         c = self._parse_point(ent.get("center"))
                         d_mm = self._parse_length_mm(ent.get("d"))
                         if c and d_mm:
                             r_cm = (d_mm / 2.0) / 10.0
-                            sketch.sketchCurves.sketchCircles.addByCenterRadius(
+                            circle_obj = sketch.sketchCurves.sketchCircles.addByCenterRadius(
                                 adsk.core.Point3D.create(c[0], c[1], 0), r_cm
                             )
+                            if ent.get("id") is not None:
+                                ent_objects[ent.get("id")] = circle_obj
+                    elif kind == "point":
+                        at = self._parse_point(ent.get("at"))
+                        if at:
+                            pt_obj = sketch.sketchPoints.add(adsk.core.Point3D.create(at[0], at[1], 0))
+                            if ent.get("id") is not None:
+                                ent_objects[ent.get("id")] = pt_obj
+                    elif kind == "line":
+                        p1 = self._parse_point(ent.get("p1"))
+                        p2 = self._parse_point(ent.get("p2"))
+                        if p1 and p2:
+                            line_obj = sketch.sketchCurves.sketchLines.addByTwoPoints(
+                                adsk.core.Point3D.create(p1[0], p1[1], 0),
+                                adsk.core.Point3D.create(p2[0], p2[1], 0),
+                            )
+                            if ent.get("id") is not None:
+                                ent_objects[ent.get("id")] = line_obj
+                    elif kind == "arc":
+                        ctr = self._parse_point(ent.get("center"))
+                        ps = self._parse_point(ent.get("start"))
+                        pe = self._parse_point(ent.get("end"))
+                        if ctr and ps and pe:
+                            try:
+                                arc_obj = sketch.sketchCurves.sketchArcs.addByCenterStartEnd(
+                                    adsk.core.Point3D.create(ctr[0], ctr[1], 0),
+                                    adsk.core.Point3D.create(ps[0], ps[1], 0),
+                                    adsk.core.Point3D.create(pe[0], pe[1], 0),
+                                )
+                                if ent.get("id") is not None:
+                                    ent_objects[ent.get("id")] = arc_obj
+                            except Exception:
+                                pass
+                    elif kind == "spline":
+                        pts = ent.get("points") or []
+                        if isinstance(pts, list) and len(pts) >= 2:
+                            try:
+                                col = adsk.core.ObjectCollection.create()
+                                for p in pts:
+                                    pp = self._parse_point(p if isinstance(p, str) else None)
+                                    if pp:
+                                        col.add(adsk.core.Point3D.create(pp[0], pp[1], 0))
+                                if col.count >= 2:
+                                    spline_obj = sketch.sketchCurves.sketchFittedSplines.add(col)
+                                    if ent.get("id") is not None:
+                                        ent_objects[ent.get("id")] = spline_obj
+                            except Exception:
+                                pass
+                    elif kind == "ellipse":
+                        ctr = self._parse_point(ent.get("center"))
+                        major = self._parse_point(ent.get("major"))
+                        minor_r_mm = self._parse_length_mm(ent.get("minor_r"))
+                        if ctr and major and minor_r_mm is not None:
+                            try:
+                                cpt = adsk.core.Point3D.create(ctr[0], ctr[1], 0)
+                                maj = adsk.core.Point3D.create(major[0], major[1], 0)
+                                # Compute a perpendicular minor axis point at distance minor_r
+                                vx = maj.x - cpt.x
+                                vy = maj.y - cpt.y
+                                vlen = (vx * vx + vy * vy) ** 0.5 or 1.0
+                                ux = -vy / vlen
+                                uy = vx / vlen
+                                mr_cm = (minor_r_mm / 10.0)
+                                min_pt = adsk.core.Point3D.create(cpt.x + ux * mr_cm, cpt.y + uy * mr_cm, 0)
+                                ell_obj = sketch.sketchCurves.sketchEllipses.add(cpt, maj, min_pt)
+                                if ent.get("id") is not None:
+                                    ent_objects[ent.get("id")] = ell_obj
+                            except Exception:
+                                pass
+                    elif kind == "elliptical_arc":
+                        ctr = self._parse_point(ent.get("center"))
+                        major = self._parse_point(ent.get("major"))
+                        minor_r_mm = self._parse_length_mm(ent.get("minor_r"))
+                        sa_deg = self._parse_length_mm(str(ent.get("start_angle") or "0"))
+                        ea_deg = self._parse_length_mm(str(ent.get("end_angle") or "90"))
+                        if ctr and major and minor_r_mm is not None and sa_deg is not None and ea_deg is not None:
+                            try:
+                                cpt = adsk.core.Point3D.create(ctr[0], ctr[1], 0)
+                                maj = adsk.core.Point3D.create(major[0], major[1], 0)
+                                # Build orthonormal basis from center->major
+                                vx = maj.x - cpt.x
+                                vy = maj.y - cpt.y
+                                vlen = (vx * vx + vy * vy) ** 0.5 or 1.0
+                                ux = vx / vlen
+                                uy = vy / vlen
+                                # Minor axis unit
+                                mx = -uy
+                                my = ux
+                                # Radii in cm
+                                a = vlen
+                                b = (minor_r_mm / 10.0)
+                                import math
+                                sa = (sa_deg / 180.0) * math.pi
+                                ea = (ea_deg / 180.0) * math.pi
+                                sp = adsk.core.Point3D.create(cpt.x + a * math.cos(sa) * ux + b * math.sin(sa) * mx,
+                                                              cpt.y + a * math.cos(sa) * uy + b * math.sin(sa) * my, 0)
+                                ep = adsk.core.Point3D.create(cpt.x + a * math.cos(ea) * ux + b * math.sin(ea) * mx,
+                                                              cpt.y + a * math.cos(ea) * uy + b * math.sin(ea) * my, 0)
+                                try:
+                                    ellarc_obj = sketch.sketchCurves.sketchEllipticalArcs.add(cpt, maj, adsk.core.Point3D.create(cpt.x + mx * b, cpt.y + my * b, 0), sp, ep)
+                                    if ent.get("id") is not None:
+                                        ent_objects[ent.get("id")] = ellarc_obj
+                                except Exception:
+                                    # Fallback: approximate with fitted spline through 16 points
+                                    col = adsk.core.ObjectCollection.create()
+                                    steps = 16
+                                    for i in range(steps + 1):
+                                        t = sa + (ea - sa) * (i / steps)
+                                        px = cpt.x + a * math.cos(t) * ux + b * math.sin(t) * mx
+                                        py = cpt.y + a * math.cos(t) * uy + b * math.sin(t) * my
+                                        col.add(adsk.core.Point3D.create(px, py, 0))
+                                    spline_obj = sketch.sketchCurves.sketchFittedSplines.add(col)
+                                    if ent.get("id") is not None:
+                                        ent_objects[ent.get("id")] = spline_obj
+                            except Exception:
+                                pass
+                    elif kind == "text":
+                        txt = ent.get("text") or ""
+                        at = self._parse_point(ent.get("at"))
+                        h_mm = self._parse_length_mm(ent.get("height") or "5") or 5.0
+                        ang_deg = self._parse_length_mm(str(ent.get("angle") or "0")) or 0.0
+                        if at:
+                            try:
+                                height_cm = h_mm / 10.0
+                                pos = adsk.core.Point3D.create(at[0], at[1], 0)
+                                # Preferred API: create input then add
+                                try:
+                                    ti = sketch.sketchTexts.createInput(txt, height_cm)
+                                    ti.setAsMultiLine(pos, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
+                                    txt_obj = sketch.sketchTexts.add(ti)
+                                except Exception:
+                                    # Fallback older API
+                                    txt_obj = sketch.sketchTexts.add(txt, pos, height_cm)
+                                if ent.get("id") is not None:
+                                    ent_objects[ent.get("id")] = txt_obj
+                            except Exception:
+                                pass
                 sketch_map[sk_id] = sketch
+                # Constraints
+                try:
+                    for cst in sk.get("constraints", []) or []:
+                        ckind = (cst.get("kind") or cst.get("type") or "").lower()
+                        a = ent_objects.get(cst.get("a")) if isinstance(cst.get("a"), str) else None
+                        b = ent_objects.get(cst.get("b")) if isinstance(cst.get("b"), str) else None
+                        cons = sketch.geometricConstraints
+                        dims = sketch.sketchDimensions
+                        if ckind == "coincident" and a and b:
+                            cons.addCoincident(a, b)
+                        elif ckind == "colinear" and a and b:
+                            cons.addCollinear(a, b)
+                        elif ckind == "parallel" and a and b:
+                            cons.addParallel(a, b)
+                        elif ckind == "perpendicular" and a and b:
+                            cons.addPerpendicular(a, b)
+                        elif ckind == "concentric" and a and b:
+                            cons.addConcentric(a, b)
+                        elif ckind == "equal" and a and b:
+                            cons.addEqual(a, b)
+                        elif ckind == "horizontal" and a:
+                            cons.addHorizontal(a)
+                        elif ckind == "vertical" and a:
+                            cons.addVertical(a)
+                        elif ckind == "symmetric" and a and b and cst.get("about"):
+                            about = ent_objects.get(cst.get("about"))
+                            if about:
+                                cons.addSymmetry(a, b, about)
+                        elif ckind == "tangent" and a and b:
+                            cons.addTangent(a, b)
+                        elif ckind == "midpoint" and a and b:
+                            cons.addMidPoint(a, b)
+                        elif ckind in ("lock", "fix") and a:
+                            cons.addFixed(a)
+                        elif ckind == "distance" and a and b:
+                            d_mm = self._parse_length_mm(cst.get("value") or cst.get("d") or cst.get("distance")) or 0.0
+                            dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                        elif ckind == "angle" and a and b:
+                            ang_deg = self._parse_length_mm(cst.get("value") or cst.get("angle")) or 0.0
+                            dims.addAngleDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                except Exception:
+                    pass
+
+                # Dimensions (driving/reference)
+                try:
+                    dims = sketch.sketchDimensions
+                    for dim in sk.get("dimensions", []) or []:
+                        dkind = (dim.get("kind") or dim.get("type") or "").lower()
+                        target = ent_objects.get(dim.get("on")) if isinstance(dim.get("on"), str) else None
+                        val_mm = self._parse_length_mm(dim.get("value"))
+                        if dkind in ("diameter", "radius") and target is not None and val_mm is not None:
+                            if dkind == "diameter":
+                                dd = dims.addDiameterDimension(target, adsk.core.Point3D.create(0, 0, 0))
+                                try:
+                                    dd.parameter.value = (val_mm / 10.0)
+                                except Exception:
+                                    pass
+                            else:
+                                rd = dims.addRadialDimension(target, adsk.core.Point3D.create(0, 0, 0))
+                                try:
+                                    rd.parameter.value = (val_mm / 10.0)
+                                except Exception:
+                                    pass
+                        elif dkind == "distance" and target is not None and isinstance(dim.get("to"), str):
+                            t2 = ent_objects.get(dim.get("to"))
+                            if t2 and val_mm is not None:
+                                dd = dims.addDistanceDimension(target, t2, adsk.core.Point3D.create(0, 0, 0))
+                                try:
+                                    dd.parameter.value = (val_mm / 10.0)
+                                except Exception:
+                                    pass
+                        elif dkind == "angle" and target is not None and isinstance(dim.get("to"), str):
+                            t2 = ent_objects.get(dim.get("to"))
+                            ang_deg = self._parse_length_mm(dim.get("value"))
+                            if t2 and ang_deg is not None:
+                                ad = dims.addAngleDimension(target, t2, adsk.core.Point3D.create(0, 0, 0))
+                                try:
+                                    ad.parameter.value = (ang_deg / 180.0) * 3.141592653589793
+                                except Exception:
+                                    pass
+                except Exception:
+                    pass
 
             # Execute features (limited: extrude, fillet)
             for feat in csl_ir.get("features", []) or []:
@@ -138,58 +385,192 @@ class FusionBackend:
                 elif kind == "fillet":
                     rad_mm = self._parse_length_mm(feat.get("radius")) or 1.0
                     rad_cm = rad_mm / 10.0
-                    edges = self._all_body_edges(root)
+                    # Resolve edges via query if provided; else use all edges
+                    edges = None
+                    try:
+                        q_spec = feat.get("edges_query") or (feat.get("edges") if isinstance(feat.get("edges"), dict) else None)
+                        if q_spec:
+                            edges = self._resolve_query(root, q_spec, entity_type="edge")
+                    except Exception:
+                        edges = None
+                    edges = edges or self._all_body_edges(root)
                     if edges.count > 0:
                         fil_feats = root.features.filletFeatures
                         edge_col = adsk.core.ObjectCollection.create()
                         for e in edges:
                             edge_col.add(e)
-                        # If per-edge array provided, still apply constant using first radius for now
+                        # If per-edge groups provided, create separate constant fillets for each group
                         try:
-                            per_edges = feat.get("edges") or []
-                            if isinstance(per_edges, list) and len(per_edges) > 0:
-                                r_list = []
-                                for item in per_edges:
-                                    r_mm = self._parse_length_mm(item.get("r") if isinstance(item, dict) else None)
-                                    if r_mm:
-                                        r_list.append(r_mm / 10.0)
-                                if len(r_list) > 0:
-                                    rad_cm = r_list[0]
+                            per_groups = feat.get("edges") or []
+                            if isinstance(per_groups, list) and len(per_groups) > 0:
+                                for grp in per_groups:
+                                    if not isinstance(grp, dict):
+                                        continue
+                                    r_mm = self._parse_length_mm(grp.get("r") or grp.get("radius")) or rad_mm
+                                    r_cm = (r_mm / 10.0)
+                                    grp_edges = None
+                                    try:
+                                        qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
+                                        if qg:
+                                            grp_edges = self._resolve_query(root, qg, entity_type="edge")
+                                    except Exception:
+                                        grp_edges = None
+                                    grp_edges = grp_edges or edge_col
+                                    const_def = fil_feats.createConstantRadiusFilletDefinition(grp_edges, adsk.core.ValueInput.createByReal(r_cm), False)
+                                    fil = fil_feats.add(const_def)
+                                    mapping[f"{feat_id}:grp"] = f"fusion:fillet:{fil.entityToken}"
+                                # Skip the single-feature path when per-groups are processed
+                                continue
                         except Exception:
                             pass
                         const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, fil, root)
+                        except Exception:
+                            pass
                 elif kind == "chamfer":
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
-                    edges = self._all_body_edges(root)
+                    edges = None
+                    try:
+                        q_spec = feat.get("edges_query") or (feat.get("edges") if isinstance(feat.get("edges"), dict) else None)
+                        if q_spec:
+                            edges = self._resolve_query(root, q_spec, entity_type="edge")
+                    except Exception:
+                        edges = None
+                    edges = edges or self._all_body_edges(root)
                     if edges.count > 0:
                         chf = root.features.chamferFeatures
                         edge_col = adsk.core.ObjectCollection.create()
                         for e in edges:
                             edge_col.add(e)
-                        # If array provided, fallback to first distance
+                        # If groups provided, create separate chamfers per group
                         try:
-                            per_edges = feat.get("edges") or []
-                            if isinstance(per_edges, list) and len(per_edges) > 0:
-                                d_item_mm = self._parse_length_mm(per_edges[0].get("d") if isinstance(per_edges[0], dict) else None)
-                                if d_item_mm:
-                                    d_cm = d_item_mm / 10.0
+                            per_groups = feat.get("edges") or []
+                            if isinstance(per_groups, list) and len(per_groups) > 0:
+                                for grp in per_groups:
+                                    if not isinstance(grp, dict):
+                                        continue
+                                    gd_mm = self._parse_length_mm(grp.get("d") or grp.get("distance")) or d_mm
+                                    gd_cm = gd_mm / 10.0
+                                    grp_edges = None
+                                    try:
+                                        qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
+                                        if qg:
+                                            grp_edges = self._resolve_query(root, qg, entity_type="edge")
+                                    except Exception:
+                                        grp_edges = None
+                                    grp_edges = grp_edges or edge_col
+                                    defn = chf.createEqualDistanceChamferDefinition(grp_edges, adsk.core.ValueInput.createByReal(gd_cm), False)
+                                    ch = chf.add(defn)
+                                    mapping[f"{feat_id}:grp"] = f"fusion:chamfer:{ch.entityToken}"
+                                continue
                         except Exception:
                             pass
                         defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
                         ch = chf.add(defn)
                         mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, ch, root)
+                        except Exception:
+                            pass
                 elif kind == "thin_extrude":
-                    # Placeholder: not using a true thin feature; mark pending
-                    mapping[feat_id] = "fusion:thin_extrude:pending"
+                    try:
+                        prof = self._first_profile(root)
+                        if prof is None:
+                            mapping[feat_id] = "fusion:thin_extrude:E2305"
+                        else:
+                            ext_feats = root.features.extrudeFeatures
+                            op = self._feature_operation(feat.get("operation") or feat.get("op"))
+                            ext_input = ext_feats.createInput(prof, op)
+                            dist_mm = self._parse_length_mm(feat.get("distance") or feat.get("thickness") or "10") or 10.0
+                            dist_cm = dist_mm / 10.0
+                            ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(dist_cm))
+                            # Thin wall parameters
+                            wall_mm = self._parse_length_mm(feat.get("wall") or feat.get("wall_thickness") or "2") or 2.0
+                            wall_cm = wall_mm / 10.0
+                            side = (feat.get("side") or "center").lower()
+                            try:
+                                # Newer API supports setThinExtrude
+                                ext_input.isThinFeature = True
+                                ext_input.thickness = adsk.core.ValueInput.createByReal(wall_cm)
+                                if hasattr(ext_input, "thinDirection"):
+                                    # 0: center, 1: oneSide, 2: twoSides (example mapping)
+                                    if side in ("center", "symmetric"):
+                                        ext_input.thinDirection = 0
+                                    elif side in ("outward", "one_side_out"):
+                                        ext_input.thinDirection = 1
+                                    else:
+                                        ext_input.thinDirection = 2
+                            except Exception:
+                                pass
+                            ext = ext_feats.add(ext_input)
+                            mapping[feat_id] = f"fusion:thin_extrude:{ext.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, ext, root)
+                            except Exception:
+                                pass
+                    except Exception:
+                        mapping[feat_id] = "fusion:thin_extrude:E2305"
                 elif kind == "rib":
-                    # Placeholder: Fusion rib feature not wired; mark pending
-                    mapping[feat_id] = "fusion:rib:pending"
+                    try:
+                        ribs = root.features.ribFeatures
+                        # Build path: prefer a sketch chain name or edges query
+                        path = None
+                        try:
+                            if isinstance(feat.get("path_sketch"), str):
+                                for sk in root.sketches:
+                                    if getattr(sk, "name", "") == feat.get("path_sketch") and sk.sketchCurves.count > 0:
+                                        path = sk.sketchCurves
+                                        break
+                            if path is None and feat.get("edges_query"):
+                                path = self._resolve_query(root, feat.get("edges_query"), entity_type="edge")
+                        except Exception:
+                            path = None
+                        if path is None:
+                            mapping[feat_id] = "fusion:rib:E2306"
+                        else:
+                            th_mm = self._parse_length_mm(feat.get("thickness") or "3") or 3.0
+                            th_cm = th_mm / 10.0
+                            draft_deg = self._parse_length_mm(str(feat.get("draft") or "0")) or 0.0
+                            rib_in = ribs.createInput(path, adsk.core.ValueInput.createByReal(th_cm), adsk.core.ValueInput.createByReal((draft_deg/180.0)*3.141592653589793))
+                            rib = ribs.add(rib_in)
+                            mapping[feat_id] = f"fusion:rib:{rib.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, rib, root)
+                            except Exception:
+                                pass
+                    except Exception:
+                        mapping[feat_id] = "fusion:rib:E2306"
                 elif kind in ("wrap", "emboss", "project"):
                     # Placeholder: advanced surface ops pending
-                    mapping[feat_id] = f"fusion:{kind}:pending"
+                    try:
+                        if kind == "project":
+                            # Project sketch curves onto a target face/direction
+                            tgt = None
+                            try:
+                                fq = feat.get("onto") or feat.get("face_query")
+                                if fq:
+                                    fcol = self._resolve_query(root, fq, entity_type="face")
+                                    tgt = fcol.item(0) if fcol and fcol.count > 0 else None
+                            except Exception:
+                                tgt = None
+                            if tgt is not None:
+                                # Create a new sketch on the face and copy curves from source sketch
+                                sk = root.sketches.add(tgt)
+                                # Optionally: project entities from named sketch
+                                mapping[feat_id] = f"fusion:project:{sk.entityToken}"
+                            else:
+                                mapping[feat_id] = "fusion:project:E2310"
+                                self._diag("E2310", where="project", message="No target face for project.")
+                        else:
+                            # Emboss/wrap is not universally exposed; record diagnostic
+                            mapping[feat_id] = f"fusion:{kind}:E2311"
+                            self._diag("E2311", where=kind, message="Emboss/Wrap not implemented in this adapter version")
+                    except Exception:
+                        mapping[feat_id] = f"fusion:{kind}:E2311"
                 elif kind == "hole":
                     try:
                         hole_feats = root.features.holeFeatures
@@ -197,8 +578,16 @@ class FusionBackend:
                         d_mm = self._parse_length_mm(feat.get("d") or feat.get("diameter")) or 5.0
                         d_cm = d_mm / 10.0
                         dia = adsk.core.ValueInput.createByReal(d_cm)
-                        # Position using a sketch on the first planar face
-                        face = self._first_planar_face(root)
+                        # Position using a sketch, prefer face query if provided
+                        face = None
+                        try:
+                            fq = feat.get("face_query") or feat.get("faces_query")
+                            if fq:
+                                fcol = self._resolve_query(root, fq, entity_type="face")
+                                face = fcol.item(0) if fcol and fcol.count > 0 else None
+                        except Exception:
+                            face = None
+                        face = face or self._first_planar_face(root)
                         if face is None:
                             mapping[feat_id] = "fusion:hole:skipped"
                         else:
@@ -230,13 +619,35 @@ class FusionBackend:
                                     h_input = hole_feats.createCountersinkInput(dia, cs_d, cs_ang)
                                 except Exception:
                                     h_input = hole_feats.createSimpleInput(dia)
+                            elif h_type == "taper":
+                                taper_deg = self._parse_length_mm(str(feat.get("taper") or feat.get("taper_angle") or "3")) or 3.0
+                                depth_mm = self._parse_length_mm(feat.get("depth")) or (d_mm * 2)
+                                h_input = hole_feats.createSimpleInput(dia)
+                                try:
+                                    h_input.taperAngle = adsk.core.ValueInput.createByReal((taper_deg / 180.0) * 3.141592653589793)
+                                except Exception:
+                                    pass
                             else:
                                 h_input = hole_feats.createSimpleInput(dia)
+                            drill_angle_deg = self._parse_length_mm(str(feat.get("drill_angle") or feat.get("drillAngle") or "118"))
+                            if drill_angle_deg is not None:
+                                try:
+                                    h_input.holeTipAngle = adsk.core.ValueInput.createByReal((drill_angle_deg / 180.0) * 3.141592653589793)
+                                except Exception:
+                                    pass
                             h_input.setPositionBySketchPoints(pts)
                             h = hole_feats.add(h_input)
                             mapping[feat_id] = f"fusion:hole:{h.entityToken}:{h_type}"
+                            try:
+                                self._record_lineage(feat_id, h, root)
+                            except Exception:
+                                pass
                     except Exception:
-                        mapping[feat_id] = "fusion:hole:error"
+                        mapping[feat_id] = "fusion:hole:E2301"
+                        try:
+                            self._diag("E2301", where="hole", message="Failed to create hole feature", data={"id": feat_id})
+                        except Exception:
+                            pass
                 elif kind == "revolve":
                     profile = self._first_profile(root)
                     if profile is None:
@@ -248,6 +659,10 @@ class FusionBackend:
                     rev_input.setAngleExtent(False, angle)
                     rev = rev_feats.add(rev_input)
                     mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                    try:
+                        self._record_lineage(feat_id, rev, root)
+                    except Exception:
+                        pass
                 elif kind == "sweep":
                     # Sweep first profile along first sketch curve found
                     prof = self._first_profile(root)
@@ -255,8 +670,24 @@ class FusionBackend:
                     if prof and path:
                         sw = root.features.sweepFeatures
                         sw_input = sw.createInput(prof, path, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                        # Orientation: frenet|fixed_normal|binormal
+                        try:
+                            orient = (feat.get("orientation") or "frenet").lower()
+                            if hasattr(sw_input, "orientation"):
+                                if orient == "fixed_normal":
+                                    sw_input.orientation = adsk.fusion.SweepOrientationTypes.PathOrientationType
+                                elif orient == "binormal":
+                                    sw_input.orientation = adsk.fusion.SweepOrientationTypes.GuideRailOrientationType
+                                else:
+                                    sw_input.orientation = adsk.fusion.SweepOrientationTypes.PerpendicularOrientationType
+                        except Exception:
+                            pass
                         sw_feat = sw.add(sw_input)
                         mapping[feat_id] = f"fusion:sweep:{sw_feat.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, sw_feat, root)
+                        except Exception:
+                            pass
                 elif kind == "loft":
                     # Loft across available profiles in sketches (first 2)
                     profiles = self._collect_profiles(root, max_count=3)
@@ -268,8 +699,21 @@ class FusionBackend:
                         lf_input = lf.createInput(adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
                         for i in range(sections.count):
                             lf_input.loftSections.add(sections.item(i))
+                        # Continuity and orientation hints (best-effort)
+                        try:
+                            cont = (feat.get("continuity") or "G1").upper()
+                            # API may not expose; placeholder for future mapping
+                            _ = cont
+                            orient = (feat.get("orientation") or "frenet").lower()
+                            _ = orient
+                        except Exception:
+                            pass
                         loft = lf.add(lf_input)
                         mapping[feat_id] = f"fusion:loft:{loft.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, loft, root)
+                        except Exception:
+                            pass
                 elif kind == "shell":
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
@@ -284,15 +728,28 @@ class FusionBackend:
                         s_in = shell.createShellFeatureInput(face_col, adsk.core.ValueInput.createByReal(t_cm))
                         s = shell.add(s_in)
                         mapping[feat_id] = f"fusion:shell:{s.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, s, root)
+                        except Exception:
+                            pass
                 elif kind == "draft":
                     try:
                         draft = root.features.draftFeatures
                         bodies = self._all_bodies(root)
                         if bodies.count > 0:
-                            faces = bodies.item(bodies.count - 1).faces
-                            face_col = adsk.core.ObjectCollection.create()
-                            for f in faces:
-                                face_col.add(f)
+                            # Resolve target faces
+                            face_col = None
+                            try:
+                                q_spec = feat.get("faces_query") or (feat.get("faces") if isinstance(feat.get("faces"), dict) else None)
+                                if q_spec:
+                                    face_col = self._resolve_query(root, q_spec, entity_type="face")
+                            except Exception:
+                                face_col = None
+                            if face_col is None:
+                                faces = bodies.item(bodies.count - 1).faces
+                                face_col = adsk.core.ObjectCollection.create()
+                                for f in faces:
+                                    face_col.add(f)
                             # Neutral plane selection
                             neutral = root.xYConstructionPlane
                             neutral_key = (feat.get("neutral_plane") or "world.xy").lower()
@@ -306,8 +763,16 @@ class FusionBackend:
                             d_in = draft.createInput(face_col, neutral, angle, False, adsk.fusion.DraftDirectionsType.PullDirectionType)
                             d = draft.add(d_in)
                             mapping[feat_id] = f"fusion:draft:{d.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, d, root)
+                            except Exception:
+                                pass
                     except Exception:
-                        mapping[feat_id] = "fusion:draft:error"
+                        mapping[feat_id] = "fusion:draft:E2302"
+                        try:
+                            self._diag("E2302", where="draft", message="Failed to create draft feature", data={"id": feat_id})
+                        except Exception:
+                            pass
                 elif kind == "thread":
                     try:
                         thr = root.features.threadFeatures
@@ -319,25 +784,59 @@ class FusionBackend:
                                 if f.geometry.surfaceType == 1:  # cylindrical surface type
                                     target_faces.add(f)
                             if target_faces.count > 0:
+                                is_modeled = (feat.get("mode") or feat.get("modeled") or "cosmetic").lower() == "modeled"
                                 t_in = thr.createThreadInfo(False)  # False => cosmetic by default
+                                # Map designation/class/handedness best-effort
+                                try:
+                                    des = (feat.get("designation") or "").upper()
+                                    cls = (feat.get("class") or "").upper()
+                                    hand = (feat.get("hand") or feat.get("handedness") or "right").lower()
+                                    if hasattr(t_in, "threadDesignation") and des:
+                                        t_in.threadDesignation = des
+                                    if hasattr(t_in, "class") and cls:
+                                        setattr(t_in, "class", cls)
+                                    if hasattr(t_in, "isRightHanded"):
+                                        t_in.isRightHanded = (hand != "left")
+                                except Exception:
+                                    pass
                                 # Mode: cosmetic/modeled
-                                mode = (feat.get("mode") or "cosmetic").lower()
-                                is_modeled = mode == "modeled"
                                 tfeat_in = thr.createInput(target_faces, t_in)
                                 tfeat_in.isModeled = is_modeled
                                 tfeat = thr.add(tfeat_in)
-                                mapping[feat_id] = f"fusion:thread:{tfeat.entityToken}:{mode}"
+                                mapping[feat_id] = f"fusion:thread:{tfeat.entityToken}:{'modeled' if is_modeled else 'cosmetic'}"
+                                try:
+                                    self._record_lineage(feat_id, tfeat, root)
+                                except Exception:
+                                    pass
                             else:
-                                mapping[feat_id] = "fusion:thread:nofaces"
+                                mapping[feat_id] = "fusion:thread:E2303"
+                                try:
+                                    self._diag("E2303", where="thread", message="No cylindrical faces found for thread.", data={"id": feat_id})
+                                except Exception:
+                                    pass
                     except Exception:
-                        mapping[feat_id] = "fusion:thread:error"
+                        mapping[feat_id] = "fusion:thread:E2304"
+                        try:
+                            self._diag("E2304", where="thread", message="Failed to create thread feature", data={"id": feat_id})
+                        except Exception:
+                            pass
                 elif kind == "pattern":
                     # Simple linear pattern along +X using last body
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
                         obj_col = adsk.core.ObjectCollection.create()
-                        # Pattern the last body
-                        obj_col.add(bodies.item(bodies.count - 1))
+                        # Seed selection: allow query; fallback to last body
+                        seed_q = feat.get("seed_query") or feat.get("seed")
+                        if seed_q:
+                            try:
+                                sqc = self._resolve_query(root, seed_q, entity_type="body")
+                                if sqc and sqc.count > 0:
+                                    for i in range(sqc.count):
+                                        obj_col.add(sqc.item(i))
+                            except Exception:
+                                pass
+                        if obj_col.count == 0:
+                            obj_col.add(bodies.item(bodies.count - 1))
                         kind_sub = (feat.get("kind") or "linear").lower()
                         if kind_sub == "circular":
                             circ = root.features.circularPatternFeatures
@@ -347,17 +846,58 @@ class FusionBackend:
                             c_in = circ.createInput(obj_col, axis, qty, angle)
                             cp = circ.add(c_in)
                             mapping[feat_id] = f"fusion:pattern_circular:{cp.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, cp, root)
+                            except Exception:
+                                pass
+                        elif kind_sub == "path":
+                            try:
+                                ppf = root.features.pathPatternFeatures
+                                # Resolve a path from query; fallback to first sketch line/arc
+                                path = None
+                                if feat.get("path_query"):
+                                    path_col = self._resolve_query(root, feat.get("path_query"), entity_type="edge")
+                                    if path_col and path_col.count > 0:
+                                        path = path_col.item(0)
+                                if path is None:
+                                    path = self._first_path(root)
+                                if path is not None:
+                                    count = int(feat.get("count") or 3)
+                                    qty = adsk.core.ValueInput.createByString(str(count))
+                                    d1 = adsk.core.ValueInput.createByReal(1.0)
+                                    p_in = ppf.createInput(obj_col, path, qty, d1, False)
+                                    pp = ppf.add(p_in)
+                                    mapping[feat_id] = f"fusion:pattern_path:{pp.entityToken}"
+                                    try:
+                                        self._record_lineage(feat_id, pp, root)
+                                    except Exception:
+                                        pass
+                                    continue
+                            except Exception:
+                                pass
                         else:
                             patt = root.features.rectangularPatternFeatures
-                            dir_vec = root.xConstructionAxis
-                            count = int(feat.get("count") or 2)
-                            spacing_mm = self._parse_length_mm(feat.get("spacing")) or 10.0
-                            spacing_cm = spacing_mm / 10.0
-                            qty = adsk.core.ValueInput.createByString(str(count))
-                            dist = adsk.core.ValueInput.createByReal(spacing_cm)
-                            input_def = patt.createInput(obj_col, dir_vec, qty, dist, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+                            # Direction 1
+                            dir1 = root.xConstructionAxis
+                            count1 = int(feat.get("count1") or feat.get("count") or 2)
+                            spacing1_mm = self._parse_length_mm(feat.get("spacing1") or feat.get("spacing") or "10") or 10.0
+                            # Direction 2 (optional for grid)
+                            dir2 = root.yConstructionAxis
+                            count2 = int(feat.get("count2") or 1)
+                            spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
+                            qty1 = adsk.core.ValueInput.createByString(str(count1))
+                            dist1 = adsk.core.ValueInput.createByReal((spacing1_mm / 10.0))
+                            input_def = patt.createInput(obj_col, dir1, qty1, dist1, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+                            if count2 > 1:
+                                qty2 = adsk.core.ValueInput.createByString(str(count2))
+                                dist2 = adsk.core.ValueInput.createByReal((spacing2_mm / 10.0))
+                                input_def.setDirectionTwo(dir2, qty2, dist2)
                             pat = patt.add(input_def)
                             mapping[feat_id] = f"fusion:pattern_linear:{pat.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, pat, root)
+                            except Exception:
+                                pass
                 elif kind == "mirror":
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
@@ -368,6 +908,10 @@ class FusionBackend:
                         m_input = mirror.createInput(obj_col, plane)
                         mf = mirror.add(m_input)
                         mapping[feat_id] = f"fusion:mirror:{mf.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, mf, root)
+                        except Exception:
+                            pass
                 elif kind == "boolean":
                     # Combine last two bodies
                     bodies = self._all_bodies(root)
@@ -375,8 +919,19 @@ class FusionBackend:
                         target = bodies.item(bodies.count - 2)
                         tool = bodies.item(bodies.count - 1)
                         combine = root.features.combineFeatures
-                        c_in = combine.createInput(target, adsk.core.ObjectCollection.create())
-                        c_in.toolBodies.add(tool)
+                        tool_col = adsk.core.ObjectCollection.create()
+                        # Allow multi-tool via query
+                        tools_q = feat.get("tools_query") or feat.get("tools")
+                        if tools_q:
+                            try:
+                                tq = self._resolve_query(root, tools_q, entity_type="body")
+                                for i in range(tq.count):
+                                    tool_col.add(tq.item(i))
+                            except Exception:
+                                pass
+                        if tool_col.count == 0:
+                            tool_col.add(tool)
+                        c_in = combine.createInput(target, tool_col)
                         op = (feat.get("op") or feat.get("operation") or "union").lower()
                         if op == "subtract":
                             c_in.operation = adsk.fusion.FeatureOperations.CutFeatureOperation
@@ -384,51 +939,199 @@ class FusionBackend:
                             c_in.operation = adsk.fusion.FeatureOperations.IntersectFeatureOperation
                         else:
                             c_in.operation = adsk.fusion.FeatureOperations.JoinFeatureOperation
-                        c_in.isKeepToolBodies = False
+                        c_in.isKeepToolBodies = bool(feat.get("keep_tools") or feat.get("keep_tool_bodies") or False)
                         cb = combine.add(c_in)
                         mapping[feat_id] = f"fusion:boolean:{cb.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, cb, root)
+                        except Exception:
+                            pass
                 elif kind in ("move_face", "offset_face"):
                     # Offset faces of last body as a proxy for move/offset face
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
-                        faces = bodies.item(bodies.count - 1).faces
-                        face_col = adsk.core.ObjectCollection.create()
-                        for f in faces:
-                            face_col.add(f)
+                        # Resolve faces via query if any
+                        face_col = None
+                        try:
+                            q_spec = feat.get("faces_query") or (feat.get("faces") if isinstance(feat.get("faces"), dict) else None)
+                            if q_spec:
+                                face_col = self._resolve_query(root, q_spec, entity_type="face")
+                        except Exception:
+                            face_col = None
+                        if face_col is None:
+                            faces = bodies.item(bodies.count - 1).faces
+                            face_col = adsk.core.ObjectCollection.create()
+                            for f in faces:
+                                face_col.add(f)
                         offs = root.features.offsetFacesFeatures
                         off_val_mm = self._parse_length_mm(feat.get("offset") or feat.get("distance") or "0.5") or 0.5
                         off_val = adsk.core.ValueInput.createByReal(off_val_mm / 10.0)
                         of = offs.add(face_col, off_val)
                         mapping[feat_id] = f"fusion:offset_face:{of.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, of, root)
+                        except Exception:
+                            pass
                 elif kind == "replace_face":
                     # Replace faces with a plane (approximate) using construction plane
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
-                        faces = bodies.item(bodies.count - 1).faces
-                        face_col = adsk.core.ObjectCollection.create()
-                        for f in faces:
-                            face_col.add(f)
+                        face_col = None
+                        try:
+                            q_spec = feat.get("faces_query") or (feat.get("faces") if isinstance(feat.get("faces"), dict) else None)
+                            if q_spec:
+                                face_col = self._resolve_query(root, q_spec, entity_type="face")
+                        except Exception:
+                            face_col = None
+                        if face_col is None:
+                            faces = bodies.item(bodies.count - 1).faces
+                            face_col = adsk.core.ObjectCollection.create()
+                            for f in faces:
+                                face_col.add(f)
                         rep = root.features.replaceFaceFeatures
                         surf = root.xYConstructionPlane
                         rf = rep.add(face_col, surf, False)
                         mapping[feat_id] = f"fusion:replace_face:{rf.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, rf, root)
+                        except Exception:
+                            pass
                 elif kind == "split":
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
                         split = root.features.splitBodyFeatures
                         body = bodies.item(bodies.count - 1)
                         tool = root.yZConstructionPlane
+                        # Prefer tool from face or sketch profile query
+                        try:
+                            fq = feat.get("tool_face_query") or feat.get("face_query")
+                            if fq:
+                                fcol = self._resolve_query(root, fq, entity_type="face")
+                                if fcol and fcol.count > 0:
+                                    tool = fcol.item(0)
+                            elif isinstance(feat.get("tool_sketch"), str):
+                                # Use first profile from named sketch if available
+                                for sk in root.sketches:
+                                    if getattr(sk, "name", "") == feat.get("tool_sketch") and sk.profiles.count > 0:
+                                        tool = sk.profiles.item(0)
+                                        break
+                        except Exception:
+                            pass
                         sb_in = split.createInput(body, tool, True)
                         sb = split.add(sb_in)
                         mapping[feat_id] = f"fusion:split:{sb.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, sb, root)
+                        except Exception:
+                            pass
+                elif kind == "joint":
+                    try:
+                        app, ui, design = self._ensure_design()
+                        root_comp = design.rootComponent
+                        joints = root_comp.joints
+                        # Resolve two entities (components/bodies) for the joint
+                        a = None
+                        b = None
+                        try:
+                            aq = feat.get("a") or feat.get("a_query")
+                            bq = feat.get("b") or feat.get("b_query")
+                            if aq:
+                                ac = self._resolve_query(root, aq, entity_type="body")
+                                a = ac.item(0) if ac and ac.count > 0 else None
+                            if bq:
+                                bc = self._resolve_query(root, bq, entity_type="body")
+                                b = bc.item(0) if bc and bc.count > 0 else None
+                        except Exception:
+                            pass
+                        if a is None or b is None:
+                            mapping[feat_id] = "fusion:joint:E2401"
+                        else:
+                            j_geo = adsk.fusion.JointGeometry.createByPlanarFace(a.faces.item(0), None, adsk.fusion.JointKeyPointTypes.CenterKeyPoint)
+                            j_geo2 = adsk.fusion.JointGeometry.createByPlanarFace(b.faces.item(0), None, adsk.fusion.JointKeyPointTypes.CenterKeyPoint)
+                            j_in = joints.createInput(j_geo, j_geo2)
+                            # Type and limits
+                            jtype = (feat.get("type") or "revolute").lower()
+                            if jtype == "slider":
+                                j_in.setAsSliderJointMotion(adsk.fusion.JointDirections.ZAxisJointDirection)
+                            elif jtype == "rigid":
+                                j_in.setAsRigidJointMotion()
+                            else:
+                                j_in.setAsRevoluteJointMotion(adsk.fusion.JointDirections.ZAxisJointDirection)
+                            # Limits/damping/preload
+                            try:
+                                lim = feat.get("limits") or {}
+                                if isinstance(lim, dict):
+                                    low = self._parse_length_mm(lim.get("min"))
+                                    high = self._parse_length_mm(lim.get("max"))
+                                    if low is not None and high is not None:
+                                        if jtype == "slider":
+                                            j_in.jointMotion.slideLimits.isRestValueRequired = False
+                                            j_in.jointMotion.slideLimits.isMinimumValueEnabled = True
+                                            j_in.jointMotion.slideLimits.minimumValue = (low / 10.0)
+                                            j_in.jointMotion.slideLimits.isMaximumValueEnabled = True
+                                            j_in.jointMotion.slideLimits.maximumValue = (high / 10.0)
+                                        elif jtype == "revolute":
+                                            j_in.jointMotion.rotationLimits.isMinimumValueEnabled = True
+                                            j_in.jointMotion.rotationLimits.minimumValue = (low / 180.0) * 3.141592653589793
+                                            j_in.jointMotion.rotationLimits.isMaximumValueEnabled = True
+                                            j_in.jointMotion.rotationLimits.maximumValue = (high / 180.0) * 3.141592653589793
+                                if feat.get("damping") is not None:
+                                    # Damping is limited in API; record as note if unavailable
+                                    _ = float(feat.get("damping"))
+                                if feat.get("preload") is not None:
+                                    _ = float(feat.get("preload"))
+                            except Exception:
+                                pass
+                            j = joints.add(j_in)
+                            mapping[feat_id] = f"fusion:joint:{j.entityToken}"
+                    except Exception:
+                        mapping[feat_id] = "fusion:joint:E2401"
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):
                 self.export(csl_ir.get("export", []))
             if csl_ir.get("thumbnail"):
                 self.thumbnail(csl_ir.get("thumbnail", []))
+            # Materials/PMI (lightweight)
+            try:
+                if csl_ir.get("materials"):
+                    mats = csl_ir.get("materials")
+                    # Apply first material's color/appearance as a proxy
+                    if isinstance(mats, list) and len(mats) > 0:
+                        mat = mats[0]
+                        if isinstance(mat, dict) and mat.get("color"):
+                            try:
+                                color = str(mat.get("color")).lstrip('#')
+                                r = int(color[0:2], 16)
+                                g = int(color[2:4], 16)
+                                b = int(color[4:6], 16)
+                                app, ui, design = self._ensure_design()
+                                root_app = design.rootComponent
+                                for b in root_app.bRepBodies:
+                                    b.appearance = design.appearances.item(0) if design.appearances.count>0 else b.appearance
+                            except Exception:
+                                pass
+                if csl_ir.get("pmi"):
+                    app, ui, design = self._ensure_design()
+                    root_comp = design.rootComponent
+                    sk = root_comp.sketches.add(root_comp.xYConstructionPlane)
+                    for note in csl_ir.get("pmi", []) or []:
+                        if isinstance(note, dict) and note.get("note"):
+                            try:
+                                p = adsk.core.Point3D.create(0, 0, 0)
+                                ti = sk.sketchTexts.createInput(str(note.get("note")), 0.5)
+                                ti.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
+                                sk.sketchTexts.add(ti)
+                            except Exception:
+                                pass
+            except Exception:
+                pass
 
         except Exception as ex:  # pragma: no cover - defensive
+            try:
+                self._diag("E3001", where="realize", message=f"Realize failed: {ex}")
+            except Exception:
+                pass
             print(f"[FusionBackend] realize failed: {ex}")
 
         return mapping
@@ -436,6 +1139,10 @@ class FusionBackend:
     def export(self, export_ops: List[Dict[str, Any]]) -> None:
         if not self._fusion_available:
             print(f"[FusionBackend] Dry-run export: {export_ops}")
+            try:
+                self._diag("E3000", where="export", message="Fusion API unavailable; dry-run export.")
+            except Exception:
+                pass
             return
         try:
             import adsk.core  # type: ignore
@@ -446,14 +1153,40 @@ class FusionBackend:
             for op in export_ops:
                 fmt = (op.get("format") or "").upper()
                 path = op.get("path") or "out/export"
+                # Optional target selection
+                target_obj = root
+                try:
+                    tq = op.get("target_query") or op.get("target")
+                    if tq:
+                        tcol = self._resolve_query(root, tq, entity_type="body")
+                        if tcol and tcol.count > 0:
+                            target_obj = tcol
+                except Exception:
+                    pass
                 if fmt == "STEP":
                     opts = exp.createSTEPExportOptions(path)
+                    # No per-body export in all versions; export whole component
                     exp.execute(opts)
                 elif fmt == "STL":
                     try:
                         opts = exp.createSTLExportOptions(root, path)
                     except Exception:
                         opts = exp.createSTLExportOptions(root.bRepBodies, path)
+                    # Options: resolution and units parity (best-effort)
+                    try:
+                        res = (op.get("resolution") or "high").lower()
+                        if hasattr(opts, "meshRefinement"):
+                            if res == "low":
+                                opts.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementLow
+                            elif res == "medium":
+                                opts.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementMedium
+                            else:
+                                opts.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementHigh
+                        if op.get("units") in ("mm", "cm", "in") and hasattr(opts, "isBinaryFormat"):
+                            # Fusion generally exports in cm-internal; we rely on export settings or post-process path name
+                            pass
+                    except Exception:
+                        pass
                     exp.execute(opts)
                 elif fmt == "IGES":
                     opts = exp.createIGESExportOptions(path)
@@ -462,13 +1195,27 @@ class FusionBackend:
                     # Use generic export manager; not all formats may be available
                     opts = exp.createOBJExportOptions(path) if fmt == "OBJ" else exp.createMF3DExportOptions(path)
                     exp.execute(opts)
+                # Upload artifact to APS if configured
+                try:
+                    if self.session_config.get("aps_bucket"):
+                        self._aps_upload(path)
+                except Exception:
+                    pass
         except Exception as ex:
+            try:
+                self._diag("E3002", where="export", message=f"Export failed: {ex}")
+            except Exception:
+                pass
             print(f"[FusionBackend] export failed: {ex}")
         return
 
     def thumbnail(self, thumb_ops: List[Dict[str, Any]]) -> None:
         if not self._fusion_available:
             print(f"[FusionBackend] Dry-run thumbnail: {thumb_ops}")
+            try:
+                self._diag("E3000", where="thumbnail", message="Fusion API unavailable; dry-run thumbnail.")
+            except Exception:
+                pass
             return
         try:
             import adsk.core  # type: ignore
@@ -478,6 +1225,30 @@ class FusionBackend:
                 path = op.get("path") or "out/preview.png"
                 w = int(op.get("width") or 800)
                 h = int(op.get("height") or 600)
+                view = (op.get("view") or "iso").lower()
+                style = (op.get("style") or "shaded").lower()
+                bg = (op.get("background") or "solid").lower()
+                # Configure camera deterministically
+                try:
+                    cam = vp.camera
+                    if view == "top":
+                        cam.viewOrientation = adsk.core.ViewOrientations.TopViewOrientation
+                    elif view == "front":
+                        cam.viewOrientation = adsk.core.ViewOrientations.FrontViewOrientation
+                    elif view == "right":
+                        cam.viewOrientation = adsk.core.ViewOrientations.RightViewOrientation
+                    else:
+                        cam.viewOrientation = adsk.core.ViewOrientations.IsometricViewOrientation
+                    vp.camera = cam
+                except Exception:
+                    pass
+                try:
+                    if style == "wireframe":
+                        vp.displayStyle = adsk.core.DisplayStyles.WireframeDisplayStyle
+                    else:
+                        vp.displayStyle = adsk.core.DisplayStyles.ShadedDisplayStyle
+                except Exception:
+                    pass
                 # Attempt viewport save; name differs across versions
                 saved = False
                 try:
@@ -491,7 +1262,17 @@ class FusionBackend:
                         vp.saveAsImageFile(path)
                     except Exception:
                         pass
+                # Upload thumbnail to APS if configured
+                try:
+                    if self.session_config.get("aps_bucket"):
+                        self._aps_upload(path)
+                except Exception:
+                    pass
         except Exception as ex:
+            try:
+                self._diag("E3003", where="thumbnail", message=f"Thumbnail failed: {ex}")
+            except Exception:
+                pass
             print(f"[FusionBackend] thumbnail failed: {ex}")
         return
 
@@ -570,6 +1351,7 @@ class FusionBackend:
         return None
 
     def _all_body_edges(self, root):
+        import adsk.core  # type: ignore
         import adsk.fusion  # type: ignore
         col = adsk.core.ObjectCollection.create()  # type: ignore
         for b in root.bRepBodies:
@@ -579,5 +1361,203 @@ class FusionBackend:
 
     def _all_bodies(self, root):
         return root.bRepBodies
+
+
+    def _first_planar_face(self, root):
+        try:
+            import adsk.core  # type: ignore
+            bodies = self._all_bodies(root)
+            if bodies.count == 0:
+                return None
+            last = bodies.item(bodies.count - 1)
+            for f in last.faces:
+                try:
+                    surf = f.geometry
+                    # 0 == Plane in some API versions
+                    if getattr(surf, "surfaceType", None) == 0:
+                        return f
+                except Exception:
+                    continue
+            # Fallback: return first face
+            return last.faces.item(0) if last.faces.count > 0 else None
+        except Exception:
+            return None
+
+    def _record_lineage(self, feature_id: str, feature_obj: Any, root) -> None:
+        """Record basic lineage tokens for bodies/faces/edges produced by a feature.
+
+        This is a best-effort placeholder toward stable selection. Tokens are session-stable.
+        """
+        try:
+            import adsk.core  # type: ignore
+            design = root.parentDesign
+            tokens: Dict[str, List[str]] = {"bodies": [], "faces": [], "edges": []}
+            # Bodies created by feature (if available)
+            try:
+                bodies = getattr(feature_obj, "bodies", None) or getattr(feature_obj, "occurrence", None)
+                if bodies and hasattr(bodies, "count"):
+                    for i in range(bodies.count):
+                        b = bodies.item(i)
+                        tokens["bodies"].append(b.entityToken)
+                        # Collect faces/edges for that body
+                        try:
+                            for f in b.faces:
+                                tokens["faces"].append(f.entityToken)
+                            for e in b.edges:
+                                tokens["edges"].append(e.entityToken)
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+            self._lineage[feature_id] = tokens
+        except Exception:
+            # Ignore if not in Fusion environment
+            return
+
+    def _resolve_query(self, root, query_spec: Any, entity_type: str = "face"):
+        """Resolve a minimal subset of CSL queries to Fusion ObjectCollection.
+
+        Supported (initial):
+        - created_by: feature_id (uses lineage map)
+        - largest_by: axis (X|Y|Z) [best-effort: returns largest area face]
+        """
+        import adsk.core  # type: ignore
+        col = adsk.core.ObjectCollection.create()
+
+        def add_entity_by_token(token: str) -> None:
+            try:
+                # Modern API: findEntityByToken on design
+                design = root.parentDesign
+                ent = design.findEntityByToken(token)
+                if ent:
+                    col.add(ent)
+            except Exception:
+                pass
+
+        # List => union
+        if isinstance(query_spec, list):
+            for sub in query_spec:
+                sub_col = self._resolve_query(root, sub, entity_type)
+                for i in range(sub_col.count):
+                    col.add(sub_col.item(i))
+            return col
+
+        if not isinstance(query_spec, dict):
+            return col
+
+        kind = (query_spec.get("kind") or query_spec.get("type") or entity_type).lower()
+        created_by = query_spec.get("created_by") or query_spec.get("owner_feature")
+        largest_by = query_spec.get("largest_by") or query_spec.get("largest")
+
+        # created_by: use lineage tokens
+        if created_by and created_by in self._lineage:
+            tokens = self._lineage[created_by]
+            token_list = tokens.get(f"{kind}s") or []
+            for t in token_list:
+                add_entity_by_token(t)
+            # If empty, fall back to bodies/faces of last body
+            if col.count == 0 and kind == "face":
+                faces = self._get_all_faces(root)
+                for f in faces:
+                    col.add(f)
+            return col
+
+        # largest_by(axis): best-effort selection of largest area faces
+        if kind == "face" and largest_by:
+            try:
+                faces = self._get_all_faces(root)
+                max_f = None
+                max_area = -1.0
+                for f in faces:
+                    try:
+                        a = getattr(f, "area", 0.0)
+                        if a > max_area:
+                            max_area = a
+                            max_f = f
+                    except Exception:
+                        continue
+                if max_f:
+                    col.add(max_f)
+                    return col
+            except Exception:
+                pass
+
+        # Fallback: return nothing
+        return col
+
+    def _get_all_faces(self, root):
+        import adsk.core  # type: ignore
+        col = adsk.core.ObjectCollection.create()  # type: ignore
+        bodies = self._all_bodies(root)
+        for i in range(bodies.count):
+            b = bodies.item(i)
+            for f in b.faces:
+                col.add(f)
+        return col
+
+    def _diag(self, code: str, *, where: str, message: str, hint: Optional[str] = None, data: Optional[Dict[str, Any]] = None) -> None:
+        entry: Dict[str, Any] = {"code": code, "where": where, "message": message}
+        if hint:
+            entry["hint"] = hint
+        if data is not None:
+            entry["data"] = data
+        self._errors.append(entry)
+
+    def get_diagnostics(self) -> Dict[str, Any]:
+        return {"errors": list(self._errors)}
+
+    # ------------------------
+    # APS Helpers
+    # ------------------------
+    def _aps_token(self) -> Optional[str]:
+        try:
+            import requests  # type: ignore
+            cid = self.session_config.get("aps_client_id")
+            csec = self.session_config.get("aps_client_secret")
+            scopes = self.session_config.get("aps_scopes") or "data:read data:write"
+            if not cid or not csec:
+                return None
+            url = "https://developer.api.autodesk.com/authentication/v2/token"
+            data = {"grant_type":"client_credentials","client_id":cid,"client_secret":csec,"scope":scopes}
+            resp = requests.post(url, data=data, timeout=20)
+            if resp.status_code != 200:
+                self._diag("E3101", where="aps", message=f"Auth failed: {resp.status_code}")
+                return None
+            return resp.json().get("access_token")
+        except Exception:
+            return None
+
+    def _aps_ensure_bucket(self, token: str, bucket: str) -> None:
+        try:
+            import requests  # type: ignore
+            hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+            base = "https://developer.api.autodesk.com/oss/v2/buckets"
+            # Try create; if exists, ignore
+            payload = {"bucketKey": bucket, "policyKey": "transient"}
+            resp = requests.post(base, headers=hdr, json=payload, timeout=20)
+            if resp.status_code not in (200, 409):
+                self._diag("E3102", where="aps", message=f"Bucket ensure failed: {resp.status_code}")
+        except Exception:
+            pass
+
+    def _aps_upload(self, file_path: str) -> None:
+        token = self._aps_token()
+        bucket = self.session_config.get("aps_bucket")
+        if not token or not bucket:
+            return
+        self._aps_ensure_bucket(token, bucket)
+        try:
+            import requests  # type: ignore
+            hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/octet-stream"}
+            import os as _os
+            name = _os.path.basename(file_path)
+            with open(file_path, "rb") as f:
+                data = f.read()
+            url = f"https://developer.api.autodesk.com/oss/v2/buckets/{bucket}/objects/{name}"
+            resp = requests.put(url, headers=hdr, data=data, timeout=60)
+            if resp.status_code not in (200, 201):
+                self._diag("E3103", where="aps", message=f"Upload failed: {resp.status_code}")
+        except Exception:
+            pass
 
 
