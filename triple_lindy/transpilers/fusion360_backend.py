@@ -144,6 +144,7 @@ class FusionBackend:
                         edge_col = adsk.core.ObjectCollection.create()
                         for e in edges:
                             edge_col.add(e)
+                        # If per-edge array provided, still apply constant using first radius for now
                         const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
@@ -159,6 +160,15 @@ class FusionBackend:
                         defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
                         ch = chf.add(defn)
                         mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                elif kind == "thin_extrude":
+                    # Placeholder: not using a true thin feature; mark pending
+                    mapping[feat_id] = "fusion:thin_extrude:pending"
+                elif kind == "rib":
+                    # Placeholder: Fusion rib feature not wired; mark pending
+                    mapping[feat_id] = "fusion:rib:pending"
+                elif kind in ("wrap", "emboss", "project"):
+                    # Placeholder: advanced surface ops pending
+                    mapping[feat_id] = f"fusion:{kind}:pending"
                 elif kind == "hole":
                     try:
                         hole_feats = root.features.holeFeatures
