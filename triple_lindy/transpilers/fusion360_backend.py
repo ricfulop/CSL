@@ -145,6 +145,18 @@ class FusionBackend:
                         for e in edges:
                             edge_col.add(e)
                         # If per-edge array provided, still apply constant using first radius for now
+                        try:
+                            per_edges = feat.get("edges") or []
+                            if isinstance(per_edges, list) and len(per_edges) > 0:
+                                r_list = []
+                                for item in per_edges:
+                                    r_mm = self._parse_length_mm(item.get("r") if isinstance(item, dict) else None)
+                                    if r_mm:
+                                        r_list.append(r_mm / 10.0)
+                                if len(r_list) > 0:
+                                    rad_cm = r_list[0]
+                        except Exception:
+                            pass
                         const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
@@ -157,6 +169,15 @@ class FusionBackend:
                         edge_col = adsk.core.ObjectCollection.create()
                         for e in edges:
                             edge_col.add(e)
+                        # If array provided, fallback to first distance
+                        try:
+                            per_edges = feat.get("edges") or []
+                            if isinstance(per_edges, list) and len(per_edges) > 0:
+                                d_item_mm = self._parse_length_mm(per_edges[0].get("d") if isinstance(per_edges[0], dict) else None)
+                                if d_item_mm:
+                                    d_cm = d_item_mm / 10.0
+                        except Exception:
+                            pass
                         defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
                         ch = chf.add(defn)
                         mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
