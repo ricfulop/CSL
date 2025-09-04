@@ -304,6 +304,12 @@ class FusionBackend:
                         dims = sketch.sketchDimensions
                         if ckind == "coincident" and a and b:
                             cons.addCoincident(a, b)
+                        elif ckind in ("coincident_to_spline", "point_on_spline") and a and b:
+                            # Alias to coincident; Fusion allows point-on-curve via coincident
+                            try:
+                                cons.addCoincident(a, b)
+                            except Exception:
+                                pass
                         elif ckind == "colinear" and a and b:
                             cons.addCollinear(a, b)
                         elif ckind == "parallel" and a and b:
@@ -314,6 +320,24 @@ class FusionBackend:
                             cons.addConcentric(a, b)
                         elif ckind == "equal" and a and b:
                             cons.addEqual(a, b)
+                        elif ckind in ("equal_length", "equal_lengths"):
+                            # Apply equal across an array of entities: items: [id1, id2, id3...]
+                            try:
+                                items = cst.get("items") or cst.get("entities") or []
+                                if isinstance(items, list) and len(items) >= 2:
+                                    prev = None
+                                    for ent_id in items:
+                                        ent_obj = ent_objects.get(ent_id) if isinstance(ent_id, str) else None
+                                        if ent_obj is None:
+                                            continue
+                                        if prev is not None:
+                                            try:
+                                                cons.addEqual(prev, ent_obj)
+                                            except Exception:
+                                                pass
+                                        prev = ent_obj
+                            except Exception:
+                                pass
                         elif ckind == "horizontal" and a:
                             cons.addHorizontal(a)
                         elif ckind == "vertical" and a:
@@ -324,16 +348,39 @@ class FusionBackend:
                                 cons.addSymmetry(a, b, about)
                         elif ckind == "tangent" and a and b:
                             cons.addTangent(a, b)
+                        elif ckind == "curvature" and a and b:
+                            # Attempt curvature continuity if API provides it; otherwise record diagnostic
+                            try:
+                                if hasattr(cons, "addCurvature"):
+                                    cons.addCurvature(a, b)
+                                else:
+                                    try:
+                                        self._diag("E1205", where="sketch", message="Curvature constraint not supported by this Fusion version; consider tangent + smoothing")
+                                    except Exception:
+                                        pass
+                            except Exception:
+                                try:
+                                    self._diag("E1205", where="sketch", message="Curvature constraint failed to apply on these entities")
+                                except Exception:
+                                    pass
                         elif ckind == "midpoint" and a and b:
                             cons.addMidPoint(a, b)
                         elif ckind in ("lock", "fix") and a:
                             cons.addFixed(a)
                         elif ckind == "distance" and a and b:
                             d_mm = self._parse_length_mm(cst.get("value") or cst.get("d") or cst.get("distance")) or 0.0
-                            dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                            try:
+                                dd = dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                                dd.parameter.value = (d_mm / 10.0)
+                            except Exception:
+                                pass
                         elif ckind == "angle" and a and b:
                             ang_deg = self._parse_length_mm(cst.get("value") or cst.get("angle")) or 0.0
-                            dims.addAngleDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                            try:
+                                ad = dims.addAngleDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                                ad.parameter.value = (ang_deg / 180.0) * 3.141592653589793
+                            except Exception:
+                                pass
                 except Exception:
                     pass
 
@@ -445,6 +492,7 @@ class FusionBackend:
                                         continue
                                     r_mm = self._parse_length_mm(grp.get("r") or grp.get("radius")) or rad_mm
                                     r_cm = (r_mm / 10.0)
+                                    is_tc = bool(grp.get("tangent_chain") or grp.get("tangent") or False)
                                     grp_edges = None
                                     try:
                                         qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
@@ -453,14 +501,15 @@ class FusionBackend:
                                     except Exception:
                                         grp_edges = None
                                     grp_edges = grp_edges or edge_col
-                                    const_def = fil_feats.createConstantRadiusFilletDefinition(grp_edges, adsk.core.ValueInput.createByReal(r_cm), False)
+                                    const_def = fil_feats.createConstantRadiusFilletDefinition(grp_edges, adsk.core.ValueInput.createByReal(r_cm), is_tc)
                                     fil = fil_feats.add(const_def)
                                     mapping[f"{feat_id}:grp"] = f"fusion:fillet:{fil.entityToken}"
                                 # Skip the single-feature path when per-groups are processed
                                 continue
                         except Exception:
                             pass
-                        const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
+                        is_tc_global = bool(feat.get("tangent_chain") or feat.get("tangent") or False)
+                        const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), is_tc_global)
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
                         try:
@@ -470,6 +519,12 @@ class FusionBackend:
                 elif kind == "chamfer":
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
+                    ang_deg_global = None
+                    if feat.get("angle") is not None:
+                        try:
+                            ang_deg_global = float(self._parse_length_mm(str(feat.get("angle"))) or 0.0)
+                        except Exception:
+                            ang_deg_global = None
                     edges = None
                     try:
                         q_spec = feat.get("edges_query") or (feat.get("edges") if isinstance(feat.get("edges"), dict) else None)
@@ -512,8 +567,15 @@ class FusionBackend:
                                 for grp in per_groups:
                                     if not isinstance(grp, dict):
                                         continue
-                                    gd_mm = self._parse_length_mm(grp.get("d") or grp.get("distance")) or d_mm
-                                    gd_cm = gd_mm / 10.0
+                                    # Choose definition: two distances, distance+angle, or equal distance
+                                    d1_mm = self._parse_length_mm(grp.get("d") or grp.get("distance")) or d_mm
+                                    d2_mm = self._parse_length_mm(grp.get("d2") or grp.get("distance2")) if grp.get("d2") or grp.get("distance2") else None
+                                    g_angle_deg = None
+                                    if grp.get("angle") is not None:
+                                        try:
+                                            g_angle_deg = float(self._parse_length_mm(str(grp.get("angle"))) or 0.0)
+                                        except Exception:
+                                            g_angle_deg = None
                                     grp_edges = None
                                     try:
                                         qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
@@ -522,13 +584,46 @@ class FusionBackend:
                                     except Exception:
                                         grp_edges = None
                                     grp_edges = grp_edges or edge_col
-                                    defn = chf.createEqualDistanceChamferDefinition(grp_edges, adsk.core.ValueInput.createByReal(gd_cm), False)
+                                    defn = None
+                                    try:
+                                        if d2_mm is not None and hasattr(chf, "createTwoDistancesChamferDefinition"):
+                                            defn = chf.createTwoDistancesChamferDefinition(
+                                                grp_edges,
+                                                adsk.core.ValueInput.createByReal((d1_mm/10.0)),
+                                                adsk.core.ValueInput.createByReal((d2_mm/10.0)),
+                                                False,
+                                            )
+                                        elif (g_angle_deg is not None or ang_deg_global is not None) and hasattr(chf, "createDistanceAndAngleChamferDefinition"):
+                                            ang = g_angle_deg if g_angle_deg is not None else ang_deg_global
+                                            defn = chf.createDistanceAndAngleChamferDefinition(
+                                                grp_edges,
+                                                adsk.core.ValueInput.createByReal((d1_mm/10.0)),
+                                                adsk.core.ValueInput.createByReal(((ang or 45.0) / 180.0) * 3.141592653589793),
+                                                False,
+                                            )
+                                    except Exception:
+                                        defn = None
+                                    if defn is None:
+                                        defn = chf.createEqualDistanceChamferDefinition(grp_edges, adsk.core.ValueInput.createByReal((d1_mm/10.0)), False)
                                     ch = chf.add(defn)
                                     mapping[f"{feat_id}:grp"] = f"fusion:chamfer:{ch.entityToken}"
                                 continue
                         except Exception:
                             pass
-                        defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
+                        # Global definition selection (angle or equal distance)
+                        defn = None
+                        try:
+                            if ang_deg_global is not None and hasattr(chf, "createDistanceAndAngleChamferDefinition"):
+                                defn = chf.createDistanceAndAngleChamferDefinition(
+                                    edge_col,
+                                    adsk.core.ValueInput.createByReal(d_cm),
+                                    adsk.core.ValueInput.createByReal((ang_deg_global / 180.0) * 3.141592653589793),
+                                    False,
+                                )
+                        except Exception:
+                            defn = None
+                        if defn is None:
+                            defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
                         ch = chf.add(defn)
                         mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
                         try:
@@ -861,6 +956,22 @@ class FusionBackend:
                                     self._diag("E2315", where="loft", message=f"Requested continuity {cont} not supported by this Fusion version.")
                                     mapping[feat_id] = f"fusion:loft:E2315"
                                     continue
+                            # Optional per-section continuity array: sections_continuity: ["G1","G2",...]
+                            try:
+                                sec_cont = feat.get("sections_continuity") or []
+                                if isinstance(sec_cont, list) and len(sec_cont) == sections.count:
+                                    for i, c in enumerate(sec_cont):
+                                        cc = (str(c) or "").upper()
+                                        if cc not in ("G0","G1","G2"):
+                                            continue
+                                        for attr in ("setSectionContinuity",):
+                                            if hasattr(lf_input, attr):
+                                                try:
+                                                    getattr(lf_input, attr)(i, cc)
+                                                except Exception:
+                                                    pass
+                            except Exception:
+                                pass
                             orient = (feat.get("orientation") or "").lower()
                             if orient:
                                 # If orientation control is not supported on loft, hard fail when explicitly requested
@@ -879,7 +990,7 @@ class FusionBackend:
                                     continue
                         except Exception:
                             pass
-                        # Optional guide rails from queries/sketch
+                        # Optional guide rails or centerline from queries/sketch
                         try:
                             guides = feat.get("guides") or []
                             if isinstance(guides, list) and len(guides) > 0:
@@ -890,6 +1001,17 @@ class FusionBackend:
                                         if gc and gc.count > 0:
                                             rails.add(gc.item(0))
                                 if rails.count > 0 and hasattr(lf_input, "centerLineOrRails"):
+                                    lf_input.centerLineOrRails = rails
+                            # Single rail/centerline via 'rail' or 'centerline' key
+                            single = feat.get("rail") or feat.get("centerline")
+                            if single:
+                                try:
+                                    scol = self._resolve_query(root, single, entity_type="edge") if isinstance(single, dict) else None
+                                except Exception:
+                                    scol = None
+                                if scol and scol.count > 0 and hasattr(lf_input, "centerLineOrRails"):
+                                    rails = adsk.core.ObjectCollection.create()
+                                    rails.add(scol.item(0))
                                     lf_input.centerLineOrRails = rails
                         except Exception:
                             pass

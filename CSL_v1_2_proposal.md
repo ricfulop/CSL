@@ -45,11 +45,14 @@
 
 - Loft/Sweep
   - `feature loft L sections [...] guides [...] continuity G2 orientation frenet`
+  - `feature loft L sections [...] rail qEdge` (alias: `centerline qEdge`)
+  - `feature loft L sections [...] sections_continuity [G0,G1,G2]` (per-section; best-effort)
   - `feature sweep S path skP.curve("p") profile skQ.profile("q") orientation fixed_normal`
 
 - Variable fillet/chamfer
-  - `feature fillet f edges [ {q: query.edges(...), r: 2 mm}, {...} ] transitions setback 1 mm`
-  - `feature chamfer c edges [ {q: qEdges, d: 1 mm}, {q: qEdges2, angle: 45 deg} ]`
+  - `feature fillet f edges [ {q: query.edges(...), r: 2 mm, tangent_chain:true}, {...} ] transitions setback 1 mm`
+  - `feature chamfer c edges [ {q: qEdges, d: 1 mm}, {q: qEdges2, angle: 45 deg}, {q: qEdges3, d:1 mm, d2:0.5 mm} ]`
+  - Global flags allowed: `tangent_chain:true` (fillet), `angle:45 deg` (chamfer)
 
 - Draft
   - `feature draft d faces query.face(part, by_tag:"mold") neutral_plane plane.world.xy angle 2 deg pull_dir +Z`
@@ -65,6 +68,7 @@
 - Patterns
   - `feature pattern p kind linear seed feature:"main" direction +X count 3 spacing 20 mm`
   - `feature pattern p2 kind table seed feature:"h1" table [ {dx:0,dy:0}, {dx:20,dy:0}, {dx:40,dy:10} ]`
+  - Per-instance overrides (optional): `{dx,dy,count}` rows; additional fields may be added per backend capability
 
 - Wrap/Emboss/Project
   - `feature emboss em onto face qFace depth 0.5 mm from sketch logo`
@@ -76,19 +80,24 @@
 - Materials / PMI
   - `material part = { ref:"ISO:6061-T6", density:"2.70 g/cm^3", color:#a8c0ff }`
   - `pmi note n1 on face qFace text "CSINK 82°"`
+  - GD&T (light) remains out-of-scope for v1.2; consider v1.3
 
 - Joints
   - `joint j1 type revolute between a.mc and b.mc limits { angular:{min:0 deg,max:90 deg} } damping 0.1 preload 5 N`
 
 ### JSON Schema Extensions (high level)
 - Add new sketch entity kinds: `spline`, `ellipse`, `elliptical_arc`, `text`.
+- Sketch constraints: add `curvature`, `coincident_to_spline` (alias), and `equal_length { items:[id...] }` form.
 - Fillet/Chamfer objects permit arrays per-edge with parameters.
+- Fillet: add `tangent_chain: boolean` at group or feature level.
+- Chamfer: add `angle` (deg), and `d2|distance2` for two-distance definition; allow group/global.
 - Draft object with `faces`, `neutral_plane`, `pull_dir`.
 - Hole object with variant-specific fields.
 - Thread object includes `designation`, `class`, `handed`, `modeled|cosmetic`.
 - Pattern object supports `kind`, `seed`, `direction(s)`, `count`, `spacing`, and optional `table`.
 - Wrap/Emboss/Project feature objects.
 - Query predicates expanded; toleranced numeric fields for curvature/area.
+- Loft: `sections_continuity` array (G0/G1/G2), and single `rail|centerline` in addition to `guides`.
 
 ### Backwards Compatibility
 - All new fields are optional with sensible defaults.
