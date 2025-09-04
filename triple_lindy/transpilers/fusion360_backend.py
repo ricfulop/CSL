@@ -781,14 +781,40 @@ class FusionBackend:
                         lf_input = lf.createInput(adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
                         for i in range(sections.count):
                             lf_input.loftSections.add(sections.item(i))
-                        # Continuity and orientation hints (best-effort)
+                        # Continuity and orientation enforcement (no fallback)
                         try:
                             cont = (feat.get("continuity") or "").upper()
                             if cont in ("G1", "G2"):
-                                # Fusion API may not expose explicit continuity; record diagnostic
-                                self._diag("E2315", where="loft", message=f"Requested continuity {cont} not explicitly supported; using default.")
+                                # Attempt to set continuity if API provides a mechanism; otherwise, hard fail with diagnostic
+                                applied = False
+                                for attr in ("sectionContinuity", "continuity", "edgeContinuity"):
+                                    if hasattr(lf_input, attr):
+                                        try:
+                                            setattr(lf_input, attr, cont)
+                                            applied = True
+                                            break
+                                        except Exception:
+                                            continue
+                                if not applied:
+                                    self._diag("E2315", where="loft", message=f"Requested continuity {cont} not supported by this Fusion version.")
+                                    mapping[feat_id] = f"fusion:loft:E2315"
+                                    continue
                             orient = (feat.get("orientation") or "").lower()
-                            _ = orient
+                            if orient:
+                                # If orientation control is not supported on loft, hard fail when explicitly requested
+                                supported = False
+                                for attr in ("orientation", "loftOrientation"):
+                                    if hasattr(lf_input, attr):
+                                        try:
+                                            setattr(lf_input, attr, orient)
+                                            supported = True
+                                            break
+                                        except Exception:
+                                            continue
+                                if not supported:
+                                    self._diag("E2316", where="loft", message=f"Requested orientation '{orient}' not supported by this Fusion version.")
+                                    mapping[feat_id] = f"fusion:loft:E2316"
+                                    continue
                         except Exception:
                             pass
                         # Optional guide rails from queries/sketch
