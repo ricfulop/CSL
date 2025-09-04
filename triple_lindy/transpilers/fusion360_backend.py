@@ -1164,43 +1164,63 @@ class FusionBackend:
                     try:
                         thr = root.features.threadFeatures
                         bodies = self._all_bodies(root)
-                        if bodies.count > 0:
+                        target_faces = adsk.core.ObjectCollection.create()
+                        # Prefer explicit face query if provided
+                        try:
+                            fq = feat.get("faces_query") or feat.get("face_query")
+                            if fq:
+                                fcol = self._resolve_query(root, fq, entity_type="face")
+                                if fcol and fcol.count > 0:
+                                    for i in range(fcol.count):
+                                        target_faces.add(fcol.item(i))
+                        except Exception:
+                            pass
+                        if target_faces.count == 0 and bodies.count > 0:
                             cyl_faces = bodies.item(bodies.count - 1).faces
-                            target_faces = adsk.core.ObjectCollection.create()
                             for f in cyl_faces:
-                                if f.geometry.surfaceType == 1:  # cylindrical surface type
-                                    target_faces.add(f)
-                            if target_faces.count > 0:
-                                is_modeled = (feat.get("mode") or feat.get("modeled") or "cosmetic").lower() == "modeled"
-                                t_in = thr.createThreadInfo(False)  # False => cosmetic by default
-                                # Map designation/class/handedness best-effort
                                 try:
-                                    des = (feat.get("designation") or "").upper()
-                                    cls = (feat.get("class") or "").upper()
-                                    hand = (feat.get("hand") or feat.get("handedness") or "right").lower()
-                                    if hasattr(t_in, "threadDesignation") and des:
-                                        t_in.threadDesignation = des
-                                    if hasattr(t_in, "class") and cls:
-                                        setattr(t_in, "class", cls)
-                                    if hasattr(t_in, "isRightHanded"):
-                                        t_in.isRightHanded = (hand != "left")
+                                    if getattr(f.geometry, "surfaceType", None) == 1:
+                                        target_faces.add(f)
                                 except Exception:
                                     pass
-                                # Mode: cosmetic/modeled
-                                tfeat_in = thr.createInput(target_faces, t_in)
-                                tfeat_in.isModeled = is_modeled
-                                tfeat = thr.add(tfeat_in)
-                                mapping[feat_id] = f"fusion:thread:{tfeat.entityToken}:{'modeled' if is_modeled else 'cosmetic'}"
-                                try:
-                                    self._record_lineage(feat_id, tfeat, root)
-                                except Exception:
-                                    pass
-                            else:
-                                mapping[feat_id] = "fusion:thread:E2303"
-                                try:
-                                    self._diag("E2303", where="thread", message="No cylindrical faces found for thread.", data={"id": feat_id})
-                                except Exception:
-                                    pass
+                        if target_faces.count > 0:
+                            is_modeled = (feat.get("mode") or feat.get("modeled") or "cosmetic").lower() == "modeled"
+                            t_in = thr.createThreadInfo(False)  # False => cosmetic by default
+                            # Map designation/class/handedness/length best-effort
+                            try:
+                                des = (feat.get("designation") or "").upper()
+                                cls = (feat.get("class") or "").upper()
+                                hand = (feat.get("hand") or feat.get("handedness") or "right").lower()
+                                if hasattr(t_in, "threadDesignation") and des:
+                                    t_in.threadDesignation = des
+                                if hasattr(t_in, "class") and cls:
+                                    setattr(t_in, "class", cls)
+                                if hasattr(t_in, "isRightHanded"):
+                                    t_in.isRightHanded = (hand != "left")
+                                if feat.get("length") is not None and hasattr(t_in, "length"):
+                                    try:
+                                        ln_mm = self._parse_length_mm(feat.get("length"))
+                                        if ln_mm is not None:
+                                            t_in.length = adsk.core.ValueInput.createByReal((ln_mm/10.0))
+                                    except Exception:
+                                        pass
+                            except Exception:
+                                pass
+                            # Mode: cosmetic/modeled
+                            tfeat_in = thr.createInput(target_faces, t_in)
+                            tfeat_in.isModeled = is_modeled
+                            tfeat = thr.add(tfeat_in)
+                            mapping[feat_id] = f"fusion:thread:{tfeat.entityToken}:{'modeled' if is_modeled else 'cosmetic'}"
+                            try:
+                                self._record_lineage(feat_id, tfeat, root)
+                            except Exception:
+                                pass
+                        else:
+                            mapping[feat_id] = "fusion:thread:E2303"
+                            try:
+                                self._diag("E2303", where="thread", message="No target cylindrical faces found for thread.", data={"id": feat_id})
+                            except Exception:
+                                pass
                     except Exception:
                         mapping[feat_id] = "fusion:thread:E2304"
                         try:
