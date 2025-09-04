@@ -217,6 +217,28 @@ class FusionBackend:
                     rev_input.setAngleExtent(False, angle)
                     rev = rev_feats.add(rev_input)
                     mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                elif kind == "sweep":
+                    # Sweep first profile along first sketch curve found
+                    prof = self._first_profile(root)
+                    path = self._first_path(root)
+                    if prof and path:
+                        sw = root.features.sweepFeatures
+                        sw_input = sw.createInput(prof, path, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                        sw_feat = sw.add(sw_input)
+                        mapping[feat_id] = f"fusion:sweep:{sw_feat.entityToken}"
+                elif kind == "loft":
+                    # Loft across available profiles in sketches (first 2)
+                    profiles = self._collect_profiles(root, max_count=3)
+                    if len(profiles) >= 2:
+                        lf = root.features.loftFeatures
+                        sections = adsk.core.ObjectCollection.create()
+                        for p in profiles:
+                            sections.add(p)
+                        lf_input = lf.createInput(adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                        for i in range(sections.count):
+                            lf_input.loftSections.add(sections.item(i))
+                        loft = lf.add(lf_input)
+                        mapping[feat_id] = f"fusion:loft:{loft.entityToken}"
                 elif kind == "shell":
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
@@ -334,6 +356,40 @@ class FusionBackend:
                         c_in.isKeepToolBodies = False
                         cb = combine.add(c_in)
                         mapping[feat_id] = f"fusion:boolean:{cb.entityToken}"
+                elif kind in ("move_face", "offset_face"):
+                    # Offset faces of last body as a proxy for move/offset face
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        faces = bodies.item(bodies.count - 1).faces
+                        face_col = adsk.core.ObjectCollection.create()
+                        for f in faces:
+                            face_col.add(f)
+                        offs = root.features.offsetFacesFeatures
+                        off_val_mm = self._parse_length_mm(feat.get("offset") or feat.get("distance") or "0.5") or 0.5
+                        off_val = adsk.core.ValueInput.createByReal(off_val_mm / 10.0)
+                        of = offs.add(face_col, off_val)
+                        mapping[feat_id] = f"fusion:offset_face:{of.entityToken}"
+                elif kind == "replace_face":
+                    # Replace faces with a plane (approximate) using construction plane
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        faces = bodies.item(bodies.count - 1).faces
+                        face_col = adsk.core.ObjectCollection.create()
+                        for f in faces:
+                            face_col.add(f)
+                        rep = root.features.replaceFaceFeatures
+                        surf = root.xYConstructionPlane
+                        rf = rep.add(face_col, surf, False)
+                        mapping[feat_id] = f"fusion:replace_face:{rf.entityToken}"
+                elif kind == "split":
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        split = root.features.splitBodyFeatures
+                        body = bodies.item(bodies.count - 1)
+                        tool = root.yZConstructionPlane
+                        sb_in = split.createInput(body, tool, True)
+                        sb = split.add(sb_in)
+                        mapping[feat_id] = f"fusion:split:{sb.entityToken}"
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):
@@ -461,6 +517,25 @@ class FusionBackend:
         for sk in root.sketches:
             if sk.profiles.count > 0:
                 return sk.profiles.item(0)
+        return None
+
+    def _collect_profiles(self, root, max_count: int = 3) -> List[Any]:
+        profiles: List[Any] = []
+        for sk in root.sketches:
+            for i in range(sk.profiles.count):
+                profiles.append(sk.profiles.item(i))
+                if len(profiles) >= max_count:
+                    return profiles
+        return profiles
+
+    def _first_path(self, root) -> Optional[Any]:
+        # Return first curve (line/arc) as a path for sweep
+        for sk in root.sketches:
+            curves = sk.sketchCurves
+            if curves.sketchLines.count > 0:
+                return curves.sketchLines.item(0)
+            if curves.sketchArcs.count > 0:
+                return curves.sketchArcs.item(0)
         return None
 
     def _all_body_edges(self, root):
