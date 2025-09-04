@@ -1179,36 +1179,7 @@ class FusionBackend:
                 self.thumbnail(csl_ir.get("thumbnail", []))
             # Materials/PMI (lightweight)
             try:
-                if csl_ir.get("materials"):
-                    mats = csl_ir.get("materials")
-                    # Apply first material's color/appearance as a proxy
-                    if isinstance(mats, list) and len(mats) > 0:
-                        mat = mats[0]
-                        if isinstance(mat, dict) and mat.get("color"):
-                            try:
-                                color = str(mat.get("color")).lstrip('#')
-                                r = int(color[0:2], 16)
-                                g = int(color[2:4], 16)
-                                b = int(color[4:6], 16)
-                                app, ui, design = self._ensure_design()
-                                root_app = design.rootComponent
-                                for b in root_app.bRepBodies:
-                                    b.appearance = design.appearances.item(0) if design.appearances.count>0 else b.appearance
-                            except Exception:
-                                pass
-                if csl_ir.get("pmi"):
-                    app, ui, design = self._ensure_design()
-                    root_comp = design.rootComponent
-                    sk = root_comp.sketches.add(root_comp.xYConstructionPlane)
-                    for note in csl_ir.get("pmi", []) or []:
-                        if isinstance(note, dict) and note.get("note"):
-                            try:
-                                p = adsk.core.Point3D.create(0, 0, 0)
-                                ti = sk.sketchTexts.createInput(str(note.get("note")), 0.5)
-                                ti.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
-                                sk.sketchTexts.add(ti)
-                            except Exception:
-                                pass
+                self._apply_materials_and_pmi(csl_ir)
             except Exception:
                 pass
 
@@ -1907,5 +1878,92 @@ class FusionBackend:
         except Exception:
             pass
         return col
+
+    def _apply_materials_and_pmi(self, csl_ir: Dict[str, Any]) -> None:
+        import adsk.core  # type: ignore
+        import adsk.fusion  # type: ignore
+        app, ui, design = self._ensure_design()
+        root_comp = design.rootComponent
+        # Materials
+        try:
+            mats = csl_ir.get("materials") or []
+            if isinstance(mats, list):
+                # Build search across material libraries
+                libraries = []
+                try:
+                    for i in range(app.materialLibraries.count):
+                        libraries.append(app.materialLibraries.item(i))
+                except Exception:
+                    pass
+                for m in mats:
+                    if not isinstance(m, dict):
+                        continue
+                    ref = m.get("ref") or m.get("name")
+                    target_mat = None
+                    if ref:
+                        # Search in design materials first
+                        try:
+                            target_mat = design.materials.itemByName(ref)
+                        except Exception:
+                            target_mat = None
+                        if not target_mat:
+                            try:
+                                for lib in libraries:
+                                    mm = lib.materials.itemByName(ref)
+                                    if mm:
+                                        target_mat = mm
+                                        break
+                            except Exception:
+                                pass
+                    # Apply to all bodies if found
+                    if target_mat:
+                        try:
+                            for b in root_comp.bRepBodies:
+                                b.material = target_mat
+                        except Exception:
+                            pass
+                    # Appearance overrides by color name or hex
+                    ap = m.get("appearance") or m.get("color")
+                    if ap:
+                        app_obj = None
+                        try:
+                            # search appearances
+                            for i in range(app.appearanceLibraries.count):
+                                lib = app.appearanceLibraries.item(i)
+                                app_obj = lib.appearances.itemByName(str(ap))
+                                if app_obj:
+                                    break
+                        except Exception:
+                            app_obj = None
+                        if app_obj:
+                            try:
+                                for b in root_comp.bRepBodies:
+                                    b.appearance = app_obj
+                            except Exception:
+                                pass
+        except Exception:
+            pass
+        # PMI notes
+        try:
+            pmi_list = csl_ir.get("pmi") or []
+            if isinstance(pmi_list, list) and len(pmi_list) > 0:
+                sk = root_comp.sketches.add(root_comp.xYConstructionPlane)
+                for note in pmi_list:
+                    if not isinstance(note, dict) or not note.get("note"):
+                        continue
+                    txt = str(note.get("note"))
+                    pos = note.get("at") or "0,0"
+                    pt = self._parse_point(pos) or [0.0, 0.0]
+                    height_mm = self._parse_length_mm(note.get("height") or "5") or 5.0
+                    height = height_mm / 10.0
+                    try:
+                        ti = sk.sketchTexts.createInput(txt, height)
+                        p = adsk.core.Point3D.create(pt[0], pt[1], 0)
+                        ti.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
+                        sk.sketchTexts.add(ti)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
 
 
