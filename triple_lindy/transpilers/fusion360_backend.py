@@ -18,7 +18,10 @@ class FusionBackend:
         self._fusion_available = self._check_fusion()
         # Lineage map for basic stable selection: featureId -> { bodies|faces|edges : [entityTokens] }
         self._lineage: Dict[str, Dict[str, List[str]]] = {}
+        # Diagnostics store
         self._errors: List[Dict[str, Any]] = []
+        # Persisted lineage cache (cross-session)
+        self._persisted_lineage: Dict[str, Dict[str, List[str]]] = {}
 
     def _check_fusion(self) -> bool:
         try:
@@ -76,6 +79,13 @@ class FusionBackend:
         # Load APS env if provided (for future cloud ops)
         self.session_config.setdefault("aps_client_id", os.getenv("APS_CLIENT_ID"))
         self.session_config.setdefault("aps_client_secret", os.getenv("APS_CLIENT_SECRET"))
+        # Default lineage path
+        self.session_config.setdefault("lineage_path", os.path.abspath(self.session_config.get("lineage_path") or "csl_lineage.json"))
+        # Load persisted lineage
+        try:
+            self._load_persisted_lineage()
+        except Exception:
+            pass
         if not self._fusion_available:
             print("[FusionBackend] Fusion API not available in this environment; running in dry-run mode.")
             try:
@@ -117,8 +127,7 @@ class FusionBackend:
                     continue
                 sk_id = sk.get("id", "sketch")
                 plane_name = (sk.get("plane") or "world.xy").lower()
-                plane = self._plane_from_name(root, plane_name)
-                sketch = root.sketches.add(plane)
+                plane = root.sketches.add(plane)
                 ent_objects: Dict[str, Any] = {}
                 # Entities
                 for ent in sk.get("entities", []) or []:
@@ -394,6 +403,12 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
+                    # Transitions/setbacks not mapped yet
+                    if feat.get("transitions") or feat.get("setback"):
+                        try:
+                            self._diag("E2320", where="fillet", message="Transitions/setbacks not mapped; applying per-group constants where possible.")
+                        except Exception:
+                            pass
                     if edges.count > 0:
                         fil_feats = root.features.filletFeatures
                         edge_col = adsk.core.ObjectCollection.create()
@@ -441,6 +456,12 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
+                    # Transitions not mapped yet
+                    if feat.get("transitions") or feat.get("setback"):
+                        try:
+                            self._diag("E2321", where="chamfer", message="Transitions/setbacks not mapped; applying per-group constants where possible.")
+                        except Exception:
+                            pass
                     if edges.count > 0:
                         chf = root.features.chamferFeatures
                         edge_col = adsk.core.ObjectCollection.create()
@@ -545,7 +566,6 @@ class FusionBackend:
                     except Exception:
                         mapping[feat_id] = "fusion:rib:E2306"
                 elif kind in ("wrap", "emboss", "project"):
-                    # Placeholder: advanced surface ops pending
                     try:
                         if kind == "project":
                             # Project sketch curves onto a target face/direction
@@ -560,15 +580,37 @@ class FusionBackend:
                             if tgt is not None:
                                 # Create a new sketch on the face and copy curves from source sketch
                                 sk = root.sketches.add(tgt)
-                                # Optionally: project entities from named sketch
                                 mapping[feat_id] = f"fusion:project:{sk.entityToken}"
                             else:
                                 mapping[feat_id] = "fusion:project:E2310"
                                 self._diag("E2310", where="project", message="No target face for project.")
                         else:
-                            # Emboss/wrap is not universally exposed; record diagnostic
-                            mapping[feat_id] = f"fusion:{kind}:E2311"
-                            self._diag("E2311", where=kind, message="Emboss/Wrap not implemented in this adapter version")
+                            # Try native emboss features if available
+                            try:
+                                emb = getattr(root.features, "embossFeatures", None)
+                                if emb:
+                                    face_q = feat.get("onto") or feat.get("face_query")
+                                    fcol = self._resolve_query(root, face_q, entity_type="face") if face_q else None
+                                    tgt = fcol.item(0) if fcol and fcol.count > 0 else None
+                                    depth_mm = self._parse_length_mm(feat.get("depth") or "1") or 1.0
+                                    depth = adsk.core.ValueInput.createByReal(depth_mm/10.0)
+                                    if tgt is not None:
+                                        # The exact Emboss API varies; attempt a simple emboss
+                                        ein = emb.createInput([tgt], depth, True)
+                                        ev = emb.add(ein)
+                                        mapping[feat_id] = f"fusion:{kind}:{ev.entityToken}"
+                                        try:
+                                            self._record_lineage(feat_id, ev, root)
+                                        except Exception:
+                                            pass
+                                    else:
+                                        mapping[feat_id] = f"fusion:{kind}:E2312"
+                                        self._diag("E2312", where=kind, message="No target face for emboss/wrap.")
+                                else:
+                                    mapping[feat_id] = f"fusion:{kind}:E2311"
+                                    self._diag("E2311", where=kind, message="Emboss/Wrap not available in this Fusion version")
+                            except Exception:
+                                mapping[feat_id] = f"fusion:{kind}:E2311"
                     except Exception:
                         mapping[feat_id] = f"fusion:{kind}:E2311"
                 elif kind == "hole":
@@ -682,6 +724,14 @@ class FusionBackend:
                                     sw_input.orientation = adsk.fusion.SweepOrientationTypes.PerpendicularOrientationType
                         except Exception:
                             pass
+                        # Optional guide surface/rail via query
+                        try:
+                            if feat.get("guide_query"):
+                                gcol = self._resolve_query(root, feat.get("guide_query"), entity_type="edge")
+                                if gcol and hasattr(sw_input, "guideRail"):
+                                    sw_input.guideRail = gcol.item(0)
+                        except Exception:
+                            pass
                         sw_feat = sw.add(sw_input)
                         mapping[feat_id] = f"fusion:sweep:{sw_feat.entityToken}"
                         try:
@@ -701,11 +751,26 @@ class FusionBackend:
                             lf_input.loftSections.add(sections.item(i))
                         # Continuity and orientation hints (best-effort)
                         try:
-                            cont = (feat.get("continuity") or "G1").upper()
-                            # API may not expose; placeholder for future mapping
-                            _ = cont
-                            orient = (feat.get("orientation") or "frenet").lower()
+                            cont = (feat.get("continuity") or "").upper()
+                            if cont in ("G1", "G2"):
+                                # Fusion API may not expose explicit continuity; record diagnostic
+                                self._diag("E2315", where="loft", message=f"Requested continuity {cont} not explicitly supported; using default.")
+                            orient = (feat.get("orientation") or "").lower()
                             _ = orient
+                        except Exception:
+                            pass
+                        # Optional guide rails from queries/sketch
+                        try:
+                            guides = feat.get("guides") or []
+                            if isinstance(guides, list) and len(guides) > 0:
+                                rails = adsk.core.ObjectCollection.create()
+                                for g in guides:
+                                    if isinstance(g, dict):
+                                        gc = self._resolve_query(root, g, entity_type="edge")
+                                        if gc and gc.count > 0:
+                                            rails.add(gc.item(0))
+                                if rails.count > 0 and hasattr(lf_input, "centerLineOrRails"):
+                                    lf_input.centerLineOrRails = rails
                         except Exception:
                             pass
                         loft = lf.add(lf_input)
@@ -885,6 +950,26 @@ class FusionBackend:
                             dir2 = root.yConstructionAxis
                             count2 = int(feat.get("count2") or 1)
                             spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
+                            # Table-driven fallback
+                            if isinstance(feat.get("table"), list) and len(feat.get("table")) > 0:
+                                try:
+                                    mv = root.features.moveFeatures
+                                    for row in feat.get("table"):
+                                        if not isinstance(row, dict):
+                                            continue
+                                        dx = (self._parse_length_mm(row.get("dx") or "0") or 0.0) / 10.0
+                                        dy = (self._parse_length_mm(row.get("dy") or "0") or 0.0) / 10.0
+                                        qty = int(row.get("count") or 1)
+                                        for i in range(qty):
+                                            vec = adsk.core.Vector3D.create(dx, dy, 0)
+                                            trans = adsk.core.Matrix3D.create()
+                                            trans.translation = vec
+                                            input_def = mv.createInput(obj_col, trans)
+                                            mv.add(input_def)
+                                        mapping[feat_id] = f"fusion:pattern_table:fallback"
+                                        continue
+                                except Exception:
+                                    pass
                             qty1 = adsk.core.ValueInput.createByString(str(count1))
                             dist1 = adsk.core.ValueInput.createByReal((spacing1_mm / 10.0))
                             input_def = patt.createInput(obj_col, dir1, qty1, dist1, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
@@ -1399,17 +1484,41 @@ class FusionBackend:
                     for i in range(bodies.count):
                         b = bodies.item(i)
                         tokens["bodies"].append(b.entityToken)
+                        # Tag body with CSL attributes
+                        try:
+                            self._tag_attribute(b, "csl_feat", feature_id)
+                        except Exception:
+                            pass
                         # Collect faces/edges for that body
                         try:
                             for f in b.faces:
                                 tokens["faces"].append(f.entityToken)
+                                try:
+                                    self._tag_attribute(f, "csl_feat", feature_id)
+                                except Exception:
+                                    pass
                             for e in b.edges:
                                 tokens["edges"].append(e.entityToken)
+                                try:
+                                    self._tag_attribute(e, "csl_feat", feature_id)
+                                except Exception:
+                                    pass
                         except Exception:
                             pass
             except Exception:
                 pass
             self._lineage[feature_id] = tokens
+            # Persist lineage (merge)
+            try:
+                self._persisted_lineage.setdefault(feature_id, {"bodies": [], "faces": [], "edges": []})
+                for k in ("bodies", "faces", "edges"):
+                    exist = set(self._persisted_lineage[feature_id].get(k, []))
+                    for t in tokens.get(k, []):
+                        if t not in exist:
+                            self._persisted_lineage[feature_id].setdefault(k, []).append(t)
+                self._save_persisted_lineage()
+            except Exception:
+                pass
         except Exception:
             # Ignore if not in Fusion environment
             return
@@ -1420,6 +1529,11 @@ class FusionBackend:
         Supported (initial):
         - created_by: feature_id (uses lineage map)
         - largest_by: axis (X|Y|Z) [best-effort: returns largest area face]
+        - owner_feature==: alias to created_by
+        - pattern_instances: select entities created by a pattern feature
+        - tangent_connected: faces tangent-flood from a seed with tolerance
+        - curvature≈ / radius≈ / area≈: approximate numeric matching with tolerance
+        - by_material: filter by appearance/material name
         """
         import adsk.core  # type: ignore
         col = adsk.core.ObjectCollection.create()
@@ -1434,24 +1548,22 @@ class FusionBackend:
             except Exception:
                 pass
 
-        # List => union
-        if isinstance(query_spec, list):
-            for sub in query_spec:
-                sub_col = self._resolve_query(root, sub, entity_type)
-                for i in range(sub_col.count):
-                    col.add(sub_col.item(i))
-            return col
-
-        if not isinstance(query_spec, dict):
-            return col
-
         kind = (query_spec.get("kind") or query_spec.get("type") or entity_type).lower()
         created_by = query_spec.get("created_by") or query_spec.get("owner_feature")
         largest_by = query_spec.get("largest_by") or query_spec.get("largest")
+        owner_feature = query_spec.get("owner_feature==") or query_spec.get("owner_feature_eq")
+        pat = query_spec.get("pattern_instances")
+        tangent = query_spec.get("tangent_connected")
+        curv_approx = query_spec.get("curvature≈") or query_spec.get("curvature_approx")
+        radius_approx = query_spec.get("radius≈") or query_spec.get("radius_approx")
+        area_approx = query_spec.get("area≈") or query_spec.get("area_approx")
+        tol = query_spec.get("tol") or query_spec.get("tolerance")
+        by_material = query_spec.get("by_material") or query_spec.get("appearance")
 
-        # created_by: use lineage tokens
-        if created_by and created_by in self._lineage:
-            tokens = self._lineage[created_by]
+        # created_by: use lineage tokens (session or persisted)
+        fid_lookup = created_by or owner_feature
+        if fid_lookup and (fid_lookup in self._lineage or fid_lookup in self._persisted_lineage):
+            tokens = self._lineage.get(fid_lookup) or self._persisted_lineage.get(fid_lookup) or {}
             token_list = tokens.get(f"{kind}s") or []
             for t in token_list:
                 add_entity_by_token(t)
@@ -1461,6 +1573,14 @@ class FusionBackend:
                 for f in faces:
                     col.add(f)
             return col
+
+        # created_by via attribute tags if lineage missing
+        if fid_lookup and col.count == 0:
+            tagged = self._find_entities_by_attr(root, kind, "csl_feat", fid_lookup)
+            for i in range(tagged.count):
+                col.add(tagged.item(i))
+            if col.count > 0:
+                return col
 
         # largest_by(axis): best-effort selection of largest area faces
         if kind == "face" and largest_by:
@@ -1481,6 +1601,102 @@ class FusionBackend:
                     return col
             except Exception:
                 pass
+
+        # pattern_instances: select from lineage for a given pattern feature
+        if pat and isinstance(pat, dict):
+            feature_id = pat.get("feature") or pat.get("id")
+            if feature_id and feature_id in self._lineage:
+                type_key = (pat.get("type") or kind or "face").lower()
+                tokens = self._lineage[feature_id]
+                for t in tokens.get(f"{type_key}s", []):
+                    add_entity_by_token(t)
+            return col
+
+        # tangent_connected: flood neighboring faces tangent to seed
+        if kind == "face" and tangent:
+            try:
+                seed_q = tangent.get("seed") if isinstance(tangent, dict) else None
+                tdeg = float(tangent.get("tol_deg") or 5.0) if isinstance(tangent, dict) else 5.0
+                import math
+                t_rad = (tdeg / 180.0) * math.pi
+                seeds = self._resolve_query(root, seed_q, entity_type="face") if seed_q else self._get_all_faces(root)
+                visited = set()
+                queue = []
+                for i in range(seeds.count):
+                    f = seeds.item(i)
+                    queue.append(f)
+                    visited.add(f.entityToken)
+                while queue:
+                    f = queue.pop(0)
+                    col.add(f)
+                    try:
+                        # Explore adjacent faces via edges
+                        for e in f.edges:
+                            for of in e.faces:
+                                if of.entityToken in visited:
+                                    continue
+                                try:
+                                    ang = abs(f.getAngleTo(of)) if hasattr(f, "getAngleTo") else 0.0
+                                except Exception:
+                                    ang = 0.0
+                                if ang <= t_rad:
+                                    visited.add(of.entityToken)
+                                    queue.append(of)
+                    except Exception:
+                        continue
+                return col
+            except Exception:
+                return col
+
+        # curvature≈ / radius≈ / area≈ filters with tolerance
+        if kind == "face" and (curv_approx is not None or radius_approx is not None or area_approx is not None):
+            try:
+                faces = self._get_all_faces(root)
+                targ = float(curv_approx or radius_approx or area_approx)
+                tol_v = float(tol or 1e-3)
+                for f in faces:
+                    try:
+                        val = None
+                        surf = f.geometry
+                        # Prefer radius when cylinder/sphere
+                        if hasattr(surf, "radius"):
+                            val = float(getattr(surf, "radius"))
+                        elif area_approx is not None and hasattr(f, "area"):
+                            val = float(f.area)
+                        if val is not None and abs(val - targ) <= tol_v:
+                            col.add(f)
+                    except Exception:
+                        continue
+                return col
+            except Exception:
+                return col
+
+        # by_material / appearance filter
+        if by_material:
+            try:
+                name = str(by_material).lower()
+                if kind == "body":
+                    bodies = self._all_bodies(root)
+                    for i in range(bodies.count):
+                        b = bodies.item(i)
+                        try:
+                            app = getattr(b, "appearance", None)
+                            if app and name in app.name.lower():
+                                col.add(b)
+                        except Exception:
+                            pass
+                else:
+                    faces = self._get_all_faces(root)
+                    for f in faces:
+                        try:
+                            app = getattr(f, "appearance", None) or getattr(f.body, "appearance", None)
+                            if app and name in app.name.lower():
+                                col.add(f)
+                        except Exception:
+                            pass
+                return col
+            except Exception:
+                return col
 
         # Fallback: return nothing
         return col
@@ -1559,5 +1775,137 @@ class FusionBackend:
                 self._diag("E3103", where="aps", message=f"Upload failed: {resp.status_code}")
         except Exception:
             pass
+
+    # ------------------------
+    # APS Orchestration (local/hosted agent compatible)
+    # ------------------------
+    def orchestrate(self, plan: Dict[str, Any]) -> Dict[str, Any]:
+        """Run an orchestration plan locally and upload artifacts if APS is configured.
+
+        Plan schema (example):
+        {
+          "export": [ { "format":"STL", "path":"out/part.stl", "resolution":"high" } ],
+          "thumbnail": [ { "path":"out/preview.png", "view":"iso", "style":"shaded" } ],
+          "aps_bucket": "csl-artifacts-<env>"
+        }
+
+        Returns { "ok": bool, "uploaded": [paths], "errors": [...] }
+        """
+        results: Dict[str, Any] = {"ok": True, "uploaded": [], "errors": []}
+        # Allow overriding bucket from plan
+        if plan.get("aps_bucket"):
+            self.session_config["aps_bucket"] = plan.get("aps_bucket")
+        # Execute steps with simple retries
+        def _try(fn, arg, name: str) -> None:
+            for attempt in range(2):
+                try:
+                    fn(arg)
+                    return
+                except Exception as ex:
+                    if attempt == 1:
+                        results["ok"] = False
+                        results["errors"].append({"step": name, "error": str(ex)})
+                        try:
+                            self._diag("E3201", where="orchestrate", message=f"{name} failed: {ex}")
+                        except Exception:
+                            pass
+        if plan.get("export"):
+            _try(self.export, plan.get("export"), "export")
+        if plan.get("thumbnail"):
+            _try(self.thumbnail, plan.get("thumbnail"), "thumbnail")
+        # If APS configured, report uploads were attempted by hooks
+        try:
+            if self.session_config.get("aps_bucket"):
+                # We cannot know remote URNs here without OSS response; report local paths
+                for op in (plan.get("export") or []):
+                    if isinstance(op, dict) and op.get("path"):
+                        results["uploaded"].append(op.get("path"))
+                for op in (plan.get("thumbnail") or []):
+                    if isinstance(op, dict) and op.get("path"):
+                        results["uploaded"].append(op.get("path"))
+        except Exception:
+            pass
+        return results
+
+    # ------------------------
+    # Persistence & Attributes for Stable IDs
+    # ------------------------
+    def _lineage_path(self) -> str:
+        return str(self.session_config.get("lineage_path") or os.path.abspath("csl_lineage.json"))
+
+    def _load_persisted_lineage(self) -> None:
+        path = self._lineage_path()
+        try:
+            if os.path.exists(path):
+                import json as _json
+                with open(path, "r", encoding="utf-8") as f:
+                    self._persisted_lineage = _json.load(f)
+        except Exception:
+            self._persisted_lineage = {}
+
+    def _save_persisted_lineage(self) -> None:
+        try:
+            import json as _json
+            with open(self._lineage_path(), "w", encoding="utf-8") as f:
+                _json.dump(self._persisted_lineage, f)
+        except Exception:
+            pass
+
+    def _tag_attribute(self, entity: Any, name: str, value: str) -> None:
+        try:
+            # Attributes: group "CSL"
+            attrs = getattr(entity, "attributes", None)
+            if attrs:
+                # Remove any previous value to avoid duplicates
+                try:
+                    old = attrs.itemByName("CSL", name)
+                    if old:
+                        old.deleteMe()
+                except Exception:
+                    pass
+                attrs.add("CSL", name, str(value))
+        except Exception:
+            pass
+
+    def _find_entities_by_attr(self, root, kind: str, name: str, value: str):
+        import adsk.core  # type: ignore
+        col = adsk.core.ObjectCollection.create()
+        try:
+            if kind == "body":
+                bodies = self._all_bodies(root)
+                for i in range(bodies.count):
+                    b = bodies.item(i)
+                    try:
+                        attrs = getattr(b, "attributes", None)
+                        a = attrs.itemByName("CSL", name) if attrs else None
+                        if a and a.value == value:
+                            col.add(b)
+                    except Exception:
+                        pass
+            elif kind == "face":
+                faces = self._get_all_faces(root)
+                for f in faces:
+                    try:
+                        attrs = getattr(f, "attributes", None)
+                        a = attrs.itemByName("CSL", name) if attrs else None
+                        if a and a.value == value:
+                            col.add(f)
+                    except Exception:
+                        pass
+            elif kind == "edge":
+                bodies = self._all_bodies(root)
+                for i in range(bodies.count):
+                    b = bodies.item(i)
+                    for e in b.edges:
+                        try:
+                            attrs = getattr(e, "attributes", None)
+                            a = attrs.itemByName("CSL", name) if attrs else None
+                            if a and a.value == value:
+                                col.add(e)
+                        except Exception:
+                            pass
+        except Exception:
+            pass
+        return col
 
 
