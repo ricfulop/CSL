@@ -79,6 +79,12 @@ Gaps: Blender lacks many face-level CAD operations; modeled threads heavy.
 
 Fallbacks: attach stable IDs/tags; persist mapping table; geometric searches with tolerances.
 
+### Selection/Queries – determinism & tolerances (Fusion)
+- Determinism: selections must be unambiguous; adapter emits E12xx with hints when multiple candidates match.
+- Stability: uses lineage tokens plus `CSL:csl_feat` attributes to reconcile across sessions.
+- Tolerances: geometric predicates accept absolute tolerances (e.g., `tol: 0.05 mm`) and angle tolerances for tangent floods (`tol_deg`).
+- Recommended practice: combine geometric predicates with `created_by`/tags to prevent drift under regeneration.
+
 ### 5) Materials & Properties
 - Fusion 360: ✓ material libraries; physical props.
 - Onshape: ~ limited materials; metadata possible.
