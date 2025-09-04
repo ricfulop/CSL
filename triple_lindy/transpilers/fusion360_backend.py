@@ -1189,44 +1189,84 @@ class FusionBackend:
                         if a is None or b is None:
                             mapping[feat_id] = "fusion:joint:E2401"
                         else:
-                            j_geo = adsk.fusion.JointGeometry.createByPlanarFace(a.faces.item(0), None, adsk.fusion.JointKeyPointTypes.CenterKeyPoint)
-                            j_geo2 = adsk.fusion.JointGeometry.createByPlanarFace(b.faces.item(0), None, adsk.fusion.JointKeyPointTypes.CenterKeyPoint)
-                            j_in = joints.createInput(j_geo, j_geo2)
-                            # Type and limits
-                            jtype = (feat.get("type") or "revolute").lower()
-                            if jtype == "slider":
-                                j_in.setAsSliderJointMotion(adsk.fusion.JointDirections.ZAxisJointDirection)
-                            elif jtype == "rigid":
-                                j_in.setAsRigidJointMotion()
+                            # Determine joint origin/axes via planar face center as default
+                            def _geom_for_body(body):
+                                try:
+                                    f = body.faces.item(0)
+                                    return adsk.fusion.JointGeometry.createByPlanarFace(f, None, adsk.fusion.JointKeyPointTypes.CenterKeyPoint)
+                                except Exception:
+                                    return None
+                            j_geo = _geom_for_body(a)
+                            j_geo2 = _geom_for_body(b)
+                            if not j_geo or not j_geo2:
+                                mapping[feat_id] = "fusion:joint:E2402"
                             else:
-                                j_in.setAsRevoluteJointMotion(adsk.fusion.JointDirections.ZAxisJointDirection)
-                            # Limits/damping/preload
-                            try:
-                                lim = feat.get("limits") or {}
-                                if isinstance(lim, dict):
-                                    low = self._parse_length_mm(lim.get("min"))
-                                    high = self._parse_length_mm(lim.get("max"))
-                                    if low is not None and high is not None:
-                                        if jtype == "slider":
-                                            j_in.jointMotion.slideLimits.isRestValueRequired = False
-                                            j_in.jointMotion.slideLimits.isMinimumValueEnabled = True
-                                            j_in.jointMotion.slideLimits.minimumValue = (low / 10.0)
-                                            j_in.jointMotion.slideLimits.isMaximumValueEnabled = True
-                                            j_in.jointMotion.slideLimits.maximumValue = (high / 10.0)
-                                        elif jtype == "revolute":
-                                            j_in.jointMotion.rotationLimits.isMinimumValueEnabled = True
-                                            j_in.jointMotion.rotationLimits.minimumValue = (low / 180.0) * 3.141592653589793
-                                            j_in.jointMotion.rotationLimits.isMaximumValueEnabled = True
-                                            j_in.jointMotion.rotationLimits.maximumValue = (high / 180.0) * 3.141592653589793
-                                if feat.get("damping") is not None:
-                                    # Damping is limited in API; record as note if unavailable
-                                    _ = float(feat.get("damping"))
-                                if feat.get("preload") is not None:
-                                    _ = float(feat.get("preload"))
-                            except Exception:
-                                pass
-                            j = joints.add(j_in)
-                            mapping[feat_id] = f"fusion:joint:{j.entityToken}"
+                                j_in = joints.createInput(j_geo, j_geo2)
+                                # Axis selection
+                                axis_name = (feat.get("axis") or "Z").upper()
+                                axis_dir = adsk.fusion.JointDirections.ZAxisJointDirection
+                                if axis_name.startswith("X"):
+                                    axis_dir = adsk.fusion.JointDirections.XAxisJointDirection
+                                elif axis_name.startswith("Y"):
+                                    axis_dir = adsk.fusion.JointDirections.YAxisJointDirection
+                                jtype = (feat.get("type") or "revolute").lower()
+                                if jtype == "slider":
+                                    j_in.setAsSliderJointMotion(axis_dir)
+                                elif jtype == "rigid":
+                                    j_in.setAsRigidJointMotion()
+                                else:
+                                    j_in.setAsRevoluteJointMotion(axis_dir)
+                                # Limits/damping/preload
+                                try:
+                                    lim = feat.get("limits") or {}
+                                    if isinstance(lim, dict):
+                                        # Linear
+                                        lmin = self._parse_length_mm(lim.get("linear_min") or lim.get("min_linear") or lim.get("min"))
+                                        lmax = self._parse_length_mm(lim.get("linear_max") or lim.get("max_linear") or lim.get("max"))
+                                        # Angular (deg)
+                                        amin = self._parse_length_mm(lim.get("angular_min") or lim.get("min_angular"))
+                                        amax = self._parse_length_mm(lim.get("angular_max") or lim.get("max_angular"))
+                                        if jtype == "slider" and (lmin is not None or lmax is not None):
+                                            jm = j_in.jointMotion
+                                            try:
+                                                jm.slideLimits.isRestValueRequired = False
+                                                if lmin is not None:
+                                                    jm.slideLimits.isMinimumValueEnabled = True
+                                                    jm.slideLimits.minimumValue = (lmin / 10.0)  # cm
+                                                if lmax is not None:
+                                                    jm.slideLimits.isMaximumValueEnabled = True
+                                                    jm.slideLimits.maximumValue = (lmax / 10.0)
+                                            except Exception:
+                                                self._diag("E2410", where="joint", message="Slider limits not supported")
+                                        if jtype == "revolute" and (amin is not None or amax is not None):
+                                            jm = j_in.jointMotion
+                                            try:
+                                                if amin is not None:
+                                                    jm.rotationLimits.isMinimumValueEnabled = True
+                                                    jm.rotationLimits.minimumValue = (amin / 180.0) * 3.141592653589793
+                                                if amax is not None:
+                                                    jm.rotationLimits.isMaximumValueEnabled = True
+                                                    jm.rotationLimits.maximumValue = (amax / 180.0) * 3.141592653589793
+                                            except Exception:
+                                                self._diag("E2411", where="joint", message="Revolute limits not supported")
+                                    # Damping/preload (best-effort)
+                                    if feat.get("damping") is not None:
+                                        try:
+                                            _ = float(feat.get("damping"))
+                                            # Fusion API may not expose; record diagnostic if unsupported
+                                            self._diag("E2412", where="joint", message="Damping specified but not settable in this Fusion API; ignoring.")
+                                        except Exception:
+                                            pass
+                                    if feat.get("preload") is not None:
+                                        try:
+                                            _ = float(feat.get("preload"))
+                                            self._diag("E2413", where="joint", message="Preload specified but not settable in this Fusion API; ignoring.")
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
+                                j = joints.add(j_in)
+                                mapping[feat_id] = f"fusion:joint:{j.entityToken}"
                     except Exception:
                         mapping[feat_id] = "fusion:joint:E2401"
 
