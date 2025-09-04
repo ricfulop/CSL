@@ -457,6 +457,16 @@ if backend.supports.features.loft {
 
 ---
 
+## 18.1) Known Gaps and v1.2 Candidates (non-normative)
+- Sketch entities: add `spline (NURBS)`, `text`, `ellipse`, `elliptical_arc`.
+- Loft/Sweep fidelity: `continuity: G0|G1|G2`, `orientation: frenet|fixed_normal|binormal`.
+- Variable fillet/chamfer: per-edge arrays with transitions/setbacks.
+- Draft: `neutral_plane` and explicit `faces` set.
+- Threads: ISO + UNC/UNF + NPT designations; cosmetic vs modeled controls.
+- Joints: limits `{linear:{min,max}, angular:{min,max}}`, `damping`, `preload`.
+- Selector predicates: `created_by`, `owner_feature==`, `pattern_instances`, `tangent_connected`, `curvature≈`.
+- Materials/PMI: `material ref` to standardized libraries + overrides; light PMI.
+
 ## 19) Quick Reference (Cheatsheet)
 - Header: `csl 1.1`, `name`, `units`, `backend { targets [...] }`  
 - Param: `param id: type = expr in [min, max]`  
