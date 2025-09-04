@@ -418,6 +418,22 @@ class FusionBackend:
                         try:
                             per_groups = feat.get("edges") or []
                             if isinstance(per_groups, list) and len(per_groups) > 0:
+                                # Attempt variable radius or vertex setbacks if provided
+                                used_variable = False
+                                for grp in per_groups:
+                                    if not isinstance(grp, dict):
+                                        continue
+                                    if grp.get("points") or grp.get("setbacks"):
+                                        try:
+                                            var_feat = self._apply_variable_fillet(root, fil_feats, grp)
+                                            if var_feat:
+                                                mapping[f"{feat_id}:var"] = f"fusion:fillet:{var_feat.entityToken}"
+                                                used_variable = True
+                                            continue
+                                        except Exception:
+                                            pass
+                                if used_variable:
+                                    continue
                                 for grp in per_groups:
                                     if not isinstance(grp, dict):
                                         continue
@@ -471,6 +487,22 @@ class FusionBackend:
                         try:
                             per_groups = feat.get("edges") or []
                             if isinstance(per_groups, list) and len(per_groups) > 0:
+                                # Attempt variable chamfer per group if definition exists
+                                used_variable = False
+                                for grp in per_groups:
+                                    if not isinstance(grp, dict):
+                                        continue
+                                    if grp.get("points"):
+                                        try:
+                                            var_ch = self._apply_variable_chamfer(root, chf, grp)
+                                            if var_ch:
+                                                mapping[f"{feat_id}:var"] = f"fusion:chamfer:{var_ch.entityToken}"
+                                                used_variable = True
+                                            continue
+                                        except Exception:
+                                            pass
+                                if used_variable:
+                                    continue
                                 for grp in per_groups:
                                     if not isinstance(grp, dict):
                                         continue
@@ -2001,5 +2033,106 @@ class FusionBackend:
                         pass
         except Exception:
             pass
+
+    def _apply_variable_fillet(self, root, fil_feats, grp: Dict[str, Any]):
+        """Attempt variable radius or setback fillet using Fusion API when available.
+
+        grp may contain:
+          - q / edges_query: target edges
+          - points: [{t:0..1, r:"mm"}, ...] control points along edge
+          - setbacks: [{vertex_query:..., d:"mm"}, ...] per-vertex setbacks
+        """
+        import adsk.core  # type: ignore
+        # Resolve edges
+        edges = None
+        try:
+            qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
+            if qg:
+                edges = self._resolve_query(root, qg, entity_type="edge")
+        except Exception:
+            edges = None
+        if not edges or edges.count == 0:
+            return None
+        # Variable radius path
+        if grp.get("points") and hasattr(fil_feats, "createVariableRadiusFilletDefinition"):
+            pts = grp.get("points")
+            try:
+                # Build arrays for radii and parameters if API expects them; fallback to first/last
+                rads = []
+                params = []
+                for p in pts:
+                    if not isinstance(p, dict):
+                        continue
+                    r_mm = self._parse_length_mm(p.get("r") or p.get("radius"))
+                    t = p.get("t")
+                    if r_mm is not None and t is not None:
+                        rads.append(adsk.core.ValueInput.createByReal((r_mm/10.0)))
+                        params.append(float(t))
+                if len(rads) >= 2 and len(params) == len(rads):
+                    vdef = fil_feats.createVariableRadiusFilletDefinition(edges, rads, params, False)
+                    return fil_feats.add(vdef)
+            except Exception:
+                self._diag("E2322", where="fillet", message="Variable fillet API not available or failed; applied constant groups.")
+                return None
+        # Setbacks at vertices (best-effort)
+        if grp.get("setbacks") and hasattr(fil_feats, "createSetbackFilletDefinition"):
+            try:
+                sdef = fil_feats.createSetbackFilletDefinition(edges)
+                for sb in (grp.get("setbacks") or []):
+                    if not isinstance(sb, dict):
+                        continue
+                    d_mm = self._parse_length_mm(sb.get("d") or sb.get("distance"))
+                    vq = sb.get("vertex_query")
+                    if d_mm is None or not vq:
+                        continue
+                    vcol = self._resolve_query(root, vq, entity_type="vertex")
+                    if vcol and vcol.count > 0:
+                        try:
+                            sdef.setSetbackDistance(vcol.item(0), adsk.core.ValueInput.createByReal(d_mm/10.0))
+                        except Exception:
+                            pass
+                return fil_feats.add(sdef)
+            except Exception:
+                self._diag("E2323", where="fillet", message="Setback fillet not supported by this Fusion version.")
+                return None
+        # Nothing applied
+        return None
+
+    def _apply_variable_chamfer(self, root, chf, grp: Dict[str, Any]):
+        """Attempt variable chamfer distances if API supports it.
+
+        grp may contain:
+          - q / edges_query: edges
+          - points: [{t:0..1, d:"mm"}]
+        """
+        import adsk.core  # type: ignore
+        edges = None
+        try:
+            qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
+            if qg:
+                edges = self._resolve_query(root, qg, entity_type="edge")
+        except Exception:
+            edges = None
+        if not edges or edges.count == 0:
+            return None
+        if grp.get("points") and hasattr(chf, "createVariableDistanceChamferDefinition"):
+            try:
+                ds = []
+                ts = []
+                for p in grp.get("points"):
+                    if not isinstance(p, dict):
+                        continue
+                    d_mm = self._parse_length_mm(p.get("d") or p.get("distance"))
+                    t = p.get("t")
+                    if d_mm is not None and t is not None:
+                        ds.append(adsk.core.ValueInput.createByReal(d_mm/10.0))
+                        ts.append(float(t))
+                if len(ds) >= 2 and len(ts) == len(ds):
+                    vdef = chf.createVariableDistanceChamferDefinition(edges, ds, ts, False)
+                    return chf.add(vdef)
+            except Exception:
+                self._diag("E2324", where="chamfer", message="Variable chamfer API not available or failed; applied constant groups.")
+                return None
+        return None
 
 
