@@ -1238,9 +1238,45 @@ class FusionBackend:
                                 opts.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementMedium
                             else:
                                 opts.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementHigh
-                        if op.get("units") in ("mm", "cm", "in") and hasattr(opts, "isBinaryFormat"):
-                            # Fusion generally exports in cm-internal; we rely on export settings or post-process path name
-                            pass
+                        # Binary/text format
+                        if isinstance(op.get("binary"), bool) and hasattr(opts, "isBinaryFormat"):
+                            opts.isBinaryFormat = bool(op.get("binary"))
+                        # Advanced mesh controls if available
+                        if hasattr(opts, "surfaceDeviation") and op.get("deviation"):
+                            dev_mm = self._parse_length_mm(op.get("deviation"))
+                            if dev_mm is not None:
+                                opts.surfaceDeviation = float(dev_mm) / 10.0
+                        if hasattr(opts, "maximumEdgeLength") and op.get("max_edge"):
+                            me_mm = self._parse_length_mm(op.get("max_edge"))
+                            if me_mm is not None:
+                                opts.maximumEdgeLength = float(me_mm) / 10.0
+                        if hasattr(opts, "aspectRatio") and op.get("aspect_ratio"):
+                            try:
+                                opts.aspectRatio = float(op.get("aspect_ratio"))
+                            except Exception:
+                                pass
+                        # Units
+                        req_units = (op.get("units") or "").lower()
+                        applied_units = False
+                        # Some Fusion versions expose units selection
+                        for attr in ("meshUnits", "stlUnits", "units"):
+                            if hasattr(opts, attr):
+                                try:
+                                    val = None
+                                    if req_units in ("mm", "millimeter", "millimetre"):
+                                        val = getattr(adsk.fusion, "StlUnitsMillimeter", None) or getattr(adsk.fusion, "UnitsMillimeter", None)
+                                    elif req_units in ("cm", "centimeter"):
+                                        val = getattr(adsk.fusion, "StlUnitsCentimeter", None) or getattr(adsk.fusion, "UnitsCentimeter", None)
+                                    elif req_units in ("in", "inch", "inches"):
+                                        val = getattr(adsk.fusion, "StlUnitsInch", None) or getattr(adsk.fusion, "UnitsInch", None)
+                                    if val is not None:
+                                        setattr(opts, attr, val)
+                                        applied_units = True
+                                        break
+                                except Exception:
+                                    continue
+                        if req_units and not applied_units:
+                            self._diag("E3004", where="export", message=f"STL units '{req_units}' not directly supported by this Fusion version; proceeding with document units.")
                     except Exception:
                         pass
                     exp.execute(opts)
