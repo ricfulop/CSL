@@ -617,32 +617,88 @@ class FusionBackend:
                                 mapping[feat_id] = "fusion:project:E2310"
                                 self._diag("E2310", where="project", message="No target face for project.")
                         else:
-                            # Try native emboss features if available
-                            try:
-                                emb = getattr(root.features, "embossFeatures", None)
-                                if emb:
-                                    face_q = feat.get("onto") or feat.get("face_query")
-                                    fcol = self._resolve_query(root, face_q, entity_type="face") if face_q else None
-                                    tgt = fcol.item(0) if fcol and fcol.count > 0 else None
-                                    depth_mm = self._parse_length_mm(feat.get("depth") or "1") or 1.0
-                                    depth = adsk.core.ValueInput.createByReal(depth_mm/10.0)
-                                    if tgt is not None:
-                                        # The exact Emboss API varies; attempt a simple emboss
-                                        ein = emb.createInput([tgt], depth, True)
-                                        ev = emb.add(ein)
-                                        mapping[feat_id] = f"fusion:{kind}:{ev.entityToken}"
+                            # Native emboss/wrap using EmbossFeatures if available
+                            emb = getattr(root.features, "embossFeatures", None)
+                            if emb is None:
+                                mapping[feat_id] = f"fusion:{kind}:E2311"
+                                self._diag("E2311", where=kind, message="Emboss/Wrap not available in this Fusion version")
+                            else:
+                                # Source curves from a named sketch (from_sketch) or last created sketch
+                                src_sk = None
+                                src_name = feat.get("from_sketch") or feat.get("sketch") or feat.get("source")
+                                if src_name and isinstance(src_name, str):
+                                    src_sk = sketch_map.get(src_name) or None
+                                    if src_sk is None:
+                                        # scan by name
                                         try:
-                                            self._record_lineage(feat_id, ev, root)
+                                            for s in root.sketches:
+                                                if getattr(s, "name", "") == src_name:
+                                                    src_sk = s
+                                                    break
+                                        except Exception:
+                                            pass
+                                if src_sk is None and len(sketch_map) > 0:
+                                    # fallback to any existing sketch if not specified
+                                    try:
+                                        src_sk = next(iter(sketch_map.values()))
+                                    except Exception:
+                                        src_sk = None
+                                # Target faces
+                                tgt_faces = None
+                                face_q = feat.get("onto") or feat.get("face_query")
+                                if face_q:
+                                    fcol = self._resolve_query(root, face_q, entity_type="face")
+                                    if fcol and fcol.count > 0:
+                                        tgt_faces = fcol
+                                if src_sk is None or tgt_faces is None or tgt_faces.count == 0:
+                                    mapping[feat_id] = f"fusion:{kind}:E2312"
+                                    self._diag("E2312", where=kind, message="Missing source sketch or target faces for emboss/wrap.")
+                                else:
+                                    # Depth/angle parameters
+                                    depth_mm = self._parse_length_mm(feat.get("depth") or "1") or 1.0
+                                    depth = adsk.core.ValueInput.createByReal(depth_mm / 10.0)
+                                    angle_deg = self._parse_length_mm(str(feat.get("angle") or "0")) or 0.0
+                                    angle = adsk.core.ValueInput.createByReal((angle_deg / 180.0) * 3.141592653589793)
+                                    # Mode: emboss vs wrap; engrave if negative depth requested
+                                    is_wrap = (kind == "wrap") or str(feat.get("method") or "").lower() == "wrap"
+                                    is_engrave = bool(feat.get("engrave") or (depth_mm < 0))
+                                    # Attempt API variations
+                                    created = None
+                                    for api_variant in ("createInput", "createEmbossFeatureInput"):
+                                        try:
+                                            if hasattr(emb, api_variant):
+                                                # Common signature guesses: (sketch, faces, isWrap?, depth, angle?)
+                                                if api_variant == "createInput":
+                                                    ein = emb.createInput(src_sk, tgt_faces, is_wrap)
+                                                    # Optional params on input
+                                                    for attr, val in (("depth", depth), ("angle", angle), ("isEngrave", is_engrave)):
+                                                        if hasattr(ein, attr):
+                                                            try:
+                                                                setattr(ein, attr, val)
+                                                            except Exception:
+                                                                pass
+                                                    created = emb.add(ein)
+                                                else:
+                                                    ein = emb.createEmbossFeatureInput(src_sk, tgt_faces, depth, is_wrap)
+                                                    if hasattr(ein, "isEngrave"):
+                                                        try:
+                                                            ein.isEngrave = is_engrave
+                                                        except Exception:
+                                                            pass
+                                                    created = emb.add(ein)
+                                                if created:
+                                                    break
+                                        except Exception:
+                                            created = None
+                                    if created:
+                                        mapping[feat_id] = f"fusion:{kind}:{created.entityToken}"
+                                        try:
+                                            self._record_lineage(feat_id, created, root)
                                         except Exception:
                                             pass
                                     else:
-                                        mapping[feat_id] = f"fusion:{kind}:E2312"
-                                        self._diag("E2312", where=kind, message="No target face for emboss/wrap.")
-                                else:
-                                    mapping[feat_id] = f"fusion:{kind}:E2311"
-                                    self._diag("E2311", where=kind, message="Emboss/Wrap not available in this Fusion version")
-                            except Exception:
-                                mapping[feat_id] = f"fusion:{kind}:E2311"
+                                        mapping[feat_id] = f"fusion:{kind}:E2313"
+                                        self._diag("E2313", where=kind, message="Emboss/Wrap API call failed on this Fusion version.")
                     except Exception:
                         mapping[feat_id] = f"fusion:{kind}:E2311"
                 elif kind == "hole":
