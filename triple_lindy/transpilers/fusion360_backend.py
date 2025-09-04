@@ -6,7 +6,8 @@ If Fusion's `adsk` modules are unavailable, methods will no-op or print guidance
 from __future__ import annotations
 
 import os
-from typing import Dict, List, Any
+import re
+from typing import Dict, List, Any, Optional
 
 
 class FusionBackend:
@@ -77,23 +78,212 @@ class FusionBackend:
                     mapping[feat["id"]] = f"fusion:{feat['id']}"
             return mapping
 
-        # Real implementation would use adsk.core/adsk.fusion to construct design
-        # and keep a mapping from CSL IDs to Fusion entity tokens.
-        # TODO: implement extrude/hole/fillet + export/thumbnail
+        try:
+            import adsk.core  # type: ignore
+            import adsk.fusion  # type: ignore
+
+            app, ui, design = self._ensure_design()
+            root: adsk.fusion.Component = design.rootComponent
+
+            # Create sketches (limited support: rect, circle)
+            sketch_map: Dict[str, Any] = {}
+            for sk in csl_ir.get("sketches", []) or []:
+                if not isinstance(sk, dict):
+                    continue
+                sk_id = sk.get("id", "sketch")
+                plane_name = (sk.get("plane") or "world.xy").lower()
+                plane = self._plane_from_name(root, plane_name)
+                sketch = root.sketches.add(plane)
+                # Entities
+                for ent in sk.get("entities", []) or []:
+                    kind = (ent.get("kind") or "").lower()
+                    if kind == "rect":
+                        p1 = self._parse_point(ent.get("p1"))
+                        p2 = self._parse_point(ent.get("p2"))
+                        if p1 and p2:
+                            sketch.sketchCurves.sketchLines.addTwoPointRectangle(
+                                adsk.core.Point3D.create(p1[0], p1[1], 0),
+                                adsk.core.Point3D.create(p2[0], p2[1], 0),
+                            )
+                    elif kind == "circle":
+                        c = self._parse_point(ent.get("center"))
+                        d_mm = self._parse_length_mm(ent.get("d"))
+                        if c and d_mm:
+                            r_cm = (d_mm / 2.0) / 10.0
+                            sketch.sketchCurves.sketchCircles.addByCenterRadius(
+                                adsk.core.Point3D.create(c[0], c[1], 0), r_cm
+                            )
+                sketch_map[sk_id] = sketch
+
+            # Execute features (limited: extrude, fillet)
+            for feat in csl_ir.get("features", []) or []:
+                if not isinstance(feat, dict):
+                    continue
+                kind = (feat.get("kind") or "").lower()
+                feat_id = feat.get("id") or kind
+                if kind == "extrude":
+                    # Use first available profile if profile string is ambiguous
+                    profile = self._first_profile(root)
+                    if profile is None:
+                        continue
+                    dist_mm = self._parse_length_mm(feat.get("distance")) or 10.0
+                    dist_cm = dist_mm / 10.0
+                    distance = adsk.core.ValueInput.createByReal(dist_cm)
+                    ext_feats = root.features.extrudeFeatures
+                    ext_input = ext_feats.createInput(profile, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                    ext_input.setDistanceExtent(False, distance)
+                    ext = ext_feats.add(ext_input)
+                    mapping[feat_id] = f"fusion:extrude:{ext.entityToken}"
+                elif kind == "fillet":
+                    rad_mm = self._parse_length_mm(feat.get("radius")) or 1.0
+                    rad_cm = rad_mm / 10.0
+                    edges = self._all_body_edges(root)
+                    if edges.count > 0:
+                        fil_feats = root.features.filletFeatures
+                        edge_col = adsk.core.ObjectCollection.create()
+                        for e in edges:
+                            edge_col.add(e)
+                        const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), False)
+                        fil = fil_feats.add(const_def)
+                        mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
+                elif kind == "hole":
+                    # Minimal: skip detailed hole types; placeholder for future expansion
+                    mapping[feat_id] = f"fusion:hole:pending"
+
+            # Optionally export and thumbnails
+            if csl_ir.get("export"):
+                self.export(csl_ir.get("export", []))
+            if csl_ir.get("thumbnail"):
+                self.thumbnail(csl_ir.get("thumbnail", []))
+
+        except Exception as ex:  # pragma: no cover - defensive
+            print(f"[FusionBackend] realize failed: {ex}")
+
         return mapping
 
     def export(self, export_ops: List[Dict[str, Any]]) -> None:
         if not self._fusion_available:
             print(f"[FusionBackend] Dry-run export: {export_ops}")
             return
-        # TODO: use ExportManager to perform requested exports
+        try:
+            import adsk.core  # type: ignore
+            import adsk.fusion  # type: ignore
+            app, ui, design = self._ensure_design()
+            root: adsk.fusion.Component = design.rootComponent
+            exp: adsk.fusion.ExportManager = design.exportManager
+            for op in export_ops:
+                fmt = (op.get("format") or "").upper()
+                path = op.get("path") or "out/export"
+                if fmt == "STEP":
+                    opts = exp.createSTEPExportOptions(path)
+                    exp.execute(opts)
+                elif fmt == "STL":
+                    try:
+                        opts = exp.createSTLExportOptions(root, path)
+                    except Exception:
+                        opts = exp.createSTLExportOptions(root.bRepBodies, path)
+                    exp.execute(opts)
+                elif fmt == "IGES":
+                    opts = exp.createIGESExportOptions(path)
+                    exp.execute(opts)
+                elif fmt in ("3MF", "OBJ"):
+                    # Use generic export manager; not all formats may be available
+                    opts = exp.createOBJExportOptions(path) if fmt == "OBJ" else exp.createMF3DExportOptions(path)
+                    exp.execute(opts)
+        except Exception as ex:
+            print(f"[FusionBackend] export failed: {ex}")
         return
 
     def thumbnail(self, thumb_ops: List[Dict[str, Any]]) -> None:
         if not self._fusion_available:
             print(f"[FusionBackend] Dry-run thumbnail: {thumb_ops}")
             return
-        # TODO: capture viewport images according to ops
+        try:
+            import adsk.core  # type: ignore
+            app = adsk.core.Application.get()
+            vp = app.activeViewport
+            for op in thumb_ops:
+                path = op.get("path") or "out/preview.png"
+                w = int(op.get("width") or 800)
+                h = int(op.get("height") or 600)
+                # Attempt viewport save; name differs across versions
+                saved = False
+                try:
+                    vp.saveAsImageFile(path, w, h)
+                    saved = True
+                except Exception:
+                    pass
+                if not saved:
+                    img = vp.tiledRendering
+                    try:
+                        vp.saveAsImageFile(path)
+                    except Exception:
+                        pass
+        except Exception as ex:
+            print(f"[FusionBackend] thumbnail failed: {ex}")
         return
+
+    # ------------------------
+    # Helpers
+    # ------------------------
+    def _ensure_design(self):
+        import adsk.core  # type: ignore
+        import adsk.fusion  # type: ignore
+        app = adsk.core.Application.get()
+        ui = app.userInterface
+        design = adsk.fusion.Design.cast(app.activeProduct)
+        if not design:
+            app.documents.add(adsk.core.DocumentTypes.FusionDesignDocumentType)
+            design = adsk.fusion.Design.cast(app.activeProduct)
+        return app, ui, design
+
+    def _plane_from_name(self, root, plane_name: str):
+        import adsk.fusion  # type: ignore
+        if "xz" in plane_name:
+            return root.xZConstructionPlane
+        if "yz" in plane_name:
+            return root.yZConstructionPlane
+        return root.xYConstructionPlane
+
+    def _parse_point(self, value: Optional[str]) -> Optional[List[float]]:
+        if not value:
+            return None
+        # Expect formats like "x, y" or "15 mm, 15 mm"
+        parts = [p.strip() for p in value.split(",")]
+        if len(parts) < 2:
+            return None
+        x = self._parse_length_cm(parts[0])
+        y = self._parse_length_cm(parts[1])
+        if x is None or y is None:
+            return None
+        return [x, y]
+
+    def _parse_length_mm(self, value: Optional[str]) -> Optional[float]:
+        if value is None:
+            return None
+        # Extract first float; default units mm if specified
+        m = re.search(r"[-+]?[0-9]*\.?[0-9]+", str(value))
+        if not m:
+            return None
+        return float(m.group(0))
+
+    def _parse_length_cm(self, value: Optional[str]) -> Optional[float]:
+        mm = self._parse_length_mm(value)
+        return None if mm is None else mm / 10.0
+
+    def _first_profile(self, root) -> Optional[Any]:
+        # Return the first available profile from any sketch
+        for sk in root.sketches:
+            if sk.profiles.count > 0:
+                return sk.profiles.item(0)
+        return None
+
+    def _all_body_edges(self, root):
+        import adsk.fusion  # type: ignore
+        col = adsk.core.ObjectCollection.create()  # type: ignore
+        for b in root.bRepBodies:
+            for e in b.edges:
+                col.add(e)
+        return col
 
 
