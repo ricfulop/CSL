@@ -1,0 +1,15 @@
+csl 1.0
+name "Threaded Plate"
+units mm
+
+param t: length = 8 mm
+param hole_d: length = 5 mm
+
+plane base = plane.world.xy
+sketch s on base {
+  rect id:plate from (0,0) to (50 mm, 30 mm)
+  circle id:h at (25 mm, 15 mm) d: hole_d
+}
+feature extrude part from sketch s.profile("plate") distance t operation new_solid id:part
+feature hole h1 on face query.face(part, normal==+Z) at points [(25 mm, 15 mm)] type simple d: hole_d depth through_all
+feature thread t1 on faces query.cylindrical_faces(part, d≈5 mm ±0.2 mm, axis≈Z) mode cosmetic designation "M6x1-6H" length 6 mm

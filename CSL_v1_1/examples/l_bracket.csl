@@ -1,0 +1,21 @@
+csl 1.0
+name "L-Bracket"
+units mm
+
+param thickness: length = 6 mm in [3 mm, 12 mm]
+param legA: length = 80 mm
+param legB: length = 60 mm
+param hole_d: length = 6.5 mm
+param fil_r: length = 3 mm
+
+plane base = plane.world.xy
+
+sketch s on base {
+  rect id:plate from (0,0) to (legA, legB)
+  circle id:h1 at (15 mm, 15 mm) d: hole_d
+  circle id:h2 at (legA-15 mm, 15 mm) d: hole_d
+}
+
+feature extrude body from sketch s.profile("plate - h1 - h2") distance thickness operation new_solid id:part
+feature fillet edges of query.edges(part, by_tag:"external") radius fil_r
+material part = { name:"6061-T6" }

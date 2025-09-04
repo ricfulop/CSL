@@ -1,0 +1,30 @@
+csl 1.0
+name "Simple MCU Board"
+units mm
+
+sketch board_outline on plane.world.xy {
+  rect id:brd from (0,0) to (100 mm, 60 mm)
+}
+feature extrude brd3d from sketch board_outline.profile("brd") distance 2 mm operation new_solid id:board
+
+ecad {
+  library libs = ["${KICAD6_SYMBOL_DIR}", "my_company_symbols"]
+  netlist {
+    comp U1 type:"MCU" footprint:"Package_QFP:TQFP-64_10x10mm_P0.5mm" nets:{ VDD: "3V3", GND:"GND" }
+    comp J1 type:"USB-C" footprint:"Connector_USB:USB_C_Receptacle" nets:{ VBUS:"5V", GND:"GND", CC1:"CC1" }
+  }
+  board {
+    outline from_sketch: board_outline.profile("brd")
+    stackup: 4_layer(impedance:"50 ohm microstrip")
+    drc: { min_trace: 4 mil, min_space: 4 mil, via_drill: 0.2 mm }
+    keepout id:ko1 region: circle( center:(50 mm,30 mm), d:20 mm) layers:["F.Cu","B.Cu"]
+  }
+  placement {
+    place U1 at (50 mm, 30 mm) rot 0 side "Top"
+    place J1 at (5 mm, 30 mm) rot 90 side "Top"
+  }
+  routing_hints {
+    diffpair: { J1.DP <-> U1.USB_DP, J1.DM <-> U1.USB_DM, target_impedance: 90 ohm }
+    match_length: [ "U1.SDCLK", "U1.SD_CMD", "U1.SD_D0..3" ] tolerance:0.5 mm
+  }
+}

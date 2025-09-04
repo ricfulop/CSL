@@ -1,0 +1,35 @@
+csl 1.0
+name "Plate + 2x Spacers + Bolts"
+units mm
+
+param t: length = 6 mm
+param W: length = 80 mm
+param H: length = 60 mm
+param hole_d: length = 6.5 mm
+
+plane base = plane.world.xy
+sketch s on base {
+  rect id:plate from (0,0) to (W, H)
+  circle id:h1 at (15 mm, 15 mm) d: hole_d
+  circle id:h2 at (W-15 mm, 15 mm) d: hole_d
+}
+feature extrude body from sketch s.profile("plate - h1 - h2") distance t operation new_solid id:plate_part
+
+datum mH1 = mate_connector at plate_part.face(by_tag:"h1") origin (0,0,0)
+datum mH2 = mate_connector at plate_part.face(by_tag:"h2") origin (0,0,0)
+
+partdef plate from this_file id:plate_part
+partdef spacer from lib:std.spacer_OD10_ID6_L10
+partdef bolt6  from lib:fasteners/ISO4762_M6x16
+
+assembly a {
+  instance p of plate at mH1
+  instance s1 of spacer at mH1
+  instance s2 of spacer at mH2
+  instance b1 of bolt6 at mH1
+  instance b2 of bolt6 at mH2
+  mate fasten p to s1
+  mate fasten p to s2
+  mate fasten p to b1
+  mate fasten p to b2
+}

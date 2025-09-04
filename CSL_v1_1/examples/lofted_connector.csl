@@ -1,0 +1,16 @@
+csl 1.0
+name "Lofted Connector"
+units mm
+
+param h: length = 40 mm
+
+plane p0 = plane.world.xy
+plane p1 = plane.offset(p0, by: h)
+
+sketch s0 on p0 {
+  circle id:c0 at (0,0) d: 30 mm
+}
+sketch s1 on p1 {
+  rect id:r1 from (-10 mm,-5 mm) to (10 mm,5 mm)
+}
+feature loft L sections [ s0.profile("c0"), s1.profile("r1") ] continuity G1 id:body

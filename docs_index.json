@@ -1,0 +1,114 @@
+{
+  "generated_at": "2025-09-04T00:00:00Z",
+  "documents": [
+    {
+      "path": "README.md",
+      "title": "CSL",
+      "summary": "Top-level project readme (placeholder).",
+      "keywords": ["CSL", "overview"],
+      "type": "markdown"
+    },
+    {
+      "path": "LICENSE",
+      "title": "MIT License",
+      "summary": "MIT License (c) 2025 Ric Fulop.
+",
+      "keywords": ["license", "MIT"],
+      "type": "text"
+    },
+    {
+      "path": "triple_lindy_complete with CSL.md",
+      "title": "Triple Lindy – Complete Zero-Shot Implementation (v1.0)",
+      "summary": "Fusion-first implementation with multi-backend support; add-in setup, file implementations, tests. FreeCAD optional backend remains supported.",
+      "keywords": ["Triple Lindy", "Fusion 360", "Onshape", "SolidWorks", "Blender", "FreeCAD", "workbench", "agent", "zero-shot", "pytest", "implementation"],
+      "type": "markdown"
+    },
+    {
+      "path": "BACKEND_GAP_ANALYSIS.md",
+      "title": "CSL v1.1 ↔ CAD Backend Gap Analysis",
+      "summary": "Coverage comparison and gaps between CSL v1.1 and Fusion 360, Onshape, SolidWorks, Blender with fallbacks and roadmap.",
+      "keywords": ["gap analysis", "Fusion 360", "Onshape", "SolidWorks", "Blender", "capabilities"],
+      "type": "markdown"
+    },
+    {
+      "path": "CSL_v1_1/csl_v1_1_spec.md",
+      "title": "CSL (CAD-Specific Language) – Version 1.1",
+      "summary": "Full language spec covering goals, metadata, params, sketches, features, queries, assemblies, ECAD, exports/thumbnails, backend capabilities, and cheatsheet.",
+      "keywords": ["CSL", "v1.1", "spec", "parameters", "sketch", "features", "export", "thumbnail", "queries", "assemblies", "ECAD", "capabilities"],
+      "type": "markdown",
+      "sections": [
+        "Goals & Scope",
+        "Header & Metadata",
+        "Core Concepts",
+        "Parameters & Expressions",
+        "Frames & Planes",
+        "Sketches & Constraints",
+        "Features (Export/Thumbnail, Geometry)",
+        "Selection & Query Language",
+        "Materials & Properties",
+        "Assemblies & Joints",
+        "ECAD Extension",
+        "Backend Adapter Hints",
+        "Errors & Determinism & IDs",
+        "Minimal Grammar",
+        "Canonical JSON IR",
+        "Cross-Tool Mapping",
+        "Backend Capabilities",
+        "Security & Reproducibility",
+        "Version History",
+        "Quick Reference"
+      ]
+    },
+    {
+      "path": "CSL_v1_1/csl_v1_1_schema.json",
+      "title": "CSL JSON IR v1.1 Schema",
+      "summary": "JSON Schema for the canonical IR, including export/thumbnail ops and backend capabilities.",
+      "keywords": ["schema", "JSON", "IR", "validation", "export", "thumbnail", "capabilities"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_1/conformance/README.md",
+      "title": "CSL v1.0 Conformance Kit (Starter)",
+      "summary": "Golden tests for adapter validation: geometry/topology checks, IDs/tags, diagnostics.",
+      "keywords": ["conformance", "tests", "validation", "adapters", "golden"],
+      "type": "markdown"
+    },
+    {
+      "path": "CSL_v1_1/examples/l_bracket.csl",
+      "title": "L-Bracket",
+      "summary": "Parametric L-bracket with extrude and fillet; material 6061-T6.",
+      "keywords": ["example", "bracket", "extrude", "fillet", "material"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_1/examples/threaded_plate.csl",
+      "title": "Threaded Plate",
+      "summary": "Plate with through hole and cosmetic thread metadata.",
+      "keywords": ["example", "hole", "thread", "cosmetic"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_1/examples/lofted_connector.csl",
+      "title": "Lofted Connector",
+      "summary": "Loft between circle and rectangle with G1 continuity.",
+      "keywords": ["example", "loft", "continuity", "profiles"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_1/examples/assembly_plate_spacers_bolts.csl",
+      "title": "Plate + 2x Spacers + Bolts",
+      "summary": "Assembly using mate connectors and fasten joints with stable IDs.",
+      "keywords": ["example", "assembly", "mate connector", "fasten", "IDs"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_1/examples/ecad_board_example.csl",
+      "title": "Simple MCU Board",
+      "summary": "ECAD example board: outline, stackup, DRC, component placement, routing hints.",
+      "keywords": ["example", "ECAD", "KiCad", "board", "placement", "DRC"],
+      "type": "csl"
+    }
+  ]
+}
+
+
