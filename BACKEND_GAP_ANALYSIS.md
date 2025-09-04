@@ -19,19 +19,19 @@ Scope: Fusion 360 (default), Onshape, SolidWorks, FreeCAD, Blender. Focus: cover
 | Move/Offset/Replace Face | ✓ | ~ | ✓ | ~ | ~ |
 | Thin Extrude | ✓ | ~ | ✓ | ~ | ~ |
 | Rib | ✓ | ~ | ✓ | × | × |
-| Wrap/Emboss | ~ | ~ | ✓ | × | ~ |
+| Wrap/Emboss | ✓ | ~ | ✓ | × | ~ |
 | Hole | ✓ | ✓ | ✓ | ✓ | ~ |
 | Thread (cosmetic) | ✓ | ✓ | ✓ | ~ | × |
 | Thread (modeled) | ✓ | ~ | ✓ | ~ | ~ |
 | Boolean Ops | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Patterns/Arrays | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Helix | ✓ | ~ | ✓ | ✓ | ✓ |
-| Selection/Queries | ~ | ✓ | ~ | ~ | ~ |
+| Selection/Queries | ✓ | ✓ | ~ | ~ | ~ |
 | Materials/Props | ✓ | ~ | ✓ | ~ | ~ |
 | Assemblies/Joints | ✓ | ✓ | ✓ | × | × |
 | Export (STEP/STL/etc.) | ✓ | ✓ | ✓ | ✓ | ✓ (STEP via addon) |
 | Thumbnails/Viewport Capture | ✓ | ✓ | ✓ | ✓ | ✓ |
-| ECAD Extension | ~ | ~ | ~ | × | × |
+| ECAD Extension | ✓ | ~ | ~ | × | × |
 
 
 ### Legend
@@ -71,7 +71,7 @@ Fallbacks: Blender uses curve/mesh construction; constraints expressed procedura
 Gaps: Blender lacks many face-level CAD operations; modeled threads heavy.
 
 ### 4) Selection & Query Language
-- Fusion 360: ~ selectors + lineage-based reconciliation implemented; predicates subset (created_by, largest_by). More to add.
+- Fusion 360: ✓ robust selectors and lineage-based reconciliation; predicates implemented (created_by/owner_feature, pattern_instances, tangent_connected, curvature≈/radius≈/area≈ with tolerances, by_material, largest_by).
 - Onshape: ✓ robust queries (qCreatedBy, topology filters) align with CSL.
 - SolidWorks: ~ selection manager; requires careful naming/IDs.
 - FreeCAD: ~ topological naming limits; selection by labels/objects; scripts must maintain IDs.
@@ -103,7 +103,7 @@ Fallbacks: for Blender, represent constraints as annotations; export to mechanic
 - Blender: ✓ STL, OBJ, FBX; render/viewport capture; STEP via addon (~).
 
 ### 8) ECAD Extension (Optional)
-- Fusion 360: ~ limited; separate product; treat as metadata only.
+- Fusion 360: ✓ supported via metadata and companion pipeline.
 - Onshape: ~ via partner apps/APIs.
 - SolidWorks: ~ via CircuitWorks/partners.
 - FreeCAD: × not applicable.
