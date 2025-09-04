@@ -162,6 +162,7 @@ class FusionBackend:
                 elif kind == "hole":
                     try:
                         hole_feats = root.features.holeFeatures
+                        h_type = (feat.get("type") or "simple").lower()
                         d_mm = self._parse_length_mm(feat.get("d") or feat.get("diameter")) or 5.0
                         d_cm = d_mm / 10.0
                         dia = adsk.core.ValueInput.createByReal(d_cm)
@@ -178,13 +179,31 @@ class FusionBackend:
                                     sp = sk.sketchPoints.add(adsk.core.Point3D.create(p[0], p[1], 0))
                                     pts.add(sp)
                             if pts.count == 0:
-                                # Fallback: place one at origin
                                 sp = sk.sketchPoints.add(adsk.core.Point3D.create(0, 0, 0))
                                 pts.add(sp)
-                            h_input = hole_feats.createSimpleInput(dia)
+                            if h_type == "counterbore":
+                                cb_d_mm = self._parse_length_mm(feat.get("cb_d") or feat.get("counterbore_d")) or (d_mm * 2)
+                                cb_depth_mm = self._parse_length_mm(feat.get("cb_depth") or feat.get("counterbore_depth")) or (d_mm)
+                                cb_d = adsk.core.ValueInput.createByReal(cb_d_mm / 10.0)
+                                cb_depth = adsk.core.ValueInput.createByReal(cb_depth_mm / 10.0)
+                                try:
+                                    h_input = hole_feats.createCounterboreInput(dia, cb_d, cb_depth)
+                                except Exception:
+                                    h_input = hole_feats.createSimpleInput(dia)
+                            elif h_type == "countersink":
+                                cs_d_mm = self._parse_length_mm(feat.get("cs_d") or feat.get("countersink_d")) or (d_mm * 2)
+                                cs_angle_deg = self._parse_length_mm(str(feat.get("cs_angle") or feat.get("countersink_angle") or "90")) or 90.0
+                                cs_d = adsk.core.ValueInput.createByReal(cs_d_mm / 10.0)
+                                cs_ang = adsk.core.ValueInput.createByReal((cs_angle_deg / 180.0) * 3.141592653589793)
+                                try:
+                                    h_input = hole_feats.createCountersinkInput(dia, cs_d, cs_ang)
+                                except Exception:
+                                    h_input = hole_feats.createSimpleInput(dia)
+                            else:
+                                h_input = hole_feats.createSimpleInput(dia)
                             h_input.setPositionBySketchPoints(pts)
                             h = hole_feats.add(h_input)
-                            mapping[feat_id] = f"fusion:hole:{h.entityToken}"
+                            mapping[feat_id] = f"fusion:hole:{h.entityToken}:{h_type}"
                     except Exception:
                         mapping[feat_id] = "fusion:hole:error"
                 elif kind == "revolve":
@@ -221,7 +240,13 @@ class FusionBackend:
                             face_col = adsk.core.ObjectCollection.create()
                             for f in faces:
                                 face_col.add(f)
+                            # Neutral plane selection
                             neutral = root.xYConstructionPlane
+                            neutral_key = (feat.get("neutral_plane") or "world.xy").lower()
+                            if "xz" in neutral_key:
+                                neutral = root.xZConstructionPlane
+                            elif "yz" in neutral_key:
+                                neutral = root.yZConstructionPlane
                             ang_deg = self._parse_length_mm(str(feat.get("angle") or "2")) or 2.0
                             ang_rad = (ang_deg / 180.0) * 3.141592653589793
                             angle = adsk.core.ValueInput.createByReal(ang_rad)
@@ -230,6 +255,29 @@ class FusionBackend:
                             mapping[feat_id] = f"fusion:draft:{d.entityToken}"
                     except Exception:
                         mapping[feat_id] = "fusion:draft:error"
+                elif kind == "thread":
+                    try:
+                        thr = root.features.threadFeatures
+                        bodies = self._all_bodies(root)
+                        if bodies.count > 0:
+                            cyl_faces = bodies.item(bodies.count - 1).faces
+                            target_faces = adsk.core.ObjectCollection.create()
+                            for f in cyl_faces:
+                                if f.geometry.surfaceType == 1:  # cylindrical surface type
+                                    target_faces.add(f)
+                            if target_faces.count > 0:
+                                t_in = thr.createThreadInfo(False)  # False => cosmetic by default
+                                # Mode: cosmetic/modeled
+                                mode = (feat.get("mode") or "cosmetic").lower()
+                                is_modeled = mode == "modeled"
+                                tfeat_in = thr.createInput(target_faces, t_in)
+                                tfeat_in.isModeled = is_modeled
+                                tfeat = thr.add(tfeat_in)
+                                mapping[feat_id] = f"fusion:thread:{tfeat.entityToken}:{mode}"
+                            else:
+                                mapping[feat_id] = "fusion:thread:nofaces"
+                    except Exception:
+                        mapping[feat_id] = "fusion:thread:error"
                 elif kind == "pattern":
                     # Simple linear pattern along +X using last body
                     bodies = self._all_bodies(root)
