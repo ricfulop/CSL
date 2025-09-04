@@ -71,7 +71,7 @@ Fallbacks: Blender uses curve/mesh construction; constraints expressed procedura
 Gaps: Blender lacks many face-level CAD operations; modeled threads heavy.
 
 ### 4) Selection & Query Language
-- Fusion 360: ~ selectors exist; not as robust as FeatureScript queries.
+- Fusion 360: ~ selectors + lineage-based reconciliation implemented; predicates subset (created_by, largest_by). More to add.
 - Onshape: ✓ robust queries (qCreatedBy, topology filters) align with CSL.
 - SolidWorks: ~ selection manager; requires careful naming/IDs.
 - FreeCAD: ~ topological naming limits; selection by labels/objects; scripts must maintain IDs.
@@ -110,7 +110,7 @@ Fallbacks: for Blender, represent constraints as annotations; export to mechanic
 - Blender: × not applicable.
 
 ### 9) Backend Capability Declarations (CSL §16)
-- Fusion 360: publish JSON via adapter; many features true.
+- Fusion 360: publish JSON via adapter; many features true; diagnostics (E-codes) and APS integration available.
 - Onshape: publish JSON reflecting FS/API support; note partials.
 - SolidWorks: publish JSON via add-in; map partials and variants.
 - FreeCAD: publish JSON via adapter; reflect Part/PartDesign coverage and gaps (wrap, rib, draft granularity).
@@ -123,14 +123,14 @@ Fallbacks: for Blender, represent constraints as annotations; export to mechanic
 
 ## Implementation Roadmap (Fusion 360 first)
 
-1. Adapter skeleton + capabilities
-2. Params/Units + basic sketches
-3. Extrude/Hole/Fillet + export/thumbnail
-4. Queries: faces/edges by tag, normals, diameter≈
-5. Threads (cosmetic then modeled), patterns
-6. Loft/Sweep/Shell/Chamfer/Draft
-7. Assemblies/joints
-8. Fallbacks for unsupported ops
+1. Adapter skeleton + capabilities ✓
+2. Params/Units + basic sketches ✓
+3. Extrude/Hole/Fillet + export/thumbnail ✓
+4. Queries: faces/edges by lineage predicates ✓ (expand set next)
+5. Threads (cosmetic then modeled), patterns ✓
+6. Loft/Sweep/Shell/Chamfer/Draft ✓ (loft continuity/orientation tuning pending)
+7. Assemblies/joints ✓
+8. Fallbacks for unsupported ops + diagnostics ✓
 
 ---
 
