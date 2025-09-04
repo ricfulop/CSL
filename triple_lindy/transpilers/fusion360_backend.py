@@ -710,9 +710,28 @@ class FusionBackend:
                                     tgt = fcol.item(0) if fcol and fcol.count > 0 else None
                             except Exception:
                                 tgt = None
+                            # Direction: along +X/+Y/+Z/-X/-Y/-Z or vector; if absent, default normal
+                            dir_vec = None
+                            try:
+                                along = feat.get("along") or feat.get("direction")
+                                if isinstance(along, str):
+                                    key = along.strip().upper()
+                                    axes = {"+X": (1,0,0), "+Y": (0,1,0), "+Z": (0,0,1), "-X": (-1,0,0), "-Y": (0,-1,0), "-Z": (0,0,-1)}
+                                    if key in axes:
+                                        v = axes[key]
+                                        dir_vec = adsk.core.Vector3D.create(v[0], v[1], v[2])
+                                elif isinstance(along, (list, tuple)) and len(along) == 3:
+                                    dir_vec = adsk.core.Vector3D.create(float(along[0]), float(along[1]), float(along[2]))
+                            except Exception:
+                                dir_vec = None
                             if tgt is not None:
-                                # Create a new sketch on the face and copy curves from source sketch
+                                # Create a new sketch on the face and note direction for diagnostics
                                 sk = root.sketches.add(tgt)
+                                if dir_vec is None and feat.get("along"):
+                                    try:
+                                        self._diag("E2314", where="project", message="Vector direction not applied; using face normal")
+                                    except Exception:
+                                        pass
                                 mapping[feat_id] = f"fusion:project:{sk.entityToken}"
                             else:
                                 mapping[feat_id] = "fusion:project:E2310"
@@ -755,7 +774,7 @@ class FusionBackend:
                                     mapping[feat_id] = f"fusion:{kind}:E2312"
                                     self._diag("E2312", where=kind, message="Missing source sketch or target faces for emboss/wrap.")
                                 else:
-                                    # Depth/angle parameters
+                                    # Depth/angle parameters and wrap mode
                                     depth_mm = self._parse_length_mm(feat.get("depth") or "1") or 1.0
                                     depth = adsk.core.ValueInput.createByReal(depth_mm / 10.0)
                                     angle_deg = self._parse_length_mm(str(feat.get("angle") or "0")) or 0.0
@@ -763,6 +782,20 @@ class FusionBackend:
                                     # Mode: emboss vs wrap; engrave if negative depth requested
                                     is_wrap = (kind == "wrap") or str(feat.get("method") or "").lower() == "wrap"
                                     is_engrave = bool(feat.get("engrave") or (depth_mm < 0))
+                                    # Optional project along direction for project/emboss variants
+                                    along = feat.get("along") or feat.get("direction")
+                                    along_vec = None
+                                    try:
+                                        if isinstance(along, str):
+                                            key = along.strip().upper()
+                                            axes = {"+X": (1,0,0), "+Y": (0,1,0), "+Z": (0,0,1), "-X": (-1,0,0), "-Y": (0,-1,0), "-Z": (0,0,-1)}
+                                            if key in axes:
+                                                v = axes[key]
+                                                along_vec = adsk.core.Vector3D.create(v[0], v[1], v[2])
+                                        elif isinstance(along, (list, tuple)) and len(along) == 3:
+                                            along_vec = adsk.core.Vector3D.create(float(along[0]), float(along[1]), float(along[2]))
+                                    except Exception:
+                                        along_vec = None
                                     # Attempt API variations
                                     created = None
                                     for api_variant in ("createInput", "createEmbossFeatureInput"):
@@ -778,12 +811,23 @@ class FusionBackend:
                                                                 setattr(ein, attr, val)
                                                             except Exception:
                                                                 pass
+                                                    # Direction if supported (best-effort)
+                                                    if along_vec is not None and hasattr(ein, "direction"):
+                                                        try:
+                                                            ein.direction = along_vec
+                                                        except Exception:
+                                                            pass
                                                     created = emb.add(ein)
                                                 else:
                                                     ein = emb.createEmbossFeatureInput(src_sk, tgt_faces, depth, is_wrap)
                                                     if hasattr(ein, "isEngrave"):
                                                         try:
                                                             ein.isEngrave = is_engrave
+                                                        except Exception:
+                                                            pass
+                                                    if along_vec is not None and hasattr(ein, "direction"):
+                                                        try:
+                                                            ein.direction = along_vec
                                                         except Exception:
                                                             pass
                                                     created = emb.add(ein)
