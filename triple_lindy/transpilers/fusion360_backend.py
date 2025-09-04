@@ -130,7 +130,8 @@ class FusionBackend:
                     dist_cm = dist_mm / 10.0
                     distance = adsk.core.ValueInput.createByReal(dist_cm)
                     ext_feats = root.features.extrudeFeatures
-                    ext_input = ext_feats.createInput(profile, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                    op = self._feature_operation(feat.get("operation") or feat.get("op"))
+                    ext_input = ext_feats.createInput(profile, op)
                     ext_input.setDistanceExtent(False, distance)
                     ext = ext_feats.add(ext_input)
                     mapping[feat_id] = f"fusion:extrude:{ext.entityToken}"
@@ -159,8 +160,33 @@ class FusionBackend:
                         ch = chf.add(defn)
                         mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
                 elif kind == "hole":
-                    # Minimal: skip detailed hole types; placeholder for future expansion
-                    mapping[feat_id] = f"fusion:hole:pending"
+                    try:
+                        hole_feats = root.features.holeFeatures
+                        d_mm = self._parse_length_mm(feat.get("d") or feat.get("diameter")) or 5.0
+                        d_cm = d_mm / 10.0
+                        dia = adsk.core.ValueInput.createByReal(d_cm)
+                        # Position using a sketch on the first planar face
+                        face = self._first_planar_face(root)
+                        if face is None:
+                            mapping[feat_id] = "fusion:hole:skipped"
+                        else:
+                            sk = root.sketches.add(face)
+                            pts = adsk.core.ObjectCollection.create()
+                            for pt in (feat.get("points") or []):
+                                p = self._parse_point(pt if isinstance(pt, str) else None)
+                                if p:
+                                    sp = sk.sketchPoints.add(adsk.core.Point3D.create(p[0], p[1], 0))
+                                    pts.add(sp)
+                            if pts.count == 0:
+                                # Fallback: place one at origin
+                                sp = sk.sketchPoints.add(adsk.core.Point3D.create(0, 0, 0))
+                                pts.add(sp)
+                            h_input = hole_feats.createSimpleInput(dia)
+                            h_input.setPositionBySketchPoints(pts)
+                            h = hole_feats.add(h_input)
+                            mapping[feat_id] = f"fusion:hole:{h.entityToken}"
+                    except Exception:
+                        mapping[feat_id] = "fusion:hole:error"
                 elif kind == "revolve":
                     profile = self._first_profile(root)
                     if profile is None:
@@ -172,6 +198,38 @@ class FusionBackend:
                     rev_input.setAngleExtent(False, angle)
                     rev = rev_feats.add(rev_input)
                     mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                elif kind == "shell":
+                    bodies = self._all_bodies(root)
+                    if bodies.count > 0:
+                        shell = root.features.shellFeatures
+                        faces = bodies.item(bodies.count - 1).faces
+                        face_col = adsk.core.ObjectCollection.create()
+                        # As a placeholder, shell entire body inward by thickness if provided
+                        for f in faces:
+                            face_col.add(f)
+                        t_mm = self._parse_length_mm(feat.get("thickness")) or 2.0
+                        t_cm = t_mm / 10.0
+                        s_in = shell.createShellFeatureInput(face_col, adsk.core.ValueInput.createByReal(t_cm))
+                        s = shell.add(s_in)
+                        mapping[feat_id] = f"fusion:shell:{s.entityToken}"
+                elif kind == "draft":
+                    try:
+                        draft = root.features.draftFeatures
+                        bodies = self._all_bodies(root)
+                        if bodies.count > 0:
+                            faces = bodies.item(bodies.count - 1).faces
+                            face_col = adsk.core.ObjectCollection.create()
+                            for f in faces:
+                                face_col.add(f)
+                            neutral = root.xYConstructionPlane
+                            ang_deg = self._parse_length_mm(str(feat.get("angle") or "2")) or 2.0
+                            ang_rad = (ang_deg / 180.0) * 3.141592653589793
+                            angle = adsk.core.ValueInput.createByReal(ang_rad)
+                            d_in = draft.createInput(face_col, neutral, angle, False, adsk.fusion.DraftDirectionsType.PullDirectionType)
+                            d = draft.add(d_in)
+                            mapping[feat_id] = f"fusion:draft:{d.entityToken}"
+                    except Exception:
+                        mapping[feat_id] = "fusion:draft:error"
                 elif kind == "pattern":
                     # Simple linear pattern along +X using last body
                     bodies = self._all_bodies(root)
@@ -179,16 +237,26 @@ class FusionBackend:
                         obj_col = adsk.core.ObjectCollection.create()
                         # Pattern the last body
                         obj_col.add(bodies.item(bodies.count - 1))
-                        patt = root.features.rectangularPatternFeatures
-                        dir_vec = root.xConstructionAxis
-                        count = int(feat.get("count") or 2)
-                        spacing_mm = self._parse_length_mm(feat.get("spacing")) or 10.0
-                        spacing_cm = spacing_mm / 10.0
-                        qty = adsk.core.ValueInput.createByString(str(count))
-                        dist = adsk.core.ValueInput.createByReal(spacing_cm)
-                        input_def = patt.createInput(obj_col, dir_vec, qty, dist, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
-                        pat = patt.add(input_def)
-                        mapping[feat_id] = f"fusion:pattern:{pat.entityToken}"
+                        kind_sub = (feat.get("kind") or "linear").lower()
+                        if kind_sub == "circular":
+                            circ = root.features.circularPatternFeatures
+                            axis = root.zConstructionAxis
+                            qty = adsk.core.ValueInput.createByString(str(int(feat.get("count") or 6)))
+                            angle = adsk.core.ValueInput.createByReal(2 * 3.141592653589793)
+                            c_in = circ.createInput(obj_col, axis, qty, angle)
+                            cp = circ.add(c_in)
+                            mapping[feat_id] = f"fusion:pattern_circular:{cp.entityToken}"
+                        else:
+                            patt = root.features.rectangularPatternFeatures
+                            dir_vec = root.xConstructionAxis
+                            count = int(feat.get("count") or 2)
+                            spacing_mm = self._parse_length_mm(feat.get("spacing")) or 10.0
+                            spacing_cm = spacing_mm / 10.0
+                            qty = adsk.core.ValueInput.createByString(str(count))
+                            dist = adsk.core.ValueInput.createByReal(spacing_cm)
+                            input_def = patt.createInput(obj_col, dir_vec, qty, dist, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+                            pat = patt.add(input_def)
+                            mapping[feat_id] = f"fusion:pattern_linear:{pat.entityToken}"
                 elif kind == "mirror":
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
@@ -199,6 +267,25 @@ class FusionBackend:
                         m_input = mirror.createInput(obj_col, plane)
                         mf = mirror.add(m_input)
                         mapping[feat_id] = f"fusion:mirror:{mf.entityToken}"
+                elif kind == "boolean":
+                    # Combine last two bodies
+                    bodies = self._all_bodies(root)
+                    if bodies.count >= 2:
+                        target = bodies.item(bodies.count - 2)
+                        tool = bodies.item(bodies.count - 1)
+                        combine = root.features.combineFeatures
+                        c_in = combine.createInput(target, adsk.core.ObjectCollection.create())
+                        c_in.toolBodies.add(tool)
+                        op = (feat.get("op") or feat.get("operation") or "union").lower()
+                        if op == "subtract":
+                            c_in.operation = adsk.fusion.FeatureOperations.CutFeatureOperation
+                        elif op == "intersect":
+                            c_in.operation = adsk.fusion.FeatureOperations.IntersectFeatureOperation
+                        else:
+                            c_in.operation = adsk.fusion.FeatureOperations.JoinFeatureOperation
+                        c_in.isKeepToolBodies = False
+                        cb = combine.add(c_in)
+                        mapping[feat_id] = f"fusion:boolean:{cb.entityToken}"
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):
