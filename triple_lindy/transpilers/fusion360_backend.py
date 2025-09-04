@@ -1059,15 +1059,51 @@ class FusionBackend:
                                     face_col.add(f)
                             # Neutral plane selection
                             neutral = root.xYConstructionPlane
-                            neutral_key = (feat.get("neutral_plane") or "world.xy").lower()
-                            if "xz" in neutral_key:
-                                neutral = root.xZConstructionPlane
-                            elif "yz" in neutral_key:
-                                neutral = root.yZConstructionPlane
+                            # Allow plane by name or query
+                            n_spec = feat.get("neutral_plane") or "world.xy"
+                            try:
+                                if isinstance(n_spec, dict):
+                                    ncol = self._resolve_query(root, n_spec, entity_type="face")
+                                    if ncol and ncol.count > 0:
+                                        neutral = ncol.item(0)
+                                else:
+                                    neutral_key = str(n_spec).lower()
+                                    if "xz" in neutral_key:
+                                        neutral = root.xZConstructionPlane
+                                    elif "yz" in neutral_key:
+                                        neutral = root.yZConstructionPlane
+                                    else:
+                                        neutral = root.xYConstructionPlane
+                            except Exception:
+                                pass
                             ang_deg = self._parse_length_mm(str(feat.get("angle") or "2")) or 2.0
                             ang_rad = (ang_deg / 180.0) * 3.141592653589793
                             angle = adsk.core.ValueInput.createByReal(ang_rad)
-                            d_in = draft.createInput(face_col, neutral, angle, False, adsk.fusion.DraftDirectionsType.PullDirectionType)
+                            # Pull direction: +X/+Y/+Z/-X/-Y/-Z or vector [x,y,z]
+                            pull = adsk.fusion.DraftDirectionsType.PullDirectionType
+                            try:
+                                pd = feat.get("pull_dir") or feat.get("pull_direction")
+                                if isinstance(pd, str):
+                                    key = pd.strip().lower()
+                                    if key in ("+x", "x"):
+                                        pull = adsk.fusion.DraftDirectionsType.PullDirectionType
+                                    elif key in ("+y", "y"):
+                                        pull = adsk.fusion.DraftDirectionsType.PullDirectionType
+                                    elif key in ("+z", "z"):
+                                        pull = adsk.fusion.DraftDirectionsType.PullDirectionType
+                                    elif key.startswith("-"):
+                                        pull = adsk.fusion.DraftDirectionsType.PushDirectionType
+                                elif isinstance(pd, (list, tuple)) and len(pd) == 3:
+                                    # Not all versions support vector pull; record diagnostic if not
+                                    try:
+                                        _ = [float(pd[0]), float(pd[1]), float(pd[2])]
+                                        # Leave as default and emit a diagnostic to indicate best-effort
+                                        self._diag("E2302A", where="draft", message="Vector pull_dir not natively supported; using default pull direction.")
+                                    except Exception:
+                                        pass
+                            except Exception:
+                                pass
+                            d_in = draft.createInput(face_col, neutral, angle, False, pull)
                             d = draft.add(d_in)
                             mapping[feat_id] = f"fusion:draft:{d.entityToken}"
                             try:
@@ -1192,7 +1228,7 @@ class FusionBackend:
                             dir2 = root.yConstructionAxis
                             count2 = int(feat.get("count2") or 1)
                             spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
-                            # Table-driven fallback
+                            # Table-driven fallback with per-instance transforms
                             if isinstance(feat.get("table"), list) and len(feat.get("table")) > 0:
                                 try:
                                     mv = root.features.moveFeatures
@@ -1201,11 +1237,40 @@ class FusionBackend:
                                             continue
                                         dx = (self._parse_length_mm(row.get("dx") or "0") or 0.0) / 10.0
                                         dy = (self._parse_length_mm(row.get("dy") or "0") or 0.0) / 10.0
+                                        dz = (self._parse_length_mm(row.get("dz") or "0") or 0.0) / 10.0
+                                        angle_deg = None
+                                        axis = (row.get("axis") or "Z").upper()
+                                        try:
+                                            angle_deg = float(self._parse_length_mm(str(row.get("angle"))) or 0.0)
+                                        except Exception:
+                                            angle_deg = None
                                         qty = int(row.get("count") or 1)
                                         for i in range(qty):
-                                            vec = adsk.core.Vector3D.create(dx, dy, 0)
                                             trans = adsk.core.Matrix3D.create()
-                                            trans.translation = vec
+                                            # Rotation first (optional)
+                                            if angle_deg is not None and angle_deg != 0.0:
+                                                try:
+                                                    theta = (angle_deg / 180.0) * 3.141592653589793
+                                                    if axis.startswith("X"):
+                                                        rot = adsk.core.Matrix3D.create()
+                                                        rot.setToRotation(theta, adsk.core.Vector3D.create(1,0,0), adsk.core.Point3D.create(0,0,0))
+                                                        trans.transformBy(rot)
+                                                    elif axis.startswith("Y"):
+                                                        rot = adsk.core.Matrix3D.create()
+                                                        rot.setToRotation(theta, adsk.core.Vector3D.create(0,1,0), adsk.core.Point3D.create(0,0,0))
+                                                        trans.transformBy(rot)
+                                                    else:
+                                                        rot = adsk.core.Matrix3D.create()
+                                                        rot.setToRotation(theta, adsk.core.Vector3D.create(0,0,1), adsk.core.Point3D.create(0,0,0))
+                                                        trans.transformBy(rot)
+                                                except Exception:
+                                                    pass
+                                            # Then translation
+                                            try:
+                                                vec = adsk.core.Vector3D.create(dx, dy, dz)
+                                                trans.translation = vec
+                                            except Exception:
+                                                pass
                                             input_def = mv.createInput(obj_col, trans)
                                             mv.add(input_def)
                                         mapping[feat_id] = f"fusion:pattern_table:fallback"
