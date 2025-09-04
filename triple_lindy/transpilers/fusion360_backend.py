@@ -5,6 +5,7 @@ If Fusion's `adsk` modules are unavailable, methods will no-op or print guidance
 """
 from __future__ import annotations
 
+import os
 from typing import Dict, List, Any
 
 
@@ -54,6 +55,9 @@ class FusionBackend:
     def open_session(self, session_config: Dict[str, Any] | None = None) -> None:
         if session_config:
             self.session_config.update(session_config)
+        # Load APS env if provided (for future cloud ops)
+        self.session_config.setdefault("aps_client_id", os.getenv("APS_CLIENT_ID"))
+        self.session_config.setdefault("aps_client_secret", os.getenv("APS_CLIENT_SECRET"))
         if not self._fusion_available:
             print("[FusionBackend] Fusion API not available in this environment; running in dry-run mode.")
 
