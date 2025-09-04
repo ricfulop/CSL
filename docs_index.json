@@ -17,9 +17,9 @@
     },
     {
       "path": "BACKLOG_FUSION_IMPLEMENTATION.md",
-      "title": "Fusion Backend – Remaining Implementation Backlog",
-      "summary": "Remaining Fusion backend implementation items by area for next iterations.",
-      "keywords": ["backlog", "Fusion", "implementation", "features"],
+      "title": "Fusion Backend – Implementation Status (v1.1)",
+      "summary": "Fusion backend status with Completed vs Remaining; links to tracking issues.",
+      "keywords": ["backlog", "Fusion", "implementation", "features", "tracking"],
       "type": "markdown"
     },
     {
@@ -32,8 +32,8 @@
     {
       "path": "BACKEND_GAP_ANALYSIS.md",
       "title": "CSL v1.1 ↔ CAD Backend Gap Analysis",
-      "summary": "Coverage comparison and gaps between CSL v1.1 and Fusion 360, Onshape, SolidWorks, FreeCAD, Blender with fallbacks and roadmap.",
-      "keywords": ["gap analysis", "Fusion 360", "Onshape", "SolidWorks", "FreeCAD", "Blender", "capabilities"],
+      "summary": "Coverage comparison and gaps; Fusion updated with lineage queries, diagnostics, APS; roadmap status.",
+      "keywords": ["gap analysis", "Fusion 360", "lineage", "diagnostics", "APS", "capabilities"],
       "type": "markdown"
     },
     {

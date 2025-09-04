@@ -46,16 +46,16 @@
 ### Remaining
 
 ### Features (3D)
-- Loft/Sweep fidelity: explicit continuity (G0/G1/G2) and full orientation mapping
-- Fillet/Chamfer: advanced transitions/setbacks
-- Wrap/Emboss: native-to-surface emboss/wrap mapping
-- Patterns: table-driven patterns
+- Loft/Sweep fidelity: explicit continuity (G0/G1/G2) and full orientation mapping ([#1](https://github.com/ricfulop/CSL/issues/1))
+- Fillet/Chamfer: advanced transitions/setbacks ([#2](https://github.com/ricfulop/CSL/issues/2))
+- Wrap/Emboss: native-to-surface emboss/wrap mapping ([#3](https://github.com/ricfulop/CSL/issues/3))
+- Patterns: table-driven patterns ([#4](https://github.com/ricfulop/CSL/issues/4))
 
 ### Selection/Queries
-- Predicates: owner_feature==, pattern_instances, tangent_connected, curvature≈, by_material
-- Stable-ID reconciliation improvements across regen
+- Predicates: owner_feature==, pattern_instances, tangent_connected, curvature≈, by_material ([#5](https://github.com/ricfulop/CSL/issues/5))
+- Stable-ID reconciliation improvements across regen ([#5](https://github.com/ricfulop/CSL/issues/5))
 
 ### APS Integration
-- Orchestration strategy (no DA for Fusion; local/hosted agent model)
+- Orchestration strategy (no DA for Fusion; local/hosted agent model) ([#6](https://github.com/ricfulop/CSL/issues/6))
 
 

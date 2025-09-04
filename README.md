@@ -13,7 +13,7 @@ CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry
 - Export and visualization: STEP/STL/… and thumbnails for downstream workflows.
 - Backend capabilities: adapters declare feature support; the agent plans fallbacks.
 
-### Fusion-first, multi-backend
+### Multi-backend
 - Initial backend: Fusion 360 (default) via Python API (`adsk.core`, `adsk.fusion`).
 - Additional backends: Onshape (FeatureScript/API), SolidWorks (.NET/COM), FreeCAD (Python), Blender (`bpy`/Geometry Nodes).
 - Adapters publish capabilities so the agent can pick the highest-fidelity route with graceful degradation.
@@ -27,11 +27,11 @@ CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry
 
 ### Architecture (high level)
 - Natural language → Triple Lindy agent → CSL (text) → JSON IR.
-- JSON IR → Backend adapter (Fusion/Onshape/SolidWorks/FreeCAD/Blender).
+- JSON IR → Backend adapter (Fusion/Onshape/SolidWorks/FreeCAD/Blender, etc).
 - Adapter executes features, applies selections, exports files and thumbnails.
 - Capabilities and diagnostics guide planning, fallbacks, and error reporting.
 
-### Quick start (Fusion 360 default)
+### Quick start (starting with Fusion 360 first but hopefully others soon)
 ```bash
 # 1) Clone
 git clone https://github.com/ricfulop/CSL.git
@@ -65,7 +65,7 @@ Optional backends
 - Issues and proposals welcome. For large changes, start with a short design note.
 - Adapters should implement a minimal interface and publish capabilities for planning.
 
-#### Getting started for contributors (Fusion-first)
+#### Getting started for contributors 
 1) Create a virtualenv and install dev tools (pytest optional).
 2) Review the adapter stub at `triple_lindy/transpilers/fusion360_backend.py`.
 3) Run the demo script:
@@ -81,3 +81,12 @@ MIT (see `LICENSE`).
 ### Learn more
 - Documentation index: `DOC_INDEX.md`
 - Triple Lindy implementation guide: `triple_lindy_complete with CSL.md`
+
+### Fusion backend status (v1.1)
+- Features: thin extrude, rib, fillet/chamfer (per-edge groups), draft (query-targeted), holes (taper/drill angle/cbore/csink), threads (ISO/UNC/UNF/NPT; cosmetic/modeled), move/offset/replace face, split by face/profile, patterns (grid/path, table fallback), booleans (multi-tool/keep-tools), sweep/loft (guide rails, orientation hints).
+- Sketch: spline/NURBS, ellipse/elliptical arc, text; constraints and dimensions mapped.
+- Selection/queries: lineage-based `created_by`, `owner_feature==`, `pattern_instances`, `tangent_connected`, `largest_by`, curvature/radius/area≈, `by_material`.
+- Diagnostics: structured E-codes; capabilities published for planning.
+- Export/thumbnail: STL resolution/units parity (best-effort), deterministic view/style/background.
+- Assemblies/joints: creation with limits; basic damping/preload mapping.
+- APS: token/bucket upload helpers and an `orchestrate(plan)` helper for local/hosted agent models.

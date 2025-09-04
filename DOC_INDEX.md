@@ -7,8 +7,8 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.
   - Keywords: CSL, AI agent, meta-parametric, Fusion 360, Onshape, SolidWorks, FreeCAD, Blender
 - [BACKLOG_FUSION_IMPLEMENTATION.md](BACKLOG_FUSION_IMPLEMENTATION.md)
-  - Summary: Remaining Fusion backend implementation items by area for next development iterations.
-  - Keywords: backlog, Fusion, implementation, features
+  - Summary: Fusion backend status with Completed vs Remaining; links to tracking issues.
+  - Keywords: backlog, Fusion, implementation, features, tracking
 - [CSL_v1_2_proposal.md](CSL_v1_2_proposal.md)
   - Summary: Proposed v1.2 syntax/schema to reach Fusion parity and cross-backend extensions; includes APS Design Automation note.
   - Keywords: v1.2, Fusion parity, schema, APS, Design Automation
@@ -22,8 +22,8 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Keywords: Triple Lindy, Fusion 360, Onshape, SolidWorks, Blender, workbench, agent, zero-shot, pytest, implementation
 
 - [BACKEND_GAP_ANALYSIS.md](BACKEND_GAP_ANALYSIS.md)
-  - Summary: Coverage comparison and gaps between CSL v1.1 and Fusion 360, Onshape, SolidWorks, Blender. Includes fallbacks and roadmap.
-  - Keywords: gap analysis, Fusion 360, Onshape, SolidWorks, Blender, capabilities
+  - Summary: Updated Fusion notes (lineage queries, diagnostics, APS) and roadmap status; pending items moved to tracking issues.
+  - Keywords: gap analysis, Fusion 360, lineage, diagnostics, APS, capabilities
 
 ### CSL v1.1
 - [Specification: `CSL_v1_1/csl_v1_1_spec.md`](CSL_v1_1/csl_v1_1_spec.md)
