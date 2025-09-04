@@ -19,19 +19,19 @@ Scope: Fusion 360 (default), Onshape, SolidWorks, FreeCAD, Blender. Focus: cover
 | Move/Offset/Replace Face | ✓ | ~ | ✓ | ~ | ~ |
 | Thin Extrude | ✓ | ~ | ✓ | ~ | ~ |
 | Rib | ✓ | ~ | ✓ | × | × |
-| Wrap/Emboss | ✓ | ~ | ✓ | × | ~ |
+| Wrap/Emboss | ~ | ~ | ✓ | × | ~ |
 | Hole | ✓ | ✓ | ✓ | ✓ | ~ |
 | Thread (cosmetic) | ✓ | ✓ | ✓ | ~ | × |
 | Thread (modeled) | ✓ | ~ | ✓ | ~ | ~ |
 | Boolean Ops | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Patterns/Arrays | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Helix | ✓ | ~ | ✓ | ✓ | ✓ |
-| Selection/Queries | ✓ | ✓ | ~ | ~ | ~ |
-| Materials/Props | ✓ | ~ | ✓ | ~ | ~ |
+| Selection/Queries | ~ | ✓ | ~ | ~ | ~ |
+| Materials/Props | ~ | ~ | ✓ | ~ | ~ |
 | Assemblies/Joints | ✓ | ✓ | ✓ | × | × |
 | Export (STEP/STL/etc.) | ✓ | ✓ | ✓ | ✓ | ✓ (STEP via addon) |
 | Thumbnails/Viewport Capture | ✓ | ✓ | ✓ | ✓ | ✓ |
-| ECAD Extension | ✓ | ~ | ~ | × | × |
+| ECAD Extension | ~ | ~ | ~ | × | × |
 
 
 ### Legend
@@ -71,7 +71,7 @@ Fallbacks: Blender uses curve/mesh construction; constraints expressed procedura
 Gaps: Blender lacks many face-level CAD operations; modeled threads heavy.
 
 ### 4) Selection & Query Language
-- Fusion 360: ✓ robust selectors and lineage-based reconciliation; predicates implemented (created_by/owner_feature, pattern_instances, tangent_connected, curvature≈/radius≈/area≈ with tolerances, by_material, largest_by).
+- Fusion 360: ~ selectors + lineage-based reconciliation implemented; predicates subset (created_by/owner_feature, pattern_instances, tangent_connected, largest_by, curvature/radius/area≈ with tolerances, by_material). Cross-session stability is best-effort.
 - Onshape: ✓ robust queries (qCreatedBy, topology filters) align with CSL.
 - SolidWorks: ~ selection manager; requires careful naming/IDs.
 - FreeCAD: ~ topological naming limits; selection by labels/objects; scripts must maintain IDs.
@@ -103,7 +103,7 @@ Fallbacks: for Blender, represent constraints as annotations; export to mechanic
 - Blender: ✓ STL, OBJ, FBX; render/viewport capture; STEP via addon (~).
 
 ### 8) ECAD Extension (Optional)
-- Fusion 360: ✓ supported via metadata and companion pipeline.
+- Fusion 360: ~ limited; treat as metadata only; companion pipeline recommended.
 - Onshape: ~ via partner apps/APIs.
 - SolidWorks: ~ via CircuitWorks/partners.
 - FreeCAD: × not applicable.
@@ -166,5 +166,30 @@ Fallbacks: for Blender, represent constraints as annotations; export to mechanic
 Notes:
 - Predicates using `≈` should allow absolute/relative tolerances for curvature/area/angle.
 - Where host lacks native support (e.g., Blender), adapters should implement approximations or emit E3xxx diagnostics.
+
+## Production-Grade Closure Plan for Fusion 360
+
+Below are the remaining items to reach production-grade (100%) completeness, with acceptance criteria.
+
+- Loft continuity (G1/G2) and orientation
+  - Acceptance: explicit continuity/orientation flags in IR honored or deterministically approximated; visual/geometry tests pass for representative lofts; diagnostics only when API lacks support.
+- Fillet/Chamfer transitions and setbacks
+  - Acceptance: per-edge variable arrays with native transitions/setbacks where supported; comparison tests validate distances/radii at sample points; fallbacks documented.
+- Native wrap/emboss
+  - Acceptance: emboss/wrap onto planar/cylindrical faces with depth/angle; deterministic artifacts; diagnostics when unsupported.
+- Stable IDs across sessions
+  - Acceptance: persisted mapping (CSL id ↔ host GUID/entityToken lineage) that reconciles after reopen/regeneration; tests verify selection stability across saves.
+- Queries expansion and determinism
+  - Acceptance: owner_feature==, pattern_instances, tangent_connected tolerances, curvature/radius/area≈ with absolute/relative tol; unambiguous failures with suggested predicates.
+- Export/units parity
+  - Acceptance: exported STEP/STL units verified by import round-trip tests; resolution controls mapped to target tessellation thresholds.
+- Assemblies/joints completeness
+  - Acceptance: revolute/slider/rigid with min/max limits, damping, preload; param round-trip tests validate numeric fidelity.
+- Materials/PMI
+  - Acceptance: apply library material refs and overrides; PMI notes placement with readable formatting; appearance round-trip checks.
+- APS orchestration hardening
+  - Acceptance: token refresh, retries with backoff, telemetry (duration/status), configurable buckets/paths; integration test uploads artifacts.
+
+Each item will include: implementation notes, test checklist, and diagnostics catalog (E-codes) for unsupported paths.
 
 

@@ -61,6 +61,8 @@ Optional backends
 - Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md` (includes proposed v1.2 features such as splines, text, variable fillet/chamfer, G2 continuity, richer joints and predicates, materials/PMI).
 - Roadmap priorities: Fusion 360 adapter completeness, robust selection predicates, assembly/joint limits, and manufacturing exports.
 
+See Production-Grade Closure Plan in `BACKEND_GAP_ANALYSIS.md` for remaining items (loft continuity, fillet transitions/setbacks, native wrap/emboss, cross-session stable IDs, units parity tests, full joints, materials/PMI, APS hardening).
+
 ### Contributing
 - Issues and proposals welcome. For large changes, start with a short design note.
 - Adapters should implement a minimal interface and publish capabilities for planning.
