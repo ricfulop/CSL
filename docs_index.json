@@ -16,6 +16,13 @@
       "type": "text"
     },
     {
+      "path": "BACKLOG_FUSION_IMPLEMENTATION.md",
+      "title": "Fusion Backend – Remaining Implementation Backlog",
+      "summary": "Remaining Fusion backend implementation items by area for next iterations.",
+      "keywords": ["backlog", "Fusion", "implementation", "features"],
+      "type": "markdown"
+    },
+    {
       "path": "triple_lindy_complete with CSL.md",
       "title": "Triple Lindy – Complete Zero-Shot Implementation (v1.0)",
       "summary": "Fusion-first implementation with multi-backend support; add-in setup, file implementations, tests. FreeCAD optional backend remains supported.",
