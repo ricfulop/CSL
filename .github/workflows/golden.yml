@@ -21,4 +21,11 @@ jobs:
       - name: Run conformance and golden check
         run: |
           make golden-check
+      - name: APS auth check (optional)
+        env:
+          APS_CLIENT_ID: ${{ secrets.APS_CLIENT_ID }}
+          APS_CLIENT_SECRET: ${{ secrets.APS_CLIENT_SECRET }}
+          APS_SCOPES: data:read data:write
+        run: |
+          make aps-auth
 
