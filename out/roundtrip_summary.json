@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "checks": [
+    {
+      "path": "out/test_ap242.step",
+      "exists": false
+    },
+    {
+      "path": "out/capabilities_fusion.json",
+      "exists": true
+    }
+  ]
+}

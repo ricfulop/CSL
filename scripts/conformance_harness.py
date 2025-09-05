@@ -177,6 +177,27 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Sheet metal (stubs): base flange, edge flange, bend, unfold/refold
+    cases.append({
+        "id": "sheet_metal_stubs",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Sheet Metal Stubs", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "40 mm,20 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "sheet_base_flange", "id": "sbf", "profile": "s", "thickness": "1.5 mm", "length": "20 mm"},
+                {"kind": "sheet_edge_flange", "id": "sef", "on": {"kind": "face", "created_by": "sbf"}, "height": "10 mm"},
+                {"kind": "sheet_bend", "id": "sbd", "angle": "45"},
+                {"kind": "sheet_unfold", "id": "sunf"},
+                {"kind": "sheet_refold", "id": "sref"}
+            ]
+        }
+    })
+
     # Selection determinism: created_by, pattern_instances, tangent_connected
     cases.append({
         "id": "selection_determinism",
@@ -306,6 +327,26 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Export 3MF parity
+    cases.append({
+        "id": "export_3mf_parity",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Export 3MF", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "12 mm,8 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "2 mm", "op": "new_solid", "result": "part"}
+            ],
+            "export": [
+                {"format": "3MF", "path": "out/test_parity.3mf"}
+            ]
+        }
+    })
+
     # Joints with limits (revolute and slider)
     cases.append({
         "id": "joints_limits",
@@ -430,6 +471,21 @@ def run_case(backend: FusionBackend, case: Dict[str, Any]) -> Dict[str, Any]:
                     _ = backend._resolve_query(backend._design.rootComponent if hasattr(backend, "_design") else None, q, entity_type=q.get("kind") or "face")
                 except Exception:
                     pass
+        # Simulate timeline mutations: reorder/suppress/regenerate by refreshing lineage and rerunning queries
+        muts = ir.get("mutations") or []
+        if isinstance(muts, list) and len(muts) > 0:
+            try:
+                # Best-effort: refresh lineage and rerun queries as a proxy for timeline changes
+                if hasattr(backend, "_design"):
+                    backend._refresh_lineage_from_attributes(backend._design.rootComponent)
+                if ir.get("post_queries"):
+                    for q in ir.get("post_queries"):
+                        try:
+                            _ = backend._resolve_query(backend._design.rootComponent if hasattr(backend, "_design") else None, q, entity_type=q.get("kind") or "face")
+                        except Exception:
+                            pass
+            except Exception:
+                pass
         # Optionally export/thumbnail per case if declared in IR
         if ir.get("export"):
             backend.export(ir.get("export", []))

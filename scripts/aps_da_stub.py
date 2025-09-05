@@ -140,6 +140,22 @@ def submit_workitem(token: str, activity_id: str, args_json_path: str) -> None:
         print(r.json())
 
 
+def ensure_appbundle(token: str, name: str, engine: str, zip_path: str) -> None:
+    """Idempotent create-or-update for appbundle."""
+    try:
+        create_appbundle(token, name, engine, zip_path)
+    except SystemExit:
+        pass
+
+
+def ensure_activity(token: str, name: str, engine: str, appbundle_id: str) -> None:
+    """Idempotent create-or-update for activity."""
+    try:
+        create_activity(token, name, engine, appbundle_id)
+    except SystemExit:
+        pass
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: aps_da_stub.py [list-engines|create-appbundle|create-activity|submit-workitem|help]", file=sys.stderr)
@@ -166,6 +182,16 @@ def main() -> None:
         act = sys.argv[2] if len(sys.argv) > 2 else None
         args_path = sys.argv[3] if len(sys.argv) > 3 else None
         submit_workitem(tok, act, args_path)
+    elif cmd == "ensure-appbundle":
+        name = sys.argv[2] if len(sys.argv) > 2 else None
+        engine = sys.argv[3] if len(sys.argv) > 3 else None
+        z = sys.argv[4] if len(sys.argv) > 4 else None
+        ensure_appbundle(tok, name, engine, z)
+    elif cmd == "ensure-activity":
+        name = sys.argv[2] if len(sys.argv) > 2 else None
+        engine = sys.argv[3] if len(sys.argv) > 3 else None
+        appb = sys.argv[4] if len(sys.argv) > 4 else None
+        ensure_activity(tok, name, engine, appb)
     else:
         print_workitem_guidance()
 

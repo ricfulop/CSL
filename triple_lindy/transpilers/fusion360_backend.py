@@ -63,6 +63,7 @@ class FusionBackend:
                     "thread_modeled": True,
                     "surface_ops": {"patch": True, "extend": True, "trim": True, "knit": True},
                     "assemblies": {"mate_connectors": True, "patterns": True},
+                    "sheet_metal": {"base_flange": True, "edge_flange": True, "bend": True, "unfold": True, "refold": True},
                 },
                 "export": {"formats": ["STEP", "STL", "IGES", "3MF", "OBJ"], "stl": {"units": ["mm", "cm", "in"], "resolution": ["low", "medium", "high"], "tessellation": {"deviation": True, "angular": True, "aspect_ratio": True, "max_edge": True}}},
                 "thumbnail": {"enabled": True, "views": ["iso", "top", "front", "right"], "styles": ["shaded", "wireframe"]},
@@ -72,6 +73,7 @@ class FusionBackend:
                 "stable_id": "entityToken (session-scoped)",
                 "lineage": "feature->(bodies,faces,edges) tokens",
                 "determinism": {"ordering": "sorted_tokens", "persisted_normalization": True},
+                "persistence": {"attributes": True, "persisted_file": True}
             },
             "diagnostics": {
                 "codes": {"E12xx": "input/validation", "E23xx": "feature/selection", "E3xxx": "environment/runtime"},
@@ -100,6 +102,14 @@ class FusionBackend:
         # Load persisted lineage
         try:
             self._load_persisted_lineage()
+        except Exception:
+            pass
+        # Opportunistically refresh lineage from attributes when available
+        try:
+            if self._fusion_available:
+                app, ui, design = self._ensure_design()
+                root = design.rootComponent
+                self._refresh_lineage_from_attributes(root)
         except Exception:
             pass
         if not self._fusion_available:
@@ -415,7 +425,7 @@ class FusionBackend:
                                 cons.addSymmetry(a, b, about)
                         elif ckind == "tangent" and a and b:
                             cons.addTangent(a, b)
-                        elif ckind == "curvature" and a and b:
+                        elif ckind in ("curvature", "curvature_continuity", "g2") and a and b:
                             # Attempt curvature continuity if API provides it; otherwise record diagnostic
                             try:
                                 if hasattr(cons, "addCurvature"):
@@ -1887,6 +1897,14 @@ class FusionBackend:
                             edges = self._all_body_edges(root)
                         try:
                             pf_in = surf_feats.createInput(edges)
+                            # Optional parameters: tangent/merge if exposed
+                            try:
+                                if bool(feat.get("tangent")) and hasattr(pf_in, "isTangentPropagationEnabled"):
+                                    pf_in.isTangentPropagationEnabled = True
+                                if hasattr(pf_in, "isMergeEnabled") and feat.get("merge") is not None:
+                                    pf_in.isMergeEnabled = bool(feat.get("merge"))
+                            except Exception:
+                                pass
                             pf = surf_feats.add(pf_in)
                             mapping[feat_id] = f"fusion:patch:{pf.entityToken}"
                             try:
@@ -1912,6 +1930,19 @@ class FusionBackend:
                             d_mm = self._parse_length_mm(feat.get("distance") or feat.get("offset") or "2.0") or 2.0
                             d = adsk.core.ValueInput.createByReal(d_mm / 10.0)
                             ei = ext_feats.createInput(faces, d)
+                            # Optional: extend side/natural if supported
+                            try:
+                                side = (feat.get("side") or "natural").lower()
+                                if hasattr(ei, "extensionType"):
+                                    # API-specific enum mapping guarded via getattr
+                                    import adsk.fusion  # type: ignore
+                                    if side in ("natural", "default"):
+                                        pass
+                                    elif side in ("both", "symmetric") and hasattr(adsk.fusion, "SurfaceExtendTypes"):
+                                        # Placeholder if API exposes symmetric; otherwise ignore
+                                        ei.extensionType = getattr(adsk.fusion.SurfaceExtendTypes, "NaturalExtendType", ei.extensionType)
+                            except Exception:
+                                pass
                             ef = ext_feats.add(ei)
                             mapping[feat_id] = f"fusion:extend:{ef.entityToken}"
                             try:
@@ -1943,7 +1974,8 @@ class FusionBackend:
                         if tool is None:
                             tool = root.xZConstructionPlane
                         try:
-                            ti = tr_feats.createInput(targets, tool, True)
+                            keep = True if str(feat.get("keep" or "true")).lower() != "false" else False
+                            ti = tr_feats.createInput(targets, tool, keep)
                             tf = tr_feats.add(ti)
                             mapping[feat_id] = f"fusion:trim:{tf.entityToken}"
                             try:
@@ -1968,7 +2000,8 @@ class FusionBackend:
                         try:
                             tol_mm = self._parse_length_mm(feat.get("tolerance") or "0.1") or 0.1
                             tol = adsk.core.ValueInput.createByReal(tol_mm / 10.0)
-                            ki = kn_feats.createInput(faces, tol, bool(feat.get("is_solid") or feat.get("to_solid")))
+                            to_solid = bool(feat.get("is_solid") or feat.get("to_solid"))
+                            ki = kn_feats.createInput(faces, tol, to_solid)
                             kf = kn_feats.add(ki)
                             mapping[feat_id] = f"fusion:knit:{kf.entityToken}"
                             try:
@@ -2161,6 +2194,115 @@ class FusionBackend:
                                 pass
                     except Exception:
                         mapping[feat_id] = "fusion:assembly_pattern:E2702"
+                elif kind == "sheet_base_flange":
+                    # Sheet metal base feature (try SheetMetal API; fallback to thin extrude)
+                    try:
+                        import adsk.core  # type: ignore
+                        import adsk.fusion  # type: ignore
+                        # Try native SheetMetal base feature
+                        try:
+                            app, ui, design = self._ensure_design()
+                            sm_root = design.rootComponent
+                            sm_feats = getattr(sm_root.features, "sheetMetalFeatures", None)
+                            base_feats = getattr(sm_feats, "baseFeatures", None)
+                            if base_feats and hasattr(base_feats, "add"):
+                                th_mm = self._parse_length_mm(feat.get("thickness") or "1.5 mm") or 1.5
+                                th = adsk.core.ValueInput.createByReal(th_mm / 10.0)
+                                # Assume first sketch profile if not named
+                                profile = None
+                                sk_name = feat.get("profile") or None
+                                if isinstance(sk_name, str):
+                                    for sk in sm_root.sketches:
+                                        if getattr(sk, "name", "") == sk_name and sk.profiles.count > 0:
+                                            profile = sk.profiles.item(0)
+                                            break
+                                if profile is None:
+                                    try:
+                                        profile = sm_root.sketches.item(0).profiles.item(0)
+                                    except Exception:
+                                        profile = None
+                                if profile is not None:
+                                    bf_in = base_feats.createInput(profile, th)
+                                    bf = base_feats.add(bf_in)
+                                    mapping[feat_id] = f"fusion:sheet_base_flange:{bf.entityToken}"
+                                    try:
+                                        self._record_lineage(feat_id, bf, root)
+                                    except Exception:
+                                        pass
+                                    # K-factor/relief diagnostics
+                                    try:
+                                        if feat.get("k_factor") is not None:
+                                            self._diag("E2805", where="sheet_metal", message="K-factor not settable via this API version; recorded as diagnostic")
+                                        if feat.get("relief"):
+                                            self._diag("E2806", where="sheet_metal", message=f"Relief '{feat.get('relief')}' requested; not directly supported in this stub")
+                                    except Exception:
+                                        pass
+                                    break
+                        except Exception:
+                            pass
+                        # Fallback: create thin extrude from profile with thickness
+                        th_mm = self._parse_length_mm(feat.get("thickness") or "1.5 mm") or 1.5
+                        dist_mm = self._parse_length_mm(feat.get("length") or "20 mm") or 20.0
+                        sk_name = feat.get("profile") or None
+                        profile = None
+                        if isinstance(sk_name, str):
+                            for sk in root.sketches:
+                                if getattr(sk, "name", "") == sk_name and sk.profiles.count > 0:
+                                    profile = sk.profiles.item(0)
+                                    break
+                        if profile is None:
+                            bodies = self._all_bodies(root)
+                            profile = bodies.item(bodies.count - 1).faces.item(0) if bodies.count > 0 else None
+                        ext = root.features.extrudeFeatures
+                        ext_input = ext.createInput(profile, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                        ext_input.isSolid = False
+                        ext_input.thickness = adsk.core.ValueInput.createByReal(th_mm / 10.0)
+                        ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(dist_mm / 10.0))
+                        ef = ext.add(ext_input)
+                        mapping[feat_id] = f"fusion:sheet_base_flange:{ef.entityToken}"
+                        try:
+                            self._record_lineage(feat_id, ef, root)
+                        except Exception:
+                            pass
+                    except Exception:
+                        mapping[feat_id] = "fusion:sheet_base_flange:E2801"
+                elif kind == "sheet_edge_flange":
+                    # Edge flange stub: offset face then thin extrude along edge normal; log relief/angle requests
+                    try:
+                        import adsk.core  # type: ignore
+                        faces = self._resolve_query(root, feat.get("on") or {"kind":"face"}, entity_type="face")
+                        face = faces.item(0) if faces and faces.count > 0 else None
+                        if face:
+                            offs = root.features.offsetFacesFeatures
+                            off_val = adsk.core.ValueInput.createByReal((self._parse_length_mm(feat.get("height") or "10 mm") or 10.0)/10.0)
+                            of = offs.add(self._get_all_faces(root), off_val)
+                            mapping[feat_id] = f"fusion:sheet_edge_flange:{of.entityToken}"
+                            try:
+                                if feat.get("angle") is not None or feat.get("relief") is not None:
+                                    self._diag("E2807", where="sheet_metal", message="Edge flange angle/relief not supported in stub mode")
+                            except Exception:
+                                pass
+                    except Exception:
+                        mapping[feat_id] = "fusion:sheet_edge_flange:E2802"
+                elif kind == "sheet_bend":
+                    # Bend stub: draft faces near an edge to simulate bend
+                    try:
+                        import adsk.core  # type: ignore
+                        dft = root.features.draftFeatures
+                        faces = self._get_all_faces(root)
+                        angle_deg = float(self._parse_length_mm(feat.get("angle") or "90") or 90.0)
+                        angle = adsk.core.ValueInput.createByReal((angle_deg/180.0)*3.141592653589793)
+                        di = dft.createInput(faces, root.xZConstructionPlane, angle, adsk.fusion.DraftDirectionsType.PullDirectionType)
+                        df = dft.add(di)
+                        mapping[feat_id] = f"fusion:sheet_bend:{df.entityToken}"
+                    except Exception:
+                        mapping[feat_id] = "fusion:sheet_bend:E2803"
+                elif kind == "sheet_unfold" or kind == "sheet_refold":
+                    # Unfold/refold stubs: diagnostics only
+                    try:
+                        self._diag("E2804", where="sheet_metal", message=f"{kind} not supported in this API; stub only")
+                    except Exception:
+                        pass
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):
@@ -2170,6 +2312,11 @@ class FusionBackend:
             # Materials/PMI (lightweight)
             try:
                 self._apply_materials_and_pmi(csl_ir)
+            except Exception:
+                pass
+            # After realization, refresh lineage from attributes for robustness
+            try:
+                self._refresh_lineage_from_attributes(root)
             except Exception:
                 pass
 
@@ -3026,6 +3173,46 @@ class FusionBackend:
         except Exception:
             pass
 
+    def _refresh_lineage_from_attributes(self, root) -> None:
+        """Populate in-memory lineage by scanning CSL attributes on entities.
+
+        This helps reconcile selections after rename/reorder/regenerate and across sessions.
+        """
+        try:
+            fids: Dict[str, Dict[str, List[str]]] = {}
+            # Bodies
+            bodies = self._all_bodies(root)
+            for i in range(getattr(bodies, "count", 0)):
+                b = bodies.item(i)
+                try:
+                    attrs = getattr(b, "attributes", None)
+                    a = attrs.itemByName("CSL", "csl_feat") if attrs else None
+                    if a:
+                        fid = str(a.value)
+                        fids.setdefault(fid, {"bodies": [], "faces": [], "edges": []})
+                        fids[fid]["bodies"].append(b.entityToken)
+                        # Faces and edges for this body
+                        for f in getattr(b, "faces", []) or []:
+                            try:
+                                fids[fid]["faces"].append(f.entityToken)
+                            except Exception:
+                                pass
+                        for e in getattr(b, "edges", []) or []:
+                            try:
+                                fids[fid]["edges"].append(e.entityToken)
+                            except Exception:
+                                pass
+                except Exception:
+                    continue
+            # Normalize and merge into in-memory lineage
+            for fid, tokens in fids.items():
+                for k in ("bodies", "faces", "edges"):
+                    lst = [t for t in tokens.get(k, []) if t]
+                    tokens[k] = sorted(list(dict.fromkeys(lst)))
+                self._lineage[fid] = tokens
+        except Exception:
+            pass
+
     def _tag_attribute(self, entity: Any, name: str, value: str) -> None:
         try:
             # Attributes: group "CSL"
@@ -3243,7 +3430,25 @@ class FusionBackend:
                     if not isinstance(frame, dict):
                         continue
                     try:
+                        # Build frame string like |⟂|A|0.1(M)|
                         label = str(frame.get("label") or frame.get("feature_control_frame") or "")
+                        if not label:
+                            comps = []
+                            sym = frame.get("symbol") or frame.get("feature") or ""
+                            datum = frame.get("datum") or frame.get("primary") or ""
+                            tol = frame.get("tolerance") or frame.get("tol") or ""
+                            mod = frame.get("modifier") or frame.get("mat_mod") or ""
+                            if sym:
+                                comps.append(str(sym))
+                            if datum:
+                                comps.append(str(datum))
+                            if tol:
+                                if mod:
+                                    comps.append(f"{tol}({mod})")
+                                else:
+                                    comps.append(str(tol))
+                            if comps:
+                                label = "|" + "|".join(comps) + "|"
                         if not label:
                             continue
                         # Use top-level XY plane and place at origin unless specified

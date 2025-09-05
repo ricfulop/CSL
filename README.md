@@ -161,6 +161,7 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
 
 - Golden check: `make golden-check`
 - Dump capabilities: `make caps` (writes `out/capabilities_fusion.json` with version/commit and determinism metadata)
+ - Publish/Archive capabilities: `make publish-caps` (writes versioned archive under `out/capabilities/archive/<version>/`)
 - APS Design Automation helpers:
   - List engines: `make aps-da-list-engines` (requires `APS_CLIENT_ID`/`APS_CLIENT_SECRET`)
   - Bootstrap check: `make aps-da-bootstrap`
@@ -168,7 +169,9 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
   - Create Activity: `make aps-da-create-activity NAME=<name> ENGINE=<engineId> APPBUNDLE=<bundleId>`
   - Submit WorkItem: `make aps-da-submit-workitem ACTIVITY=<activityId> ARGS=<args.json>`
   - Clean: `make aps-da-clean`
+  - DA pipeline: `make aps-da-pipeline` (ensure + submit; see env below)
 
 ### Environment
 
 - Optional env for metadata: `CSL_VERSION`, `GIT_COMMIT`/`CI_COMMIT_SHA`, `FUSION_BUILD`
+- APS DA env: `APS_ENGINE`, `APS_BUNDLE_ZIP`, optional `APS_BUNDLE_NAME`, `APS_ACTIVITY_NAME`, `APS_INPUT_URL`, `APS_OUTPUT_URL`

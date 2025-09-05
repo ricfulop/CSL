@@ -37,9 +37,14 @@
       "errors": 8
     },
     {
-      "id": "selection_determinism",
+      "id": "sheet_metal_stubs",
       "ok": true,
       "errors": 9
+    },
+    {
+      "id": "selection_determinism",
+      "ok": true,
+      "errors": 10
     },
     {
       "id": "selection_determinism_reorder",
@@ -63,6 +68,11 @@
     },
     {
       "id": "export_step_ap242_sidecar",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "export_3mf_parity",
       "ok": true,
       "errors": 10
     },

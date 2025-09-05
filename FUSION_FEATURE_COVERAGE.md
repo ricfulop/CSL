@@ -46,6 +46,8 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
   - [Done] last body across plane
 - Surface Ops
   - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — best-effort; API-version dependent
+- Sheet Metal
+  - [Partial] base flange, edge flange, bend stubs; unfold/refold emits diagnostics
 - Materials/PMI
   - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos; density override → [Diag]
 - Selection/Queries
@@ -53,9 +55,11 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Export/Thumbnail
   - [Partial] STEP/STL with resolution/units best-effort; STL advanced tessellation (deviation/angle/aspect/max-edge); deterministic thumbnail views/styles
   - [Partial] STEP AP242 sidecar metadata JSON for downstream workflows
+  - [Partial] 3MF export parity via generic export manager (availability varies by version)
 - APS Orchestration
   - [Done] token cache/refresh, bucket ensure, upload retries/backoff, telemetry, configurable buckets
 
-Notes
+Notes / Gallery
 - Where explicit options (e.g., G2 loft, variable transitions) are requested but unavailable, the backend emits diagnostics and avoids silent fallbacks.
 - Constraint set can be expanded to cover curvature continuity, equal arrays, and additional geometric relations as needed.
+ - Examples gallery (CSL_v1_1/examples): l_bracket.csl, threaded_plate.csl, lofted_connector.csl, assembly_plate_spacers_bolts.csl, ecad_board_example.csl
