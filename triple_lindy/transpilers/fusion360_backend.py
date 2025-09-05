@@ -2049,13 +2049,32 @@ class FusionBackend:
                             dev_mm = self._parse_length_mm(op.get("deviation"))
                             if dev_mm is not None:
                                 opts.surfaceDeviation = float(dev_mm) / 10.0
-                        if hasattr(opts, "maximumEdgeLength") and op.get("max_edge"):
-                            me_mm = self._parse_length_mm(op.get("max_edge"))
+                        if hasattr(opts, "maximumEdgeLength") and (op.get("max_edge") or op.get("max_edge_length")):
+                            me_val = op.get("max_edge") or op.get("max_edge_length")
+                            me_mm = self._parse_length_mm(me_val)
                             if me_mm is not None:
                                 opts.maximumEdgeLength = float(me_mm) / 10.0
                         if hasattr(opts, "aspectRatio") and op.get("aspect_ratio"):
                             try:
                                 opts.aspectRatio = float(op.get("aspect_ratio"))
+                            except Exception:
+                                pass
+                        # Angular/normal tolerance in degrees (convert to radians) if supported
+                        ang_key = None
+                        for k in ("normal_deviation_deg", "angular_tolerance_deg", "angular"):
+                            if op.get(k) is not None:
+                                ang_key = k
+                                break
+                        if ang_key is not None:
+                            try:
+                                ang_deg = float(self._parse_length_mm(str(op.get(ang_key))) or 0.0)
+                                ang_rad = (ang_deg / 180.0) * 3.141592653589793
+                                for attr in ("normalTolerance", "angularTolerance"):
+                                    if hasattr(opts, attr):
+                                        try:
+                                            setattr(opts, attr, ang_rad)
+                                        except Exception:
+                                            pass
                             except Exception:
                                 pass
                         # Units

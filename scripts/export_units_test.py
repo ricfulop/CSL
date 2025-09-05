@@ -13,7 +13,7 @@ from typing import Any, Dict
 from triple_lindy.transpilers.fusion360_backend import FusionBackend
 
 
-def build_ir(units: str, resolution: str, binary: bool) -> Dict[str, Any]:
+def build_ir(units: str, resolution: str, binary: bool, *, extra: Dict[str, Any] | None = None) -> Dict[str, Any]:
     return {
         "csl": "1.1",
         "meta": {"name": f"ExportUnitsTest-{units}-{resolution}-{int(binary)}", "units": units},
@@ -26,7 +26,7 @@ def build_ir(units: str, resolution: str, binary: bool) -> Dict[str, Any]:
             {"kind": "extrude", "id": "e", "profile": "plate", "distance": "2 mm", "op": "new_solid", "result": "part"}
         ],
         "export": [
-            {"id": "stl_out", "format": "STL", "path": f"out/plate_{units}_{resolution}_{int(binary)}.stl", "target": "part", "resolution": resolution, "binary": binary, "units": units},
+            {"id": "stl_out", "format": "STL", "path": f"out/plate_{units}_{resolution}_{int(binary)}.stl", "target": "part", "resolution": resolution, "binary": binary, "units": units, **(extra or {})},
             {"id": "step_out", "format": "STEP", "path": f"out/plate_{units}.step"}
         ],
     }
@@ -38,15 +38,15 @@ def main() -> None:
     backend.open_session()
 
     combos = [
-        ("mm", "high", True),
-        ("mm", "low", False),
-        ("in", "medium", True),
-        ("cm", "high", False),
+        ("mm", "high", True, {"deviation": "0.05 mm", "normal_deviation_deg": 1.0, "aspect_ratio": 5.0, "max_edge_length": "2 mm"}),
+        ("mm", "low", False, {}),
+        ("in", "medium", True, {"angular": 2.0}),
+        ("cm", "high", False, {"max_edge": "3 mm"}),
     ]
 
     report = {"ok": True, "runs": []}
-    for units, res, binary in combos:
-        ir = build_ir(units, res, binary)
+    for units, res, binary, extra in combos:
+        ir = build_ir(units, res, binary, extra=extra)
         try:
             backend.realize(ir)
             backend.export(ir.get("export", []))

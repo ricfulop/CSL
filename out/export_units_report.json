@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "runs": [
+    {
+      "units": "mm",
+      "resolution": "high",
+      "binary": true,
+      "ok": true
+    },
+    {
+      "units": "mm",
+      "resolution": "low",
+      "binary": false,
+      "ok": true
+    },
+    {
+      "units": "in",
+      "resolution": "medium",
+      "binary": true,
+      "ok": true
+    },
+    {
+      "units": "cm",
+      "resolution": "high",
+      "binary": false,
+      "ok": true
+    }
+  ]
+}
