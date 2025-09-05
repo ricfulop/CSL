@@ -111,6 +111,26 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Fillet vertex setbacks (feature-level)
+    cases.append({
+        "id": "fillet_setbacks",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Fillet Setbacks", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "40 mm,20 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "4 mm", "op": "new_solid", "result": "part"},
+                {"kind": "fillet", "id": "fs", "edges": {"kind": "edges", "of": "query.edges(part)"}, "setbacks": [
+                    {"vertex_query": {"kind": "vertex", "on": "query.edges(part)"}, "d": "1.0 mm"}
+                ]}
+            ]
+        }
+    })
+
     # Wrap/Emboss placeholder (will emit diagnostics or best-effort)
     cases.append({
         "id": "emboss_text",

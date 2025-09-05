@@ -652,10 +652,20 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
-                    # Transitions/setbacks not mapped yet
-                    if feat.get("transitions") or feat.get("setback"):
+                    # Transitions not mapped; setbacks supported via helper when provided
+                    if feat.get("transitions"):
                         try:
-                            self._diag("E2320", where="fillet", message="Transitions/setbacks not mapped; applying per-group constants where possible.")
+                            self._diag("E2320", where="fillet", message="Transitions not mapped; applying per-group/variable where possible.")
+                        except Exception:
+                            pass
+                    # Feature-level setbacks across provided edges (requires edges_query/q spec)
+                    if isinstance(feat.get("setbacks"), list) and (isinstance(feat.get("edges"), dict) or isinstance(feat.get("edges_query"), dict)):
+                        try:
+                            grp = {"edges_query": (feat.get("edges_query") or feat.get("edges")), "setbacks": feat.get("setbacks")}
+                            var_feat = self._apply_variable_fillet(root, fil_feats, grp)
+                            if var_feat:
+                                mapping[f"{feat_id}:setbacks"] = f"fusion:fillet:{var_feat.entityToken}"
+                                continue
                         except Exception:
                             pass
                     if edges.count > 0:
@@ -730,9 +740,9 @@ class FusionBackend:
                         edges = None
                     edges = edges or self._all_body_edges(root)
                     # Transitions not mapped yet
-                    if feat.get("transitions") or feat.get("setback"):
+                    if feat.get("transitions"):
                         try:
-                            self._diag("E2321", where="chamfer", message="Transitions/setbacks not mapped; applying per-group constants where possible.")
+                            self._diag("E2321", where="chamfer", message="Transitions not mapped; applying per-group where possible.")
                         except Exception:
                             pass
                     if edges.count > 0:
