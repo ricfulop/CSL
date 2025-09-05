@@ -57,6 +57,7 @@ Optional backends
 - JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`
 - Conformance kit: `CSL_v1_1/conformance/README.md`
 - Examples: `CSL_v1_1/examples/`
+  - New: `constraints_patterns_demo.csl` showcases construction/driven constraints and per-instance patterns.
 
 ### Gap analysis and roadmap
 - Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md` (includes proposed v1.2 features such as splines, text, variable fillet/chamfer, G2 continuity, richer joints and predicates, materials/PMI).

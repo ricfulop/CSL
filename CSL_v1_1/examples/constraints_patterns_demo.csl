@@ -1,0 +1,39 @@
+{
+  "csl": "1.1",
+  "meta": { "name": "Constraints & Patterns Demo", "units": "mm" },
+  "params": {},
+  "sketches": [
+    { "id": "s", "plane": "world.xy", "entities": [
+      { "kind": "rect", "id": "seed", "p1": "0,0", "p2": "20 mm,10 mm" },
+      { "kind": "line", "id": "l1", "p1": "0,20 mm", "p2": "25 mm,20 mm" },
+      { "kind": "line", "id": "l2", "p1": "0,25 mm", "p2": "25 mm,25 mm" },
+      { "kind": "spline", "id": "sp1", "points": ["0,35 mm", "12 mm, 38 mm", "24 mm, 35 mm"] },
+      { "kind": "point", "id": "pt1", "at": "12 mm, 35 mm" }
+    ],
+    "constraints": [
+      { "kind": "equal_length", "items": ["l1", "l2"] },
+      { "kind": "coincident_to_spline", "a": "pt1", "b": "sp1" },
+      { "kind": "distance", "a": "l1", "b": "l2", "value": "5 mm", "reference": true }
+    ],
+    "dimensions": [] }
+  ],
+  "features": [
+    { "kind": "extrude", "id": "e", "profile": "seed", "distance": "3 mm", "op": "new_solid", "result": "part" },
+    { "kind": "pattern", "id": "pat_rect", "seed": "query.body(part)", "kind": "linear",
+      "count1": 3, "spacing1": "15 mm", "axis1": "X",
+      "count2": 2, "spacing2": "10 mm", "axis2": "Y" },
+    { "kind": "pattern", "id": "pat_instances", "seed": "query.body(part)", "kind": "linear",
+      "instances": [
+        { "dx": "0 mm", "dy": "0 mm", "dz": "0 mm", "angle": 0, "axis": "Z", "count": 1 },
+        { "dx": "18 mm", "dy": "6 mm", "dz": "0 mm", "angle": 10, "axis": "Z", "count": 1 }
+      ] },
+    { "kind": "pattern", "id": "pat_circ", "seed": "query.body(part)", "kind": "circular",
+      "count": 6, "angle": "360 deg", "axis": "Z" }
+  ],
+  "export": [
+    { "id": "stl", "format": "STL", "path": "out/constraints_patterns_demo.stl", "resolution": "high", "binary": true, "units": "mm",
+      "deviation": "0.05 mm", "normal_deviation_deg": 1.0 }
+  ]
+}
+
+
