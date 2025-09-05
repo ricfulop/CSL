@@ -176,6 +176,27 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Constraints: equal-length arrays and coincident-to-spline
+    cases.append({
+        "id": "constraints_equal_and_spline",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Constraints Equal & Spline", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "line", "id": "l1", "p1": "0,0", "p2": "20 mm,0"},
+                    {"kind": "line", "id": "l2", "p1": "0,5 mm", "p2": "20 mm,5 mm"},
+                    {"kind": "spline", "id": "sp1", "points": ["0,10 mm", "10 mm, 12 mm", "20 mm, 10 mm"]},
+                    {"kind": "point", "id": "pt1", "at": "10 mm, 10 mm"}
+                ],
+                "constraints": [
+                    {"kind": "equal_length", "items": ["l1", "l2"]},
+                    {"kind": "coincident_to_spline", "a": "pt1", "b": "sp1"}
+                ]}
+            ]
+        }
+    })
+
     # Wrap/Emboss placeholder (will emit diagnostics or best-effort)
     cases.append({
         "id": "emboss_text",

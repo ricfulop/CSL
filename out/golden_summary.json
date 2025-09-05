@@ -37,9 +37,14 @@
       "errors": 8
     },
     {
-      "id": "emboss_text",
+      "id": "constraints_equal_and_spline",
       "ok": true,
       "errors": 9
+    },
+    {
+      "id": "emboss_text",
+      "ok": true,
+      "errors": 10
     },
     {
       "id": "joints_limits",

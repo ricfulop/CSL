@@ -226,6 +226,58 @@
       ]
     },
     {
+      "id": "constraints_equal_and_spline",
+      "ok": true,
+      "mapping_size": 0,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "env",
+          "message": "Fusion API unavailable; dry-run mode."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
+    },
+    {
       "id": "emboss_text",
       "ok": true,
       "mapping_size": 2,
@@ -234,6 +286,11 @@
           "code": "E3000",
           "where": "env",
           "message": "Fusion API unavailable; dry-run mode."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
         },
         {
           "code": "E3000",
@@ -284,8 +341,8 @@
       "errors": [
         {
           "code": "E3000",
-          "where": "env",
-          "message": "Fusion API unavailable; dry-run mode."
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
         },
         {
           "code": "E3000",
