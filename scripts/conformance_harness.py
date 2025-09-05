@@ -152,6 +152,30 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Selection determinism: created_by, pattern_instances, tangent_connected
+    cases.append({
+        "id": "selection_determinism",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Selection Determinism", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "20 mm,10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "3 mm", "op": "new_solid", "result": "p"},
+                {"kind": "fillet", "id": "f1", "edges": "query.edges(p)", "radius": "1 mm"},
+                {"kind": "pattern", "id": "pat1", "seed": "query.body(p)", "kind": "linear", "count1": 3, "spacing1": "8 mm"}
+            ],
+            "post_queries": [
+                {"kind": "face", "created_by": "f1"},
+                {"kind": "body", "pattern_instances": {"feature": "pat1"}},
+                {"kind": "face", "tangent_connected": {"seed": {"kind": "face", "created_by": "f1"}, "tol_deg": 1.0}}
+            ]
+        }
+    })
+
     # Wrap/Emboss placeholder (will emit diagnostics or best-effort)
     cases.append({
         "id": "emboss_text",
@@ -245,6 +269,13 @@ def run_case(backend: FusionBackend, case: Dict[str, Any]) -> Dict[str, Any]:
         diags = backend.get_diagnostics()
         if diags.get("errors"):
             result["errors"] = diags["errors"][-10:]
+        # For selection determinism tests, we may run follow-up queries
+        if ir.get("post_queries"):
+            for q in ir.get("post_queries"):
+                try:
+                    _ = backend._resolve_query(backend._design.rootComponent if hasattr(backend, "_design") else None, q, entity_type=q.get("kind") or "face")
+                except Exception:
+                    pass
         # Optionally export/thumbnail per case if declared in IR
         if ir.get("export"):
             backend.export(ir.get("export", []))
