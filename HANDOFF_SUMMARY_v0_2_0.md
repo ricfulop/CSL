@@ -33,6 +33,10 @@
 - Tag: `v0.2.0` (pushed)
 - Changelog: `CHANGELOG.md`
 
+### New Release (v0.3.0)
+- Tag: `v0.3.0` (pending tag; notes in CHANGELOG)
+- Highlights: constraints parity, loft/fillet/patterns improvements, stable IDs, selection goldens, export tessellation, APS tooling, CI golden gate.
+
 ### Next milestone (v0.3.0, 2–3 weeks)
 - Stable IDs hardening: reopen/regeneration reconciliation; E12xx repair guidance.
 - Conformance & CI: goldens for loft G2/orientation, variable fillet/chamfer, wrap direction, advanced joints, selection determinism; CI gate on golden_summary.json.
