@@ -2574,6 +2574,17 @@ class FusionBackend:
             entry["hint"] = hint
         if data is not None:
             entry["data"] = data
+        # Auto-hints for common classes
+        try:
+            if code.startswith("E12") and not hint:
+                if where in ("sketch", "query"):
+                    entry["hint"] = "Add created_by/owner_feature== and tolerances (tol/tol_deg) to disambiguate."
+                elif where in ("loft", "sweep"):
+                    entry["hint"] = "Specify continuity/orientation or add rails/guide to reduce ambiguity."
+            if code.startswith("E23") and not entry.get("hint"):
+                entry["hint"] = "Strengthen selection via queries (created_by, pattern_instances, by_material) or apply tags."
+        except Exception:
+            pass
         self._errors.append(entry)
 
     def get_diagnostics(self) -> Dict[str, Any]:
