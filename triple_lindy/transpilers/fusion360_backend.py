@@ -50,7 +50,7 @@ class FusionBackend:
                     "loft": {"continuity": ["G1", "G2"], "orientation": ["perpendicular", "fixed_normal", "binormal"], "rails": True},
                     "shell": True,
                     "draft": True,
-                    "pattern": {"linear": {"axis1": True, "axis2": True}, "circular": {"axis": True, "angle": True, "axis_query": True}, "path": {"spacing": True}},
+                    "pattern": {"linear": {"axis1": True, "axis2": True}, "circular": {"axis": True, "angle": True, "axis_query": True}, "path": {"spacing": True}, "table": True},
                     "boolean": ["union", "subtract", "intersect"],
                     "thread_cosmetic": True,
                     "thread_modeled": True,
@@ -1651,11 +1651,16 @@ class FusionBackend:
                                 dir2 = root.zConstructionAxis
                             count2 = int(feat.get("count2") or 1)
                             spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
-                            # Table-driven fallback with per-instance transforms
+                            # Table-driven fallback with per-instance transforms (also supports 'instances')
+                            per_inst = None
                             if isinstance(feat.get("table"), list) and len(feat.get("table")) > 0:
+                                per_inst = feat.get("table")
+                            elif isinstance(feat.get("instances"), list) and len(feat.get("instances")) > 0:
+                                per_inst = feat.get("instances")
+                            if per_inst is not None:
                                 try:
                                     mv = root.features.moveFeatures
-                                    for row in feat.get("table"):
+                                    for row in per_inst:
                                         if not isinstance(row, dict):
                                             continue
                                         dx = (self._parse_length_mm(row.get("dx") or "0") or 0.0) / 10.0

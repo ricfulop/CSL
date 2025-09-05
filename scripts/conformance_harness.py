@@ -147,7 +147,11 @@ def build_cases() -> List[Dict[str, Any]]:
                 {"kind": "extrude", "id": "e", "profile": "seed", "distance": "3 mm", "op": "new_solid", "result": "part"},
                 {"kind": "pattern", "id": "pat_circ", "seed": "query.body(part)", "kind": "circular", "count": 6, "angle": "360 deg", "axis": "Z"},
                 {"kind": "pattern", "id": "pat_path", "seed": "query.body(part)", "kind": "path", "count": 4, "spacing": "10 mm", "path_query": "s.edge(pathline)"},
-                {"kind": "pattern", "id": "pat_rect", "seed": "query.body(part)", "kind": "linear", "count1": 3, "spacing1": "12 mm", "axis1": "X", "count2": 2, "spacing2": "6 mm", "axis2": "Y"}
+                {"kind": "pattern", "id": "pat_rect", "seed": "query.body(part)", "kind": "linear", "count1": 3, "spacing1": "12 mm", "axis1": "X", "count2": 2, "spacing2": "6 mm", "axis2": "Y"},
+                {"kind": "pattern", "id": "pat_instances", "seed": "query.body(part)", "kind": "linear", "instances": [
+                    {"dx": "0 mm", "dy": "0 mm", "dz": "0 mm", "angle": 0, "axis": "Z", "count": 1},
+                    {"dx": "15 mm", "dy": "5 mm", "dz": "0 mm", "angle": 15, "axis": "Z", "count": 1}
+                ]}
             ]
         }
     })

@@ -139,7 +139,7 @@
     {
       "id": "patterns_suite",
       "ok": true,
-      "mapping_size": 4,
+      "mapping_size": 5,
       "errors": [
         {
           "code": "E3000",
