@@ -45,7 +45,7 @@ Commits
 - APS: DA stub (list engines); APS auth check; orchestrate example target
 - Stable IDs: refresh persisted tokens from attributes on reload
 
-## v0.4.0-pre (surface ops, AP242 sidecar, PMI/GD&T minimal, assemblies stubs, determinism)
+## v0.4.0 (surface ops, AP242 sidecar, PMI/GD&T minimal, assemblies stubs, determinism)
 
 Highlights
 - Selection determinism: sorted-token lineage, persisted normalization, deterministic face ordering; added determinism goldens.
