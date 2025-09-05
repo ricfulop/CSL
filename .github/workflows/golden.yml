@@ -1,0 +1,24 @@
+name: Golden Conformance
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps (none required)
+        run: echo "No external deps"
+      - name: Run conformance and golden check
+        run: |
+          make golden-check
+
