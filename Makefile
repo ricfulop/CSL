@@ -16,4 +16,16 @@ aps-orchestrate-example:
 aps-da-list-engines:
 	python3 scripts/aps_da_stub.py list-engines
 
+aps-da-create-appbundle:
+	# Usage: make aps-da-create-appbundle NAME=MyAppBundle ENGINE=Autodesk.Fusion+<ver> ZIP=path/to/zip
+	python3 scripts/aps_da_stub.py create-appbundle "$(NAME)" "$(ENGINE)" "$(ZIP)"
+
+aps-da-create-activity:
+	# Usage: make aps-da-create-activity NAME=MyActivity ENGINE=Autodesk.Fusion+<ver> APPBUNDLE=<bundleId>
+	python3 scripts/aps_da_stub.py create-activity "$(NAME)" "$(ENGINE)" "$(APPBUNDLE)"
+
+aps-da-submit-workitem:
+	# Usage: make aps-da-submit-workitem ACTIVITY=<activityId> ARGS=workitem_args.json
+	python3 scripts/aps_da_stub.py submit-workitem "$(ACTIVITY)" "$(ARGS)"
+
 
