@@ -297,6 +297,11 @@ def main() -> None:
         if not res.get("ok"):
             report["ok"] = False
         report["cases"].append(res)
+    # Simulate reopen/regeneration reconciliation by reloading persisted lineage
+    try:
+        backend._load_persisted_lineage()
+    except Exception:
+        pass
     Path("out/conformance_report.json").write_text(json.dumps(report, indent=2))
     # Golden summary: only ok/err counts by case id
     golden = {"ok": report["ok"], "cases": [{"id": c["id"], "ok": c["ok"], "errors": len(c.get("errors") or [])} for c in report["cases"]]}

@@ -2732,6 +2732,33 @@ class FusionBackend:
                 import json as _json
                 with open(path, "r", encoding="utf-8") as f:
                     self._persisted_lineage = _json.load(f)
+            # Attempt reconciliation in Fusion: refresh tokens by scanning attributes
+            try:
+                app, ui, design = self._ensure_design()
+                root = design.rootComponent
+                # For each feature id, find bodies/faces/edges tagged with CSL:csl_feat
+                for fid, entry in list(self._persisted_lineage.items()):
+                    refreshed = {"bodies": [], "faces": [], "edges": []}
+                    try:
+                        tagged_b = self._find_entities_by_attr(root, "body", "csl_feat", fid)
+                        for i in range(tagged_b.count):
+                            b = tagged_b.item(i)
+                            refreshed["bodies"].append(b.entityToken)
+                        tagged_f = self._find_entities_by_attr(root, "face", "csl_feat", fid)
+                        for i in range(tagged_f.count):
+                            f = tagged_f.item(i)
+                            refreshed["faces"].append(f.entityToken)
+                        tagged_e = self._find_entities_by_attr(root, "edge", "csl_feat", fid)
+                        for i in range(tagged_e.count):
+                            e = tagged_e.item(i)
+                            refreshed["edges"].append(e.entityToken)
+                        # If we found any, replace persisted tokens with refreshed ones
+                        if any(len(v) > 0 for v in refreshed.values()):
+                            self._persisted_lineage[fid] = refreshed
+                    except Exception:
+                        continue
+            except Exception:
+                pass
         except Exception:
             self._persisted_lineage = {}
 
