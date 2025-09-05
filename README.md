@@ -76,6 +76,22 @@ Outputs:
 - `out/golden_summary.json`: short summary for CI gates.
 - Dry-run friendly: if Fusion API is unavailable, the adapter returns a stable mapping and diagnostics for CI.
 
+### APS (Autodesk Platform Services)
+- Auth test:
+```bash
+export APS_CLIENT_ID=... APS_CLIENT_SECRET=...
+make aps-auth
+```
+- Orchestrate example (local Fusion run + upload when configured):
+```bash
+make aps-orchestrate-example
+```
+- Design Automation (DA) stub:
+```bash
+make aps-da-list-engines
+```
+Set `APS_SCOPES` and optionally `APS_BUCKET` (defaults to `csl-artifacts-<env>`).
+
 ### Export units/parity test
 Quickly exercise STL/STEP unit and resolution options.
 
