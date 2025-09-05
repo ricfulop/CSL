@@ -156,3 +156,19 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
 - Predicates supported: `created_by`/`owner_feature==`, `pattern_instances`, `tangent_connected(seed, tol_deg)`, `largest_by(axis)`, `curvature≈`/`radius≈`/`area≈` with `tol`, `by_material`.
 - Tolerances: use absolute tolerances via `tol` (e.g., `tol: 0.1` mm) or `tol_deg` for angular floods; values are unit-checked.
 - Determinism policy: ambiguous queries fail with E12xx diagnostics and guidance to strengthen predicates/tags; lineage/attributes are used for stable reconciliation across sessions.
+
+## Automation
+
+- Golden check: `make golden-check`
+- Dump capabilities: `make caps` (writes `out/capabilities_fusion.json` with version/commit and determinism metadata)
+- APS Design Automation helpers:
+  - List engines: `make aps-da-list-engines` (requires `APS_CLIENT_ID`/`APS_CLIENT_SECRET`)
+  - Bootstrap check: `make aps-da-bootstrap`
+  - Create AppBundle: `make aps-da-create-appbundle NAME=<name> ENGINE=<engineId> ZIP=<path.zip>`
+  - Create Activity: `make aps-da-create-activity NAME=<name> ENGINE=<engineId> APPBUNDLE=<bundleId>`
+  - Submit WorkItem: `make aps-da-submit-workitem ACTIVITY=<activityId> ARGS=<args.json>`
+  - Clean: `make aps-da-clean`
+
+### Environment
+
+- Optional env for metadata: `CSL_VERSION`, `GIT_COMMIT`/`CI_COMMIT_SHA`, `FUSION_BUILD`

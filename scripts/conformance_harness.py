@@ -156,6 +156,27 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Surface ops: patch, extend, trim, knit (best-effort)
+    cases.append({
+        "id": "surface_ops_best_effort",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Surface Ops", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "40 mm,20 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "2 mm", "op": "new_solid", "result": "p"},
+                {"kind": "patch", "id": "surf_patch", "edges_query": {"kind": "edge", "created_by": "e"}},
+                {"kind": "extend", "id": "surf_extend", "faces_query": {"kind": "face", "created_by": "e"}, "distance": "1 mm"},
+                {"kind": "trim", "id": "surf_trim", "target_query": {"kind": "face", "created_by": "e"}},
+                {"kind": "knit", "id": "surf_knit", "faces_query": {"kind": "face", "created_by": "e"}, "tolerance": "0.1 mm", "to_solid": False}
+            ]
+        }
+    })
+
     # Selection determinism: created_by, pattern_instances, tangent_connected
     cases.append({
         "id": "selection_determinism",
@@ -177,6 +198,52 @@ def build_cases() -> List[Dict[str, Any]]:
                 {"kind": "body", "pattern_instances": {"feature": "pat1"}},
                 {"kind": "face", "tangent_connected": {"seed": {"kind": "face", "created_by": "f1"}, "tol_deg": 1.0}}
             ]
+        }
+    })
+
+    # Selection determinism under timeline reorder (simulated)
+    cases.append({
+        "id": "selection_determinism_reorder",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Selection Determinism Reorder", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "16 mm,12 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "4 mm", "op": "new_solid", "result": "p"},
+                {"kind": "fillet", "id": "f1", "edges": "query.edges(p)", "radius": "1.5 mm"},
+                {"kind": "pattern", "id": "pat1", "seed": "query.body(p)", "kind": "linear", "count1": 2, "spacing1": "10 mm"}
+            ],
+            "post_queries": [
+                {"kind": "face", "created_by": "f1"},
+                {"kind": "body", "pattern_instances": {"feature": "pat1"}}
+            ],
+            "mutations": ["reorder"]
+        }
+    })
+
+    # Selection determinism under suppress/regenerate (simulated)
+    cases.append({
+        "id": "selection_determinism_regenerate",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Selection Determinism Regenerate", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "10 mm,10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "5 mm", "op": "new_solid", "result": "p"},
+                {"kind": "fillet", "id": "f1", "edges": "query.edges(p)", "radius": "1.0 mm"}
+            ],
+            "post_queries": [
+                {"kind": "face", "tangent_connected": {"seed": {"kind": "face", "created_by": "f1"}, "tol_deg": 2.0}}
+            ],
+            "mutations": ["suppress", "regen"]
         }
     })
 
@@ -219,6 +286,26 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Export STEP with AP242 sidecar metadata
+    cases.append({
+        "id": "export_step_ap242_sidecar",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Export AP242", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "20 mm,10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "3 mm", "op": "new_solid", "result": "part"}
+            ],
+            "export": [
+                {"format": "STEP", "path": "out/test_ap242.step"}
+            ]
+        }
+    })
+
     # Joints with limits (revolute and slider)
     cases.append({
         "id": "joints_limits",
@@ -240,6 +327,25 @@ def build_cases() -> List[Dict[str, Any]]:
                  "limits": {"angular_min": "-45 deg", "angular_max": "45 deg"}},
                 {"kind": "joint", "id": "j2", "type": "slider", "a": "query.body(p1)", "b": "query.body(p2)", "axis": "X",
                  "limits": {"linear_min": "0 mm", "linear_max": "10 mm"}}
+            ]
+        }
+    })
+
+    # Assemblies: mate connector and assembly pattern (best-effort)
+    cases.append({
+        "id": "assemblies_stubs",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Assemblies Stubs", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "16 mm,16 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "4 mm", "op": "new_solid", "result": "p"},
+                {"kind": "mate_connector", "id": "mc1", "on": {"kind": "face", "created_by": "e"}},
+                {"kind": "assembly_pattern", "id": "ap1", "count1": 2, "spacing1": "10 mm", "count2": 1, "spacing2": "10 mm"}
             ]
         }
     })
@@ -278,6 +384,29 @@ def build_cases() -> List[Dict[str, Any]]:
                 "dimensions": [
                     {"kind": "diameter", "on": "c1", "value": "12 mm", "reference": True}
                 ]}
+            ]
+        }
+    })
+
+    # PMI/GD&T minimal notes
+    cases.append({
+        "id": "pmi_gdt_notes",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "PMI/GDT Notes", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "20 mm,10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "3 mm", "op": "new_solid", "result": "part"}
+            ],
+            "pmi": [
+                {"note": "REF", "plane": "world.xy", "at": "5 mm, 5 mm", "height": "4 mm"}
+            ],
+            "gdt": [
+                {"label": "⟂|A|0.1", "plane": "world.xy", "at": "0,0", "height": "4 mm"}
             ]
         }
     })

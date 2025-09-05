@@ -44,3 +44,21 @@ Commits
 - Capabilities: publish granular JSON; snapshot saved by golden check
 - APS: DA stub (list engines); APS auth check; orchestrate example target
 - Stable IDs: refresh persisted tokens from attributes on reload
+
+## v0.4.0-pre (surface ops, AP242 sidecar, PMI/GD&T minimal, assemblies stubs, determinism)
+
+Highlights
+- Selection determinism: sorted-token lineage, persisted normalization, deterministic face ordering; added determinism goldens.
+- Surface ops: patch / extend / trim / knit (best-effort; API-version dependent); new conformance case.
+- Export: STEP AP242 sidecar metadata JSON.
+- PMI/GD&T: minimal feature-control-frame placement via PMI text.
+- Assemblies: mate connectors and assembly patterns stubs.
+- Capabilities/Docs/Make: capabilities dump (`make caps`), coverage and README updates.
+
+Commits
+- Lineage/selection determinism hardening in `triple_lindy/transpilers/fusion360_backend.py`.
+- Surface ops handlers and conformance cases.
+- STEP AP242 sidecar emission in export path; export case.
+- PMI/GD&T minimal note placement and case.
+- Assembly stubs (`mate_connector`, `assembly_pattern`) and case.
+- Capabilities metadata additions; `scripts/dump_capabilities.py`; Make targets & docs updates.

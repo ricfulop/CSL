@@ -37,6 +37,13 @@
       "type": "markdown"
     },
     {
+      "path": "FUSION_FEATURE_COVERAGE.md",
+      "title": "Fusion Backend Feature Coverage",
+      "summary": "Status per feature including surface ops stubs, AP242 sidecar metadata, and PMI/GD&T minimal notes.",
+      "keywords": ["Fusion", "coverage", "surface ops", "AP242", "PMI", "GD&T"],
+      "type": "markdown"
+    },
+    {
       "path": "CSL_v1_2_proposal.md",
       "title": "CSL v1.2 – Fusion Parity and Cross-Backend Extensions (Proposal)",
       "summary": "Proposed v1.2 syntax and schema to reach Fusion parity and extend cross-backend features; includes APS Design Automation linkage.",

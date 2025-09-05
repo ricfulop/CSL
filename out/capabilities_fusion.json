@@ -1,0 +1,145 @@
+{
+  "csl": "1.1",
+  "backend": "fusion",
+  "version": "v0.3.0",
+  "commit": "unknown",
+  "fusion_build": "dry-run",
+  "supports": {
+    "brep": true,
+    "mesh": true,
+    "params": true,
+    "queries": true,
+    "features": {
+      "extrude": true,
+      "fillet": {
+        "variable": true,
+        "setbacks": true
+      },
+      "hole": true,
+      "loft": {
+        "continuity": [
+          "G1",
+          "G2"
+        ],
+        "orientation": [
+          "perpendicular",
+          "fixed_normal",
+          "binormal"
+        ],
+        "rails": true
+      },
+      "shell": true,
+      "draft": true,
+      "pattern": {
+        "linear": {
+          "axis1": true,
+          "axis2": true
+        },
+        "circular": {
+          "axis": true,
+          "angle": true,
+          "axis_query": true
+        },
+        "path": {
+          "spacing": true
+        },
+        "table": true
+      },
+      "boolean": [
+        "union",
+        "subtract",
+        "intersect"
+      ],
+      "thread_cosmetic": true,
+      "thread_modeled": true,
+      "surface_ops": {
+        "patch": true,
+        "extend": true,
+        "trim": true,
+        "knit": true
+      },
+      "assemblies": {
+        "mate_connectors": true,
+        "patterns": true
+      }
+    },
+    "export": {
+      "formats": [
+        "STEP",
+        "STL",
+        "IGES",
+        "3MF",
+        "OBJ"
+      ],
+      "stl": {
+        "units": [
+          "mm",
+          "cm",
+          "in"
+        ],
+        "resolution": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "tessellation": {
+          "deviation": true,
+          "angular": true,
+          "aspect_ratio": true,
+          "max_edge": true
+        }
+      }
+    },
+    "thumbnail": {
+      "enabled": true,
+      "views": [
+        "iso",
+        "top",
+        "front",
+        "right"
+      ],
+      "styles": [
+        "shaded",
+        "wireframe"
+      ]
+    }
+  },
+  "queries": {
+    "predicates_supported": [
+      "created_by",
+      "owner_feature==",
+      "pattern_instances",
+      "tangent_connected",
+      "largest_by",
+      "curvature\u2248",
+      "radius\u2248",
+      "area\u2248",
+      "by_material"
+    ],
+    "stable_id": "entityToken (session-scoped)",
+    "lineage": "feature->(bodies,faces,edges) tokens",
+    "determinism": {
+      "ordering": "sorted_tokens",
+      "persisted_normalization": true
+    }
+  },
+  "diagnostics": {
+    "codes": {
+      "E12xx": "input/validation",
+      "E23xx": "feature/selection",
+      "E3xxx": "environment/runtime"
+    },
+    "recent": [
+      {
+        "code": "E3000",
+        "where": "env",
+        "message": "Fusion API unavailable; dry-run mode."
+      }
+    ]
+  },
+  "aps": {
+    "enabled": false,
+    "bucket": "csl-artifacts-local",
+    "scopes": "data:read data:write"
+  }
+}

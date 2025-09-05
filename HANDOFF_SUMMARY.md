@@ -24,62 +24,13 @@ This session focused on bringing the Fusion 360 backend toward production-grade 
 - APS Integration: token, bucket ensure, uploads; orchestrate(plan) helper
 - Docs: backlog converted to Completed vs Remaining with links; gap analysis refreshed; query determinism/tolerances documented
 
-### Urgent fix (open linter errors)
-There is a malformed try/except block in `triple_lindy/transpilers/fusion360_backend.py` inside `_apply_materials_and_pmi`. Fix by replacing that method with a simple, lint-safe version.
-
-Suggested replacement for `_apply_materials_and_pmi` (single try/except):
-
-```python
-def _apply_materials_and_pmi(self, csl_ir: Dict[str, Any]) -> None:
-    try:
-        import adsk.core  # type: ignore
-        import adsk.fusion  # type: ignore
-        app, ui, design = self._ensure_design()
-        root_comp = design.rootComponent
-        # Apply appearances by name (simple path)
-        mats = csl_ir.get("materials") or []
-        if isinstance(mats, list):
-            for m in mats:
-                if not isinstance(m, dict):
-                    continue
-                ap = m.get("appearance") or m.get("color")
-                if not ap:
-                    continue
-                found = None
-                for i in range(app.appearanceLibraries.count):
-                    try:
-                        lib = app.appearanceLibraries.item(i)
-                        obj = lib.appearances.itemByName(str(ap))
-                        if obj:
-                            found = obj
-                            break
-                    except Exception:
-                        continue
-                if found:
-                    try:
-                        for b in root_comp.bRepBodies:
-                            b.appearance = found
-                    except Exception:
-                        pass
-        # PMI notes on XY plane
-        pmi_list = csl_ir.get("pmi") or []
-        if isinstance(pmi_list, list) and len(pmi_list) > 0:
-            sk = root_comp.sketches.add(root_comp.xYConstructionPlane)
-            for note in pmi_list:
-                if not isinstance(note, dict) or not note.get("note"):
-                    continue
-                try:
-                    h_mm = self._parse_length_mm(note.get("height") or "5") or 5.0
-                    ti = sk.sketchTexts.createInput(str(note.get("note")), h_mm/10.0)
-                    p = adsk.core.Point3D.create(0, 0, 0)
-                    ti.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment,
-                                      adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
-                    sk.sketchTexts.add(ti)
-                except Exception:
-                    pass
-    except Exception:
-        pass
-```
+### Recent updates (toward v0.4.0)
+- Selection determinism: sorted-token lineage, persisted normalization, and deterministic face ordering; new determinism goldens.
+- Surface ops: patch/extend/trim/knit stubs (best-effort where API supports); added conformance case.
+- Export: STEP AP242 sidecar metadata JSON emitted alongside `.step` files.
+- PMI/GD&T: minimal feature-control-frame placement via PMI text.
+- Assemblies: mate connectors and assembly patterns stubs.
+- Capabilities/Docs/Make: `make caps` added; README and coverage updated.
 
 ### Remaining production-grade items
 - prod-grade-gap-docs (in_progress):

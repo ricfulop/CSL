@@ -44,12 +44,15 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
   - [Done] by face/plane/sketch profile
 - Mirror
   - [Done] last body across plane
+- Surface Ops
+  - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — best-effort; API-version dependent
 - Materials/PMI
   - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos; density override → [Diag]
 - Selection/Queries
   - [Partial] created_by, owner_feature==, pattern_instances, tangent_connected(tol), largest_by, curvature≈/radius≈/area≈, by_material; lineage tags; cross-session persistence (basic)
 - Export/Thumbnail
   - [Partial] STEP/STL with resolution/units best-effort; STL advanced tessellation (deviation/angle/aspect/max-edge); deterministic thumbnail views/styles
+  - [Partial] STEP AP242 sidecar metadata JSON for downstream workflows
 - APS Orchestration
   - [Done] token cache/refresh, bucket ensure, upload retries/backoff, telemetry, configurable buckets
 

@@ -25,6 +25,12 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: Updated Fusion notes (lineage queries, diagnostics, APS) and roadmap status; pending items moved to tracking issues.
   - Keywords: gap analysis, Fusion 360, lineage, diagnostics, APS, capabilities
 
+### v0.4.0 Additions
+- Surface operations (patch/extend/trim/knit) – best-effort stubs in Fusion backend; see `FUSION_FEATURE_COVERAGE.md`.
+- STEP AP242 sidecar metadata – see `scripts/dump_capabilities.py` and export notes.
+- PMI/GD&T minimal notes – via backend PMI helpers.
+- Assemblies stubs – mate connectors and assembly patterns.
+
 ### CSL v1.1
 - [Specification: `CSL_v1_1/csl_v1_1_spec.md`](CSL_v1_1/csl_v1_1_spec.md)
   - Summary: Full language spec for CSL v1.1. Covers goals, headers/metadata, parameters, sketches, features, robust selection/query language, materials, assemblies, ECAD extension, new export/thumbnail ops, backend capabilities, security, and cheatsheet.
