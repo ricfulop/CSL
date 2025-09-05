@@ -1605,6 +1605,12 @@ class FusionBackend:
                                 self._record_lineage(feat_id, cp, root)
                             except Exception:
                                 pass
+                            # Try native per-instance element transforms if provided and supported
+                            try:
+                                if isinstance(feat.get("instances"), list) and len(feat.get("instances")) > 0:
+                                    self._apply_per_instance_pattern(cp, feat.get("instances"))
+                            except Exception:
+                                pass
                         elif kind_sub == "path":
                             try:
                                 ppf = root.features.pathPatternFeatures
@@ -1626,6 +1632,12 @@ class FusionBackend:
                                     mapping[feat_id] = f"fusion:pattern_path:{pp.entityToken}"
                                     try:
                                         self._record_lineage(feat_id, pp, root)
+                                    except Exception:
+                                        pass
+                                    # Try native per-instance transforms if supported
+                                    try:
+                                        if isinstance(feat.get("instances"), list) and len(feat.get("instances")) > 0:
+                                            self._apply_per_instance_pattern(pp, feat.get("instances"))
                                     except Exception:
                                         pass
                                     continue
@@ -1716,6 +1728,12 @@ class FusionBackend:
                             mapping[feat_id] = f"fusion:pattern_linear:{pat.entityToken}"
                             try:
                                 self._record_lineage(feat_id, pat, root)
+                            except Exception:
+                                pass
+                            # Try native per-instance element transforms if provided and supported
+                            try:
+                                if isinstance(feat.get("instances"), list) and len(feat.get("instances")) > 0:
+                                    self._apply_per_instance_pattern(pat, feat.get("instances"))
                             except Exception:
                                 pass
                 elif kind == "mirror":
@@ -3100,4 +3118,53 @@ class FusionBackend:
                 return None
         return None
 
+
+    def _apply_per_instance_pattern(self, pattern_obj: Any, instances: List[Dict[str, Any]]) -> None:
+        """Best-effort native per-instance adjustment if API exposes pattern elements.
+
+        On some versions, pattern features expose patternElements; we can tweak transforms.
+        Fallback is already handled via moveFeatures.
+        """
+        try:
+            elements = getattr(pattern_obj, "patternElements", None)
+            if not elements or not hasattr(elements, "count"):
+                return
+            count = min(elements.count, len(instances))
+            import adsk.core  # type: ignore
+            for i in range(count):
+                inst = instances[i]
+                el = elements.item(i)
+                # Apply a simple additional transform (translation + optional rotation around Z)
+                try:
+                    dx = float((self._parse_length_mm(inst.get("dx") or "0") or 0.0) / 10.0)
+                    dy = float((self._parse_length_mm(inst.get("dy") or "0") or 0.0) / 10.0)
+                    dz = float((self._parse_length_mm(inst.get("dz") or "0") or 0.0) / 10.0)
+                    angle_deg = None
+                    try:
+                        angle_deg = float(self._parse_length_mm(str(inst.get("angle"))) or 0.0)
+                    except Exception:
+                        angle_deg = None
+                    trans = adsk.core.Matrix3D.create()
+                    if angle_deg is not None and angle_deg != 0.0:
+                        theta = (angle_deg / 180.0) * 3.141592653589793
+                        rot = adsk.core.Matrix3D.create()
+                        rot.setToRotation(theta, adsk.core.Vector3D.create(0, 0, 1), adsk.core.Point3D.create(0, 0, 0))
+                        trans.transformBy(rot)
+                    vec = adsk.core.Vector3D.create(dx, dy, dz)
+                    trans.translation = vec
+                    # Common properties that may exist: elementTransform or setTransform
+                    if hasattr(el, "elementTransform"):
+                        try:
+                            el.elementTransform = trans
+                        except Exception:
+                            pass
+                    if hasattr(el, "setTransform"):
+                        try:
+                            el.setTransform(trans)
+                        except Exception:
+                            pass
+                except Exception:
+                    continue
+        except Exception:
+            return
 
