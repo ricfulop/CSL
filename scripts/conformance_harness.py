@@ -131,6 +131,27 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Patterns: circular, path, rectangular with axis/spacing
+    cases.append({
+        "id": "patterns_suite",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Patterns Suite", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "seed", "p1": "0,0", "p2": "8 mm,8 mm"},
+                    {"kind": "line", "id": "pathline", "p1": "0,0", "p2": "40 mm,0"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "seed", "distance": "3 mm", "op": "new_solid", "result": "part"},
+                {"kind": "pattern", "id": "pat_circ", "seed": "query.body(part)", "kind": "circular", "count": 6, "angle": "360 deg", "axis": "Z"},
+                {"kind": "pattern", "id": "pat_path", "seed": "query.body(part)", "kind": "path", "count": 4, "spacing": "10 mm", "path_query": "s.edge(pathline)"},
+                {"kind": "pattern", "id": "pat_rect", "seed": "query.body(part)", "kind": "linear", "count1": 3, "spacing1": "12 mm", "axis1": "X", "count2": 2, "spacing2": "6 mm", "axis2": "Y"}
+            ]
+        }
+    })
+
     # Wrap/Emboss placeholder (will emit diagnostics or best-effort)
     cases.append({
         "id": "emboss_text",

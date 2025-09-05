@@ -27,19 +27,24 @@
       "errors": 6
     },
     {
-      "id": "emboss_text",
+      "id": "patterns_suite",
       "ok": true,
       "errors": 7
     },
     {
-      "id": "joints_limits",
+      "id": "emboss_text",
       "ok": true,
       "errors": 8
     },
     {
-      "id": "sketch_construction",
+      "id": "joints_limits",
       "ok": true,
       "errors": 9
+    },
+    {
+      "id": "sketch_construction",
+      "ok": true,
+      "errors": 10
     },
     {
       "id": "reference_dimensions",

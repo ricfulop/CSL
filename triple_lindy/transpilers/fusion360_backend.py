@@ -1579,10 +1579,26 @@ class FusionBackend:
                         kind_sub = (feat.get("kind") or "linear").lower()
                         if kind_sub == "circular":
                             circ = root.features.circularPatternFeatures
+                            # Axis selection: axis (X|Y|Z) or axis_query (edge)
                             axis = root.zConstructionAxis
+                            ax_name = (feat.get("axis") or "").upper()
+                            if ax_name.startswith("X"):
+                                axis = root.xConstructionAxis
+                            elif ax_name.startswith("Y"):
+                                axis = root.yConstructionAxis
+                            # Best-effort: allow axis_query to supply an edge as axis
+                            try:
+                                if feat.get("axis_query"):
+                                    acol = self._resolve_query(root, feat.get("axis_query"), entity_type="edge")
+                                    if acol and acol.count > 0:
+                                        axis = acol.item(0)
+                            except Exception:
+                                pass
                             qty = adsk.core.ValueInput.createByString(str(int(feat.get("count") or 6)))
-                            angle = adsk.core.ValueInput.createByReal(2 * 3.141592653589793)
-                            c_in = circ.createInput(obj_col, axis, qty, angle)
+                            # Angle: default 360 deg; support degrees input
+                            ang_deg = self._parse_length_mm(str(feat.get("angle") or "360")) or 360.0
+                            ang = adsk.core.ValueInput.createByReal((ang_deg / 180.0) * 3.141592653589793)
+                            c_in = circ.createInput(obj_col, axis, qty, ang)
                             cp = circ.add(c_in)
                             mapping[feat_id] = f"fusion:pattern_circular:{cp.entityToken}"
                             try:
@@ -1603,7 +1619,8 @@ class FusionBackend:
                                 if path is not None:
                                     count = int(feat.get("count") or 3)
                                     qty = adsk.core.ValueInput.createByString(str(count))
-                                    d1 = adsk.core.ValueInput.createByReal(1.0)
+                                    spacing_mm = self._parse_length_mm(feat.get("spacing") or "10") or 10.0
+                                    d1 = adsk.core.ValueInput.createByReal(spacing_mm / 10.0)
                                     p_in = ppf.createInput(obj_col, path, qty, d1, False)
                                     pp = ppf.add(p_in)
                                     mapping[feat_id] = f"fusion:pattern_path:{pp.entityToken}"
@@ -1618,10 +1635,20 @@ class FusionBackend:
                             patt = root.features.rectangularPatternFeatures
                             # Direction 1
                             dir1 = root.xConstructionAxis
+                            ax1 = (feat.get("dir1") or feat.get("axis1") or "").upper()
+                            if ax1.startswith("Y"):
+                                dir1 = root.yConstructionAxis
+                            elif ax1.startswith("Z"):
+                                dir1 = root.zConstructionAxis
                             count1 = int(feat.get("count1") or feat.get("count") or 2)
                             spacing1_mm = self._parse_length_mm(feat.get("spacing1") or feat.get("spacing") or "10") or 10.0
                             # Direction 2 (optional for grid)
                             dir2 = root.yConstructionAxis
+                            ax2 = (feat.get("dir2") or feat.get("axis2") or "").upper()
+                            if ax2.startswith("X"):
+                                dir2 = root.xConstructionAxis
+                            elif ax2.startswith("Z"):
+                                dir2 = root.zConstructionAxis
                             count2 = int(feat.get("count2") or 1)
                             spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
                             # Table-driven fallback with per-instance transforms
