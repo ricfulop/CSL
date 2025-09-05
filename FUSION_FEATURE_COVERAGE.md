@@ -19,13 +19,13 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Sweep
   - [Partial] orientation hints; optional guide rail
 - Loft
-  - [Partial] sections; G1/G2 continuity requested → [Diag] if unsupported; optional guide rails
+  - [Partial] sections; continuity mapping (G1/G2 via enums) best-effort; orientation hints; optional rails/centerline; [Diag] when unsupported
 - Shell
   - [Partial] whole-body inward by thickness
 - Draft
   - [Partial] face set + neutral plane + angle; pull direction fixed
 - Fillet
-  - [Partial] per-edge groups; variable radius/setbacks when API supports; otherwise constants; transitions/setbacks → [Diag]
+  - [Partial] per-edge groups; variable radius; vertex setbacks (API-dependent); transitions → [Diag]
 - Chamfer
   - [Partial] equal-distance; points variant; angle+distance variant (best-effort); transitions/setbacks → [Diag]
 - Wrap/Emboss/Project
@@ -35,7 +35,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Threads
   - [Partial] cosmetic/modeled; designation/class/handedness mapping; selection simplified to last-body cylindrical faces
 - Patterns
-  - [Partial] rectangular/grid, circular, path; table-driven fallback via move/copy; no full variable per-instance controls
+  - [Partial] rectangular/grid, circular, path; per-instance via `instances`/`table` (fallback) and native element transforms when exposed
 - Boolean
   - [Done] union/subtract/intersect; keep tools
 - Move/Offset/Replace Face
@@ -49,7 +49,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Selection/Queries
   - [Partial] created_by, owner_feature==, pattern_instances, tangent_connected(tol), largest_by, curvature≈/radius≈/area≈, by_material; lineage tags; cross-session persistence (basic)
 - Export/Thumbnail
-  - [Partial] STEP/STL with resolution/units best-effort; deterministic thumbnail views/styles
+  - [Partial] STEP/STL with resolution/units best-effort; STL advanced tessellation (deviation/angle/aspect/max-edge); deterministic thumbnail views/styles
 - APS Orchestration
   - [Done] token cache/refresh, bucket ensure, upload retries/backoff, telemetry, configurable buckets
 
