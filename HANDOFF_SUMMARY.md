@@ -100,10 +100,9 @@ def _apply_materials_and_pmi(self, csl_ir: Dict[str, Any]) -> None:
 - #6 APS orchestration strategy
 
 ### Quick resume checklist for a new session
-1) Fix `_apply_materials_and_pmi` per snippet above; run lints
-2) Close prod-grade-materials-pmi by adding face/plane PMI placement + material refs
-3) Add APS orchestration retries/telemetry; document env vars
-4) Add conformance tests for loft G1/G2, variable fillet/chamfer, wrap/emboss, joints limits
-5) Update `BACKEND_GAP_ANALYSIS.md` acceptance tables; mark items complete as tests pass
+1) See `HANDOFF_SUMMARY_v0_3_0.md` for the latest shipped scope and next-milestone items
+2) Run `make golden-check` locally or in CI to validate changes
+3) For APS testing, set `APS_CLIENT_ID`/`APS_CLIENT_SECRET` and try `make aps-auth` and `make aps-da-list-engines`
+4) Update `BACKEND_GAP_ANALYSIS.md` acceptance tables as features land
 
 
