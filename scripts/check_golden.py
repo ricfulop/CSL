@@ -35,6 +35,15 @@ for c in summary.get('cases', []):
 
 if ok and not fail_cases:
     print('Golden check: PASS')
+    # Optional capability snapshot for debugging
+    try:
+        from triple_lindy.transpilers.fusion360_backend import FusionBackend  # type: ignore
+        be = FusionBackend()
+        be.open_session()
+        caps = be.get_capabilities()
+        Path('out/capabilities_fusion.json').write_text(json.dumps(caps, indent=2))
+    except Exception:
+        pass
     sys.exit(0)
 
 if fail_cases:
