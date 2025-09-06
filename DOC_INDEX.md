@@ -54,6 +54,10 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: Checklist for adapter support of new v1.2 items.
   - Keywords: conformance, checklist, adapters
 
+- [User Guide: `CSL_v1_2/USER_GUIDE_v1_2.md`](CSL_v1_2/USER_GUIDE_v1_2.md)
+  - Summary: Guided introduction to v1.2 language, syntax, examples, and best practices.
+  - Keywords: user guide, tutorial, v1.2, syntax, examples
+
 - [JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`](CSL_v1_1/csl_v1_1_schema.json)
   - Summary: Canonical JSON IR schema for CSL v1.1 including export and thumbnail operations and backend capability structure.
   - Keywords: schema, JSON, IR, validation, export, thumbnail, capabilities

@@ -1,0 +1,20 @@
+csl 1.2
+name "Threads and Emboss"
+units mm
+
+sketch s0 on world.xy {
+  circle id:boss center (0,0) d 12 mm
+}
+
+feature extrude E profile boss distance 12 mm op new_solid result part
+
+feature thread T { designation: "ISO M6x1", class: "6H", pitch: 1 mm, handedness: right, mode: modeled, target: query.created_by("E") }
+
+sketch label on world.yz {
+  text id:tx at (0,0) height 4 mm content "CSL" font "Arial"
+}
+
+feature emboss Em { onto: query.created_by("E"), depth: 0.5 mm, draft: 5 deg }
+
+export step id:out format STEP path "out/threads_and_emboss.step" target part
+

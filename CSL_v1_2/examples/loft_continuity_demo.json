@@ -1,0 +1,21 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Loft Continuity Demo", "units": "mm"},
+  "params": [{"id":"diameter","type":"length","value":"30 mm"}],
+  "sketches": [
+    {"id": "s0", "plane": "world.xy", "entities": [
+      {"kind": "circle", "id": "c0", "center": "0,0", "d": "diameter"}
+    ]},
+    {"id": "s1", "plane": "world.xz", "entities": [
+      {"kind": "rect", "id": "r1", "p1": "-10 mm,-5 mm", "p2": "10 mm,5 mm"}
+    ]}
+  ],
+  "features": [
+    {"kind": "loft", "id": "L", "sections": ["s0.profile(c0)", "s1.profile(r1)"], "continuity": "G2", "orientation": "frenet", "result": "body"}
+  ],
+  "export": [
+    {"id": "out", "format": "STEP", "path": "out/loft_continuity_demo.step", "target": "part"}
+  ]
+}
+
+

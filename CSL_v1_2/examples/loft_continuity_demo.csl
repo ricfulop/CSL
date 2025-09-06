@@ -1,0 +1,18 @@
+csl 1.2
+name "Loft Continuity Demo"
+units mm
+
+param diameter: length = 30 mm
+
+sketch s0 on world.xy {
+  circle id:c0 center (0,0) d diameter
+}
+
+sketch s1 on world.xz {
+  rect id:r1 p1 (-10 mm,-5 mm) p2 (10 mm,5 mm)
+}
+
+feature loft L sections [s0.profile(c0), s1.profile(r1)] continuity G2 orientation frenet result body
+
+export step id:out format STEP path "out/loft_continuity_demo.step" target part
+

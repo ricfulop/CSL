@@ -1,0 +1,22 @@
+csl 1.2
+name "Variable Fillet & Chamfer"
+units mm
+
+sketch base on world.xy {
+  rect id:plate p1 (0,0) p2 (60 mm, 30 mm)
+  circle id:h1 center (15 mm, 15 mm) d 6 mm
+}
+
+feature extrude E profile (plate - h1) distance 5 mm op new_solid result part
+
+feature fillet F {
+  edges: [ { q: query.created_by("E"), r: [2 mm, 5 mm] } ]
+  transitions: setback
+}
+
+feature chamfer C {
+  edges: [ { q: query.created_by("F"), distance: 1 mm, angle: 45 deg } ]
+}
+
+export step id:out format STEP path "out/variable_fillet_chamfer.step" target part
+

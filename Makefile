@@ -23,6 +23,15 @@ query-fuzz:
 perf:
 	PYTHONPATH=$(PWD) python3 scripts/perf_baseline.py
 
+# CSL validation
+validate-v12:
+	# Validate all v1.2 IR examples (JSON) against the v1.2 schema
+	PYTHONPATH=$(PWD) python3 scripts/validate_csl.py --schema CSL_v1_2/csl_v1_2_schema.json CSL_v1_2/examples/*.json
+
+validate-v11:
+	# Validate all v1.1 IR examples (JSON) against the v1.1 schema
+	PYTHONPATH=$(PWD) python3 scripts/validate_csl.py --schema CSL_v1_1/csl_v1_1_schema.json CSL_v1_1/examples/*.json
+
 aps-auth:
 	python3 scripts/aps_auth_test.py
 

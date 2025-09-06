@@ -1,0 +1,20 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Variable Fillet & Chamfer", "units": "mm"},
+  "sketches": [
+    {"id":"base","plane":"world.xy","entities":[
+      {"kind":"rect","id":"plate","p1":"0,0","p2":"60 mm,30 mm"},
+      {"kind":"circle","id":"h1","center":"15 mm,15 mm","d":"6 mm"}
+    ]}
+  ],
+  "features": [
+    {"kind":"extrude","id":"E","profile":"plate - h1","distance":"5 mm","op":"new_solid","result":"part"},
+    {"kind":"fillet","id":"F","edges":[{"q":"query.created_by('E')","r":["2 mm","5 mm"]}],"transitions":"setback"},
+    {"kind":"chamfer","id":"C","edges":[{"q":"query.created_by('F')","distance":"1 mm","angle":"45 deg"}]}
+  ],
+  "export": [
+    {"id":"out","format":"STEP","path":"out/variable_fillet_chamfer.step","target":"part"}
+  ]
+}
+
+

@@ -79,6 +79,13 @@
       "type": "markdown"
     },
     {
+      "path": "CSL_v1_2/USER_GUIDE_v1_2.md",
+      "title": "CSL v1.2 User Guide (Draft)",
+      "summary": "Guided introduction to v1.2 syntax, examples, and best practices.",
+      "keywords": ["user guide", "tutorial", "v1.2", "syntax", "examples"],
+      "type": "markdown"
+    },
+    {
       "path": "CSL_v1_1/csl_v1_1_spec.md",
       "title": "CSL (CAD-Specific Language) – Version 1.1",
       "summary": "Full language spec covering goals, metadata, params, sketches, features, queries, assemblies, ECAD, exports/thumbnails, backend capabilities, and cheatsheet.",

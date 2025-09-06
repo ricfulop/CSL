@@ -1,0 +1,18 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Threads and Emboss", "units": "mm"},
+  "sketches": [
+    {"id":"s0","plane":"world.xy","entities":[{"kind":"circle","id":"boss","center":"0,0","d":"12 mm"}]},
+    {"id":"label","plane":"world.yz","entities":[{"kind":"text","id":"tx","at":"0,0","height":"4 mm","content":"CSL","font":"Arial"}]}
+  ],
+  "features": [
+    {"kind":"extrude","id":"E","profile":"boss","distance":"12 mm","op":"new_solid","result":"part"},
+    {"kind":"thread","id":"T","designation":"ISO M6x1","class":"6H","pitch":"1 mm","handedness":"right","mode":"modeled","target":"query.created_by('E')"},
+    {"kind":"emboss","id":"Em","onto":"query.created_by('E')","depth":"0.5 mm","draft":"5 deg"}
+  ],
+  "export": [
+    {"id":"out","format":"STEP","path":"out/threads_and_emboss.step","target":"part"}
+  ]
+}
+
+
