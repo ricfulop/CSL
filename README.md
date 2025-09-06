@@ -157,6 +157,7 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
 
 ### Learn more
 - Documentation index: `DOC_INDEX.md`
+- CSL Glossary: `CSL_GLOSSARY.md`
 - Triple Lindy implementation guide: `triple_lindy_complete with CSL.md`
 
 ### Fusion backend status (v1.2)

@@ -4,6 +4,9 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 
 ### Root
 - [README.md](README.md)
+- [CSL_GLOSSARY.md](CSL_GLOSSARY.md)
+  - Summary: Comprehensive glossary of CSL constructs and syntax across v1.0–v1.2; quick lookup with version tags.
+  - Keywords: glossary, syntax, reference, v1.0, v1.1, v1.2
   - Summary: AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.
   - Keywords: CSL, AI agent, meta-parametric, Fusion 360, Onshape, SolidWorks, FreeCAD, Blender
 - [BACKLOG_FUSION_IMPLEMENTATION.md](BACKLOG_FUSION_IMPLEMENTATION.md)

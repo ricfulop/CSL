@@ -9,6 +9,13 @@
       "type": "markdown"
     },
     {
+      "path": "CSL_GLOSSARY.md",
+      "title": "CSL Glossary (v1.0  v1.2)",
+      "summary": "Comprehensive glossary of CSL constructs and syntax across versions; quick lookup.",
+      "keywords": ["glossary", "syntax", "reference", "v1.0", "v1.1", "v1.2"],
+      "type": "markdown"
+    },
+    {
       "path": "LICENSE",
       "title": "MIT License",
       "summary": "MIT License (c) 2025 Ric Fulop.\n",
