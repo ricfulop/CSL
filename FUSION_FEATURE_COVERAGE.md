@@ -13,7 +13,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Extrude
   - [Done] distance extent; op new/cut/join
 - Thin extrude
-  - [Partial] thickness, side (best-effort mapping)
+  - [Done] thickness, side (center/one-side/two-sides), dual-wall when exposed; to-face/through-all extent best‑effort
 - Rib
   - [Done] path + thickness + draft
 - Revolve

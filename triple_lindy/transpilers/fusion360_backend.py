@@ -1156,28 +1156,78 @@ class FusionBackend:
                             ext_feats = root.features.extrudeFeatures
                             op = self._feature_operation(feat.get("operation") or feat.get("op"))
                             ext_input = ext_feats.createInput(prof, op)
-                            dist_mm = self._parse_length_mm(feat.get("distance") or feat.get("thickness") or "10") or 10.0
+                            # Extent: distance (default) or to-face/through-all if exposed
+                            dist_mm = self._parse_length_mm(feat.get("distance") or feat.get("depth") or feat.get("thickness") or "10") or 10.0
                             dist_cm = dist_mm / 10.0
-                            ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(dist_cm))
+                            try:
+                                # To-face extent if requested
+                                to_face = None
+                                if feat.get("to_face_query"):
+                                    try:
+                                        fc = self._resolve_query(root, feat.get("to_face_query"), entity_type="face")
+                                        if fc and fc.count > 0:
+                                            to_face = fc.item(0)
+                                    except Exception:
+                                        to_face = None
+                                if to_face is not None and hasattr(ext_input, "setToExtent"):
+                                    ext_input.setToExtent(to_face)
+                                else:
+                                    # Through all extent
+                                    if str(feat.get("through_all") or "").lower() in ("1", "true", "yes") and hasattr(ext_input, "setAllExtent"):
+                                        ext_input.setAllExtent(False)
+                                    else:
+                                        ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(dist_cm))
+                            except Exception:
+                                ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(dist_cm))
                             # Thin wall parameters
                             wall_mm = self._parse_length_mm(feat.get("wall") or feat.get("wall_thickness") or "2") or 2.0
                             wall_cm = wall_mm / 10.0
-                            side = (feat.get("side") or "center").lower()
+                            side = (feat.get("side") or feat.get("wall_side") or "center").lower()
+                            wall2_mm = self._parse_length_mm(feat.get("wall2") or feat.get("wall_thickness2"))
+                            wall2_cm = None if wall2_mm is None else (wall2_mm / 10.0)
                             try:
                                 # Newer API supports setThinExtrude
                                 ext_input.isThinFeature = True
                                 ext_input.thickness = adsk.core.ValueInput.createByReal(wall_cm)
                                 if hasattr(ext_input, "thinDirection"):
                                     # 0: center, 1: oneSide, 2: twoSides (example mapping)
-                                    if side in ("center", "symmetric"):
+                                    if side in ("center", "symmetric", "centre"):
                                         ext_input.thinDirection = 0
-                                    elif side in ("outward", "one_side_out"):
+                                    elif side in ("outward", "outside", "one_side_out", "one_side"):
                                         ext_input.thinDirection = 1
                                     else:
                                         ext_input.thinDirection = 2
+                                # If API supports separate second thickness
+                                for attr in ("thickness2", "secondThickness"):
+                                    if wall2_cm is not None and hasattr(ext_input, attr):
+                                        try:
+                                            setattr(ext_input, attr, adsk.core.ValueInput.createByReal(wall2_cm))
+                                        except Exception:
+                                            pass
+                            except Exception:
+                                # Fallbacks for older APIs: try surface extrude + thicken or non-solid with thickness
+                                try:
+                                    # Try non-solid thin extrude if supported
+                                    if hasattr(ext_input, "isSolid"):
+                                        ext_input.isSolid = False
+                                        if hasattr(ext_input, "thickness"):
+                                            ext_input.thickness = adsk.core.ValueInput.createByReal(wall_cm)
+                                except Exception:
+                                    pass
+                            ext = ext_feats.add(ext_input)
+                            # If still not a thin solid and a thicken feature exists, try to thicken
+                            try:
+                                if str(feat.get("ensure_solid") or "").lower() in ("1", "true", "yes"):
+                                    bodies = self._all_bodies(root)
+                                    last = bodies.item(bodies.count - 1) if bodies.count > 0 else None
+                                    if last and getattr(last, "isSolid", True) is False:
+                                        thick = root.features.thickenFeatures if hasattr(root.features, "thickenFeatures") else None
+                                        if thick:
+                                            ti = thick.createInput(last.faces, adsk.core.ValueInput.createByReal(wall_cm), True)
+                                            tf = thick.add(ti)
+                                            mapping[f"{feat_id}:thicken"] = f"fusion:thicken:{tf.entityToken}"
                             except Exception:
                                 pass
-                            ext = ext_feats.add(ext_input)
                             mapping[feat_id] = f"fusion:thin_extrude:{ext.entityToken}"
                             try:
                                 self._record_lineage(feat_id, ext, root)
