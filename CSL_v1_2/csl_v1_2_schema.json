@@ -12,7 +12,8 @@
     "features": { "type": "array", "items": {"type": "object"} },
     "materials": { "type": "array", "items": {"type": "object"} },
     "export": { "type": "array", "items": {"type": "object"} },
-    "thumbnail": { "type": "array", "items": {"type": "object"} }
+    "thumbnail": { "type": "array", "items": {"type": "object"} },
+    "assemblies": { "type": "array", "items": {"type": "object"} }
   },
   "additionalProperties": true,
   "allOf": [
@@ -64,6 +65,21 @@
       }}}}}
     },
     {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "wrap"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "onto": {},
+        "depth": {},
+        "direction": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "project"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "onto": {},
+        "along": {}
+      }}}}}
+    },
+    {
       "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "thread"}}}}}},
       "then": { "properties": { "features": {"items": {"properties": {
         "designation": {"type": "string"},
@@ -77,6 +93,48 @@
       "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "pattern"}}}}}},
       "then": { "properties": { "features": {"items": {"properties": {
         "table": {"type": "array", "items": {"type": "object"}}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "patch"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"boundary": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "extend"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"distance": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "trim"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"tool": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "knit"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"targets": {"type": "array"}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "sheet_base"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"profile": {}, "thickness": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "edge_flange"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"edge": {}, "length": {}, "angle": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "bend"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"radius": {}, "relief": {}}}}}}
+    },
+    {
+      "if": { "properties": { "assemblies": {"contains": {"properties": {"joints": {"type": "array"}}}}}},
+      "then": { "properties": { "assemblies": {"items": {"properties": {
+        "instances": {"type": "array", "items": {"type": "object"}},
+        "joints": {"type": "array", "items": {"type": "object", "properties": {
+          "type": {"type": "string", "enum": ["rigid","revolute","slider","cylindrical","pin_slot"]},
+          "between": {"type": "array", "items": {}},
+          "axis": {},
+          "limits": {"type": "object", "properties": {"linear": {"type": "object"}, "angular": {"type": "object"}}},
+          "damping": {},
+          "preload": {}
+        }}}
       }}}}}
     }
   ]

@@ -1,0 +1,23 @@
+csl 1.2
+name "Assembly Slider Demo"
+units mm
+
+sketch base_sk on world.xy { rect id:plate p1 (0,0) p2 (80 mm, 40 mm) }
+feature extrude base_ex profile plate distance 6 mm op new_solid result part
+
+sketch cart_sk on world.xy { rect id:car p1 (-10 mm,-5 mm) p2 (10 mm,5 mm) }
+feature extrude cart_ex profile car distance 10 mm op new_solid result part
+
+assembly A {
+  instance base = created_by(base_ex)
+  instance cart = created_by(cart_ex) at transform(translate: (0 mm, 0 mm, 6 mm))
+
+  joint j_slider type slider between cart and base axis world.x {
+    limits { linear: { min: 0 mm, max: 50 mm } }
+    damping 0.1
+    preload 0 N
+  }
+}
+
+export step id:asm format STEP path "out/assembly_slider_demo.step" target assembly
+
