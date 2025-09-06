@@ -2730,6 +2730,34 @@ class FusionBackend:
                 elif fmt in ("3MF", "OBJ"):
                     # Use generic export manager; not all formats may be available
                     opts = exp.createOBJExportOptions(path) if fmt == "OBJ" else exp.createMF3DExportOptions(path)
+                    try:
+                        # 3MF: units/binary/appearance (best-effort)
+                        if fmt == "3MF":
+                            try:
+                                req_units = (op.get("units") or op.get("meshUnits") or "").lower()
+                                unit_map = {
+                                    "mm": (getattr(adsk.fusion, "UnitsMillimeter", None) or getattr(adsk.fusion, "StlUnitsMillimeter", None)),
+                                    "cm": (getattr(adsk.fusion, "UnitsCentimeter", None) or getattr(adsk.fusion, "StlUnitsCentimeter", None)),
+                                    "inch": (getattr(adsk.fusion, "UnitsInch", None) or getattr(adsk.fusion, "StlUnitsInch", None)),
+                                }
+                                if hasattr(opts, "units") and req_units in unit_map and unit_map[req_units] is not None:
+                                    opts.units = unit_map[req_units]
+                            except Exception:
+                                pass
+                            try:
+                                if hasattr(opts, "isBinary") and op.get("binary") is not None:
+                                    opts.isBinary = bool(op.get("binary"))
+                            except Exception:
+                                pass
+                            try:
+                                if hasattr(opts, "exportAppearance") and op.get("appearance") is not None:
+                                    opts.exportAppearance = bool(op.get("appearance"))
+                            except Exception:
+                                pass
+                        }
+                    } catch (Exception) {
+                        pass
+                    }
                     exp.execute(opts)
                 # Upload artifact to APS if configured
                 try:
