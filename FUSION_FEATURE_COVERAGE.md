@@ -1,6 +1,6 @@
 # Fusion Backend Feature Coverage (vs Fusion 360 API)
 
-![Coverage](https://img.shields.io/badge/Fusion%20Coverage-63%25-yellowgreen)
+![Coverage](https://img.shields.io/badge/Fusion%20Coverage-77%25-green)
 
 Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diagnostics only; [Todo] not implemented.
 
