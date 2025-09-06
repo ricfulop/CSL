@@ -1960,10 +1960,17 @@ class FusionBackend:
                         seed_q = feat.get("seed_query") or feat.get("seed")
                         if seed_q:
                             try:
+                                # Try bodies first
                                 sqc = self._resolve_query(root, seed_q, entity_type="body")
                                 if sqc and sqc.count > 0:
                                     for i in range(sqc.count):
                                         obj_col.add(sqc.item(i))
+                                else:
+                                    # Try faces if bodies not present
+                                    fqc = self._resolve_query(root, seed_q, entity_type="face")
+                                    if fqc and fqc.count > 0:
+                                        for i in range(fqc.count):
+                                            obj_col.add(fqc.item(i))
                             except Exception:
                                 pass
                         if obj_col.count == 0:
@@ -1991,6 +1998,12 @@ class FusionBackend:
                             ang_deg = self._parse_length_mm(str(feat.get("angle") or "360")) or 360.0
                             ang = adsk.core.ValueInput.createByReal((ang_deg / 180.0) * 3.141592653589793)
                             c_in = circ.createInput(obj_col, axis, qty, ang)
+                            # Optional: rotate direction and compute options if available
+                            try:
+                                if hasattr(c_in, "isSymmetric") and feat.get("symmetric") is not None:
+                                    c_in.isSymmetric = bool(feat.get("symmetric"))
+                            except Exception:
+                                pass
                             cp = circ.add(c_in)
                             mapping[feat_id] = f"fusion:pattern_circular:{cp.entityToken}"
                             try:
@@ -2020,6 +2033,12 @@ class FusionBackend:
                                     spacing_mm = self._parse_length_mm(feat.get("spacing") or "10") or 10.0
                                     d1 = adsk.core.ValueInput.createByReal(spacing_mm / 10.0)
                                     p_in = ppf.createInput(obj_col, path, qty, d1, False)
+                                    # Align to path direction if exposed
+                                    try:
+                                        if hasattr(p_in, "isAlignToPath") and feat.get("align_to_path") is not None:
+                                            p_in.isAlignToPath = bool(feat.get("align_to_path"))
+                                    except Exception:
+                                        pass
                                     pp = ppf.add(p_in)
                                     mapping[feat_id] = f"fusion:pattern_path:{pp.entityToken}"
                                     try:
@@ -2046,6 +2065,7 @@ class FusionBackend:
                                 dir1 = root.zConstructionAxis
                             count1 = int(feat.get("count1") or feat.get("count") or 2)
                             spacing1_mm = self._parse_length_mm(feat.get("spacing1") or feat.get("spacing") or "10") or 10.0
+                            mode1 = (feat.get("mode1") or feat.get("distance_type1") or "spacing").lower()
                             # Direction 2 (optional for grid)
                             dir2 = root.yConstructionAxis
                             ax2 = (feat.get("dir2") or feat.get("axis2") or "").upper()
@@ -2055,6 +2075,7 @@ class FusionBackend:
                                 dir2 = root.zConstructionAxis
                             count2 = int(feat.get("count2") or 1)
                             spacing2_mm = self._parse_length_mm(feat.get("spacing2") or "10") or 10.0
+                            mode2 = (feat.get("mode2") or feat.get("distance_type2") or "spacing").lower()
                             # Table-driven fallback with per-instance transforms (also supports 'instances')
                             per_inst = None
                             if isinstance(feat.get("table"), list) and len(feat.get("table")) > 0:
@@ -2111,11 +2132,37 @@ class FusionBackend:
                                     pass
                             qty1 = adsk.core.ValueInput.createByString(str(count1))
                             dist1 = adsk.core.ValueInput.createByReal((spacing1_mm / 10.0))
-                            input_def = patt.createInput(obj_col, dir1, qty1, dist1, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+                            dist_type1 = adsk.fusion.PatternDistanceType.SpacingPatternDistanceType
+                            try:
+                                if "extent" in mode1 and hasattr(adsk.fusion.PatternDistanceType, "ExtentPatternDistanceType"):
+                                    dist_type1 = adsk.fusion.PatternDistanceType.ExtentPatternDistanceType
+                            except Exception:
+                                pass
+                            input_def = patt.createInput(obj_col, dir1, qty1, dist1, dist_type1)
                             if count2 > 1:
                                 qty2 = adsk.core.ValueInput.createByString(str(count2))
                                 dist2 = adsk.core.ValueInput.createByReal((spacing2_mm / 10.0))
-                                input_def.setDirectionTwo(dir2, qty2, dist2)
+                                try:
+                                    dist_type2 = adsk.fusion.PatternDistanceType.SpacingPatternDistanceType
+                                    if "extent" in mode2 and hasattr(adsk.fusion.PatternDistanceType, "ExtentPatternDistanceType"):
+                                        dist_type2 = adsk.fusion.PatternDistanceType.ExtentPatternDistanceType
+                                    if hasattr(input_def, "setDirectionTwoWithDistanceType"):
+                                        input_def.setDirectionTwoWithDistanceType(dir2, qty2, dist2, dist_type2)
+                                    else:
+                                        input_def.setDirectionTwo(dir2, qty2, dist2)
+                                except Exception:
+                                    input_def.setDirectionTwo(dir2, qty2, dist2)
+                            # Optional symmetry flags
+                            try:
+                                if hasattr(input_def, "isSymmetricInDirectionOne") and feat.get("symmetric1") is not None:
+                                    input_def.isSymmetricInDirectionOne = bool(feat.get("symmetric1"))
+                            except Exception:
+                                pass
+                            try:
+                                if hasattr(input_def, "isSymmetricInDirectionTwo") and feat.get("symmetric2") is not None:
+                                    input_def.isSymmetricInDirectionTwo = bool(feat.get("symmetric2"))
+                            except Exception:
+                                pass
                             pat = patt.add(input_def)
                             mapping[feat_id] = f"fusion:pattern_linear:{pat.entityToken}"
                             try:

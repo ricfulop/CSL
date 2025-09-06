@@ -37,7 +37,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Threads
   - [Partial] cosmetic/modeled; designation/class/handedness mapping; selection simplified to last-body cylindrical faces
 - Patterns
-  - [Partial] rectangular/grid, circular, path; per‑instance transforms via table/native element transforms when exposed
+  - [Done] rectangular/grid (spacing/extent; symmetry), circular (axis/angle; symmetry), path (spacing; align-to-path); per‑instance transforms via table/native elements when exposed
 - Boolean
   - [Done] union/subtract/intersect; keep tools
 - Move/Offset/Replace Face
