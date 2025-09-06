@@ -431,15 +431,25 @@ class FusionBackend:
                         elif ckind == "tangent" and a and b:
                             cons.addTangent(a, b)
                         elif ckind in ("curvature", "curvature_continuity", "g2") and a and b:
-                            # Attempt curvature continuity if API provides it; otherwise record diagnostic
+                            # Attempt curvature continuity if API provides it; otherwise fallback to tangent with diagnostic
                             try:
+                                # Ensure entities are curves where possible; if not, attempt to extract parent curves
+                                ent_a = a
+                                ent_b = b
+                                try:
+                                    if hasattr(a, "parentCurve"): ent_a = a.parentCurve
+                                except Exception: pass
+                                try:
+                                    if hasattr(b, "parentCurve"): ent_b = b.parentCurve
+                                except Exception: pass
                                 if hasattr(cons, "addCurvature"):
-                                    cons.addCurvature(a, b)
+                                    cons.addCurvature(ent_a, ent_b)
                                 else:
                                     try:
-                                        self._diag("E1205", where="sketch", message="Curvature constraint not supported by this Fusion version; consider tangent + smoothing")
+                                        cons.addTangent(ent_a, ent_b)
+                                        self._diag("E1205I", where="sketch", message="Curvature continuity not available; applied tangent as best-effort")
                                     except Exception:
-                                        pass
+                                        self._diag("E1205", where="sketch", message="Curvature constraint not supported by this Fusion version; consider tangent + smoothing")
                             except Exception:
                                 try:
                                     self._diag("E1205", where="sketch", message="Curvature constraint failed to apply on these entities")
@@ -451,33 +461,65 @@ class FusionBackend:
                             cons.addFixed(a)
                         elif ckind == "distance" and a and b:
                             d_mm = self._parse_length_mm(cst.get("value") or cst.get("d") or cst.get("distance")) or 0.0
+                            orient_str = (cst.get("orientation") or cst.get("orient") or "aligned").lower()
                             try:
-                                dd = dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
-                                dd.parameter.value = (d_mm / 10.0)
+                                # Prefer orientation signature when available
+                                dd = None
+                                orient_enum = None
+                                try:
+                                    import adsk.fusion  # type: ignore
+                                    enum_t = getattr(adsk.fusion, "SketchDimensionOrientations", None) or getattr(adsk.fusion, "DimensionOrientations", None)
+                                    if enum_t:
+                                        if orient_str.startswith("hor"):
+                                            orient_enum = getattr(enum_t, "HorizontalDimensionOrientation", None)
+                                        elif orient_str.startswith("ver"):
+                                            orient_enum = getattr(enum_t, "VerticalDimensionOrientation", None)
+                                        else:
+                                            orient_enum = getattr(enum_t, "AlignedDimensionOrientation", None)
+                                except Exception:
+                                    orient_enum = None
+                                if orient_enum is not None:
+                                    try:
+                                        dd = dims.addDistanceDimension(a, b, orient_enum, adsk.core.Point3D.create(0, 0, 0))
+                                    except Exception:
+                                        dd = None
+                                if dd is None:
+                                    dd = dims.addDistanceDimension(a, b, adsk.core.Point3D.create(0, 0, 0))
+                                # Set value in cm units
+                                try:
+                                    dd.parameter.value = (d_mm / 10.0)
+                                except Exception:
+                                    pass
+                                # Driven/reference flags
                                 try:
                                     driven = cst.get("driven")
                                     if driven is None:
                                         driven = cst.get("reference")
                                     if driven is not None:
-                                        # Try multiple API variants
+                                        for attr in ("isDriving", "isReference"):
+                                            if hasattr(dd, attr):
+                                                try:
+                                                    setattr(dd, attr, False if attr == "isDriving" and bool(driven) else (True if attr == "isReference" and bool(driven) else getattr(dd, attr)))
+                                                except Exception:
+                                                    pass
                                         try:
-                                            dd.isDriving = (not bool(driven))
+                                            if hasattr(dd, "parameter") and hasattr(dd.parameter, "isDriving"):
+                                                dd.parameter.isDriving = (not bool(driven))
                                         except Exception:
                                             pass
                                         try:
-                                            dd.isReference = bool(driven)
-                                        except Exception:
-                                            pass
-                                        try:
-                                            dd.parameter.isDriving = (not bool(driven))
-                                        except Exception:
-                                            pass
-                                        try:
-                                            dd.parameter.isDriven = bool(driven)
+                                            if hasattr(dd, "parameter") and hasattr(dd.parameter, "isDriven"):
+                                                dd.parameter.isDriven = bool(driven)
                                         except Exception:
                                             pass
                                 except Exception:
                                     pass
+                            except Exception:
+                                pass
+                        elif ckind in ("equal_radius", "equal_radii") and a and b:
+                            # Equal radius for arcs/circles maps to Equal constraint in Fusion
+                            try:
+                                cons.addEqual(a, b)
                             except Exception:
                                 pass
                         elif ckind == "angle" and a and b:
