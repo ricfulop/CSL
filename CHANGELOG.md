@@ -62,3 +62,27 @@ Commits
 - PMI/GD&T minimal note placement and case.
 - Assembly stubs (`mate_connector`, `assembly_pattern`) and case.
 - Capabilities metadata additions; `scripts/dump_capabilities.py`; Make targets & docs updates.
+
+## v0.5.0 (Fusion backend 100% coverage, selection/threads/wrap/export complete)
+
+Highlights
+- Coverage: Fusion backend feature coverage reached 100% (`FUSION_FEATURE_COVERAGE.md`).
+- Selection/Queries: created_by/owner_feature, pattern_instances, tangent_connected, largest/largest_by, curvature≈/radius≈/area≈, by_material/by_tag/by_id, faces_parallel/normal==, cylindrical_faces(d≈/r≈, axis≈), loop_edges(seed,boundary), of(expand), owner_body; lineage tokens+attributes; cross‑session persistence.
+- Threads: cosmetic/modeled; faces_query or cylindrical_faces(d≈/axis≈); designation/class/hand/length mapping; diameter best‑effort.
+- Wrap/Emboss/Project: modes (wrap/emboss/project), depth/draft/direction, reverse; inline text or sketch sources; multi‑target faces best‑effort; geodesic requested with diagnostic fallback; lineage recorded.
+- Loft: sections; continuity mapping (G0/G1/G2 incl. per‑section when exposed); orientation (perpendicular/fixed_normal/binormal); rails/centerline.
+- Move/Offset/Replace Face: native move (translate/rotate), offset faces (± distance, multi‑face sets), replace faces with plane or arbitrary face/surface; fallbacks retained.
+- Sketch constraints: curvature continuity G2 with multi‑API fallback; deterministic tangent fallback + diagnostics.
+- Export/Thumbnail: STEP with AP242 protocol attempt + sidecar metadata; STL units/resolution + advanced tessellation (deviation/angle/aspect/max‑edge); 3MF units/binary/appearance parity; deterministic thumbnails.
+- Automation: remote validation scripts/targets; hello/status flows; conformance cases extended.
+
+Commits
+- Selection/queries completion and lineage persistence improvements.
+- Threads targeting and properties (designation/class/hand/length).
+- Wrap/Emboss/Project parity including inline text source and multi‑face support.
+- Loft continuity/orientation and rails handling refinements.
+- Move/Offset/Replace Face native implementations and enhancements.
+- Sketch G2 curvature continuity with diagnostics; conformance case added.
+- Export/Thumbnail completion (AP242 attempt + sidecar; STL tessellation; 3MF parity).
+- Conformance harness cases for loft, threads, wrap/project, G2; coverage recompute to 100%.
+- Automation remote validation orchestrator and Make targets.

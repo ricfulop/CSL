@@ -268,6 +268,85 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Loft continuity G1 with two sections
+    cases.append({
+        "id": "loft_continuity_g1",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Loft G1", "units": "mm"},
+            "sketches": [
+                {"id": "skA", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "a", "center": "0,0", "d": "10 mm"}
+                ]},
+                {"id": "skB", "plane": "world.xz", "entities": [
+                    {"kind": "rect", "id": "b", "p1": "-5 mm,-5 mm", "p2": "5 mm,5 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "loft", "id": "L1", "sections": ["skA", "skB"], "continuity": "G1"}
+            ]
+        }
+    })
+
+    # Loft with orientation and rail
+    cases.append({
+        "id": "loft_orientation_rail",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Loft Orient + Rail", "units": "mm"},
+            "sketches": [
+                {"id": "skA", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "a", "center": "0,0", "d": "8 mm"}
+                ]},
+                {"id": "skB", "plane": "world.xz", "entities": [
+                    {"kind": "circle", "id": "b", "center": "0,0", "d": "4 mm"}
+                ]},
+                {"id": "skG", "plane": "world.yz", "entities": [
+                    {"kind": "line", "id": "rail1", "p1": "0,0", "p2": "0,10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "loft", "id": "L2", "sections": ["skA", "skB"], "orientation": "perpendicular", "guides": [{"kind": "edge", "of": "skG"}]}
+            ]
+        }
+    })
+
+    # Threads cosmetic via cylindrical_faces query
+    cases.append({
+        "id": "thread_cosmetic_query",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Thread Cosmetic Query", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "c", "center": "0,0", "d": "10 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "s", "distance": "10 mm", "op": "new_solid", "result": "p"},
+                {"kind": "thread", "id": "t_c", "faces_query": {"kind": "face", "cylindrical_faces": True, "d≈": 10}, "mode": "cosmetic", "designation": "M10x1.5-6H", "handedness": "right", "length": "8 mm"}
+            ]
+        }
+    })
+
+    # Threads modeled via cylindrical_faces d≈ and axis≈
+    cases.append({
+        "id": "thread_modeled_query",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Thread Modeled Query", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "c", "center": "0,0", "d": "8 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "s", "distance": "12 mm", "op": "new_solid", "result": "p"},
+                {"kind": "thread", "id": "t_m", "faces_query": {"kind": "face", "cylindrical_faces": True, "d≈": 8, "axis≈": "+Z"}, "mode": "modeled", "designation": "M8x1.25-6H", "handedness": "left", "length": "10 mm"}
+            ]
+        }
+    })
+
     # Constraints: equal-length arrays and coincident-to-spline
     cases.append({
         "id": "constraints_equal_and_spline",
@@ -302,7 +381,49 @@ def build_cases() -> List[Dict[str, Any]]:
             ],
             "features": [
                 {"kind": "extrude", "id": "e", "profile": "plate", "distance": "3 mm", "op": "new_solid", "result": "part"},
-                {"kind": "emboss", "id": "em", "source_sketch": "s", "onto": "query.face(part)", "depth": "0.3 mm", "text": "CSL"}
+                {"kind": "emboss", "id": "em", "sketch": "s", "on": {"kind": "face"}, "depth": "0.3 mm", "draft": "0 deg"}
+            ]
+        }
+    })
+
+    # Wrap curve onto face
+    cases.append({
+        "id": "wrap_curve",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Wrap Curve", "units": "mm"},
+            "sketches": [
+                {"id": "s1", "plane": "world.xy", "entities": [
+                    {"kind": "circle", "id": "c", "center": "0,0", "d": "20 mm"}
+                ]},
+                {"id": "s2", "plane": "world.xz", "entities": [
+                    {"kind": "line", "id": "l", "p1": "-5 mm,0", "p2": "5 mm,0"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "s1", "distance": "5 mm", "op": "new_solid", "result": "part"},
+                {"kind": "wrap", "id": "w1", "sketch": "s2", "on": {"kind": "face"}, "method": "wrap", "depth": "0.2 mm", "draft": "0 deg"}
+            ]
+        }
+    })
+
+    # Project sketch onto face (zero depth)
+    cases.append({
+        "id": "project_curve",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Project Curve", "units": "mm"},
+            "sketches": [
+                {"id": "s1", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "r", "p1": "-5 mm,-5 mm", "p2": "5 mm,5 mm"}
+                ]},
+                {"id": "logo", "plane": "world.xz", "entities": [
+                    {"kind": "text", "id": "t", "at": "0,0", "text": "CSL", "height": "3 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "s1", "distance": "6 mm", "op": "new_solid", "result": "part"},
+                {"kind": "project", "id": "p1", "sketch": "logo", "on": {"kind": "face"}, "method": "project", "depth": "0.0 mm"}
             ]
         }
     })
@@ -424,6 +545,24 @@ def build_cases() -> List[Dict[str, Any]]:
                 ],
                 "dimensions": [
                     {"kind": "diameter", "on": "c1", "value": "12 mm", "reference": True}
+                ]}
+            ]
+        }
+    })
+
+    # G2 curvature continuity on spline-to-arc
+    cases.append({
+        "id": "sketch_g2_curvature",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Sketch G2", "units": "mm"},
+            "sketches": [
+                {"id": "s0", "plane": "world.xy", "entities": [
+                    {"kind": "spline", "id": "sp", "points": ["0,0", "10 mm, 5 mm", "20 mm, 0"]},
+                    {"kind": "arc", "id": "ar", "center": "25 mm, 0", "start": "20 mm,0", "end": "30 mm, 0"}
+                ],
+                "constraints": [
+                    {"kind": "curvature", "a": "sp", "b": "ar"}
                 ]}
             ]
         }

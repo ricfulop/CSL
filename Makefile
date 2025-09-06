@@ -109,6 +109,14 @@ fusion-auto-loft-test:
 fusion-auto-sweep-test:
 	FUSION_SCRIPT_FILE=scripts/fusion_auto_sweep_test.ts python3 scripts/fusion_auto_submit.py
 
+# Wrap/Project tests (Automation ScriptJob)
+fusion-auto-wrap-project-test:
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_wrap_project_test.ts python3 scripts/fusion_auto_submit.py
+
+# Remote validation orchestrator: runs multiple tests
+automation-remote-validate:
+	PYTHONPATH=$(PWD) python3 scripts/automation_remote_validation.py
+
 # 3-legged OAuth helper for Fusion Automation (uses Traditional Web App creds)
 oauth3l-login:
 	# Set APS_CLIENT_ID/APS_CLIENT_SECRET (Traditional Web App) and optional APS_REDIRECT_URI; saves out/token_3l.json

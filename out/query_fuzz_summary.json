@@ -3,7 +3,23 @@
     {
       "query": {
         "kind": "face",
+        "created_by": "e"
+      },
+      "error": "No module named 'adsk'"
+    },
+    {
+      "query": {
+        "kind": "face",
         "largest_by": "area"
+      },
+      "error": "No module named 'adsk'"
+    },
+    {
+      "query": {
+        "kind": "body",
+        "pattern_instances": {
+          "feature": "none"
+        }
       },
       "error": "No module named 'adsk'"
     },
@@ -16,22 +32,6 @@
             "created_by": "e"
           },
           "tol_deg": 1.0
-        }
-      },
-      "error": "No module named 'adsk'"
-    },
-    {
-      "query": {
-        "kind": "face",
-        "created_by": "e"
-      },
-      "error": "No module named 'adsk'"
-    },
-    {
-      "query": {
-        "kind": "body",
-        "pattern_instances": {
-          "feature": "none"
         }
       },
       "error": "No module named 'adsk'"

@@ -1,0 +1,17 @@
+{
+  "status": "failedInstructions",
+  "progress": "{\"id\":\"92b48f0a7e5e497687ae161b2ea2a605\"}",
+  "reportUrl": "https://dasprod-store.s3.amazonaws.com/workItem/VGdIdaCCakfAZajn5abhTET0mgQQXAEp3gYGsYs4KGEjVI4y/92b48f0a7e5e497687ae161b2ea2a605/report?X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECcaCXVzLWVhc3QtMSJGMEQCIFD7hIaRhcdCBCgx4TM4zFE8ya3DigcYoAYDQNtfnaJWAiAJhC%2FLPXre53793xcINigoZoCKtNyMxYbsxtzF7XPZZSqJAwiP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAQaDDIyMDQ3MzE1MjMxMCIM36NTpSal%2FgHDUEOTKt0CFBC6mVXOX4rEIWupXI70GlfSc4Ok8cloviYuF%2BYXlOyJpO1%2BjcxrqrukMzfz7n4sHJMuexGX5JzHg7MmsUMS%2F%2FrE%2Bvy%2FrDJvyeqyAQSuuIZMq3y0pqUcdKHEbaxmzE7LuUzB6D7PGhL9ZYBZHj7QNG97KVLLgFWTcykjdo%2Fk%2B%2FfRUul%2F1JgVYxNNG8emh9tKE49a%2BE7x3I0%2FKD5FQdhLDyIhP7JI%2BBbs4ZwLxAsVxnD39%2FQcIEekmVr7PDSTK8elUB7Y7GV%2BBiwvgYUEkYRQEN6wzPtUuQqFVqAKaWxzyPch72UfIXqOzpmopGgv7p9eC4mVyc3f%2BsaLuF%2F3vvBEGCPo6N2W7pKaVDLMhyMQs4wdx4GgbUAok9yLiSgTYUHCL5zdaLBYZgQkLF1aahM780tf%2Fp6OwC5w87jlfXRqDLNStTU3NgTQLYTRPEyc1tFx2iha6n8XBvotJQmrHzDihPHFBjqfAQDW%2BAsxD%2BGg3aYnd0zpZ9yj96N9HVE1FdfSDuKzImcW%2B%2FHI5VnWhk%2FYB0Xny%2BOqr7uHQcq1Y09erOyLEVQ8G33zTlrCE4a%2BkT4q%2BCOmQ4%2BtuNGrVnV1ZqNj7nvNlX5soQUATrIbDOUM26f5kKaXfjiQjXgUSnoxQDygzrsXPTvfZsPTVJkUfXGDyznnJKEQ1NygnfKsQbORrPxyR4TzYw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIATGVJZKM3O6PZDV26%2F20250906%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250906T143128Z&X-Amz-SignedHeaders=host&X-Amz-Signature=44482941343b3480ac7a4cd96e582c2e9458afcfdb5708c822029effa589e8a0",
+  "activityId": "Fusion.ScriptJob+Latest",
+  "stats": {
+    "timeQueued": "2025-09-06T14:16:25.1526518Z",
+    "timeDownloadStarted": "2025-09-06T14:16:25.213788+00:00",
+    "timeInstructionsStarted": "2025-09-06T14:16:25.2469035+00:00",
+    "timeInstructionsEnded": "2025-09-06T14:31:26.3057081+00:00",
+    "timeUploadEnded": "2025-09-06T14:31:26.382577+00:00",
+    "timeFinished": "2025-09-06T14:31:26.4094442Z",
+    "bytesDownloaded": 2327,
+    "bytesUploaded": 927
+  },
+  "id": "92b48f0a7e5e497687ae161b2ea2a605"
+}

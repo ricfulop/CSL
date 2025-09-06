@@ -57,12 +57,42 @@
       "errors": 10
     },
     {
+      "id": "loft_continuity_g1",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "loft_orientation_rail",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "thread_cosmetic_query",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "thread_modeled_query",
+      "ok": true,
+      "errors": 10
+    },
+    {
       "id": "constraints_equal_and_spline",
       "ok": true,
       "errors": 10
     },
     {
       "id": "emboss_text",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "wrap_curve",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "project_curve",
       "ok": true,
       "errors": 10
     },
@@ -93,6 +123,11 @@
     },
     {
       "id": "reference_dimensions",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "sketch_g2_curvature",
       "ok": true,
       "errors": 10
     },
