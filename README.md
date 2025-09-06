@@ -1,6 +1,6 @@
 ## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
 
-![LOC](https://img.shields.io/badge/LOC-9330-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-3391-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-5577-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-447-informational)
+![LOC](https://img.shields.io/badge/LOC-9330-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-3391-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-5577-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-447-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
 ### Why
 Modern hardware programs span CAD, CAE, CAM, BOM, sourcing, factory automation, and project management. Designs change rapidly; syncing geometry, constraints, analyses, and manufacturing outputs across tools is fragile and manual. CSL exists to make complex, multi-domain engineering agent-friendly, reproducible, and automated.
 
@@ -43,7 +43,8 @@ cp -r triple_lindy "$HOME/Library/Application Support/Autodesk/Autodesk Fusion 3
 
 # 3) Enable and run the add-in in Fusion 360
 
-# 4) Try the examples in CSL_v1_1/examples/*.csl (L-bracket, assembly, etc.)
+# 4) Try the v1.2 examples in CSL_v1_2/examples/*.csl (loft continuity, sweep, holes, face ops, sheet metal)
+#    Or v1.1 examples in CSL_v1_1/examples/*.csl
 ```
 
 Optional backends
@@ -57,8 +58,22 @@ Optional backends
 - JSON Schema (v1.2 Draft): `CSL_v1_2/csl_v1_2_schema.json`
 - Migration: `MIGRATION_v1_1_to_v1_2.md`
 - Conformance checklists: `CSL_v1_1/conformance/README.md`, `CSL_v1_2/conformance/README.md`
-- Examples: `CSL_v1_1/examples/`
-  - New: `constraints_patterns_demo.csl` showcases construction/driven constraints and per-instance patterns.
+- Examples: `CSL_v1_2/examples/` (v1.2) and `CSL_v1_1/examples/` (v1.1)
+  - Notable v1.1 example: `constraints_patterns_demo.csl` (construction/driven constraints, per-instance patterns)
+
+### What's new in v1.2
+- Sketch: `spline`, `ellipse`, `elliptical_arc`, `text`.
+- Loft: continuity G0/G1/G2, orientation controls, rails/centerline.
+- Sweep: orientation, twist, scale, optional guide rail.
+- Fillet/Chamfer: per‑edge variable groups; transitions/setbacks (best‑effort).
+- Draft: explicit `faces`, `neutral_plane`, optional `pull_dir`.
+- Wrap/Emboss/Project: depth/draft/direction; project along direction.
+- Threads: standardized designations/classes/handedness; modeled vs cosmetic.
+- Queries: `created_by`, `owner_feature==`, `pattern_instances`, `tangent_connected`, `largest_by`, `curvature≈/radius≈/area≈`, `by_material`.
+- Assemblies & joints: limits `{linear, angular}`, optional damping/preload.
+- Sheet metal: base/edge flange/bend; unfold/refold (best‑effort).
+- Helix curve generator; light PMI notes/frames.
+- Validation: `make validate-v12` checks IR against the v1.2 schema.
 
 ### Gap analysis and roadmap
 - Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md` (includes proposed v1.2 features such as splines, text, variable fillet/chamfer, G2 continuity, richer joints and predicates, materials/PMI).
@@ -144,7 +159,7 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
 - Documentation index: `DOC_INDEX.md`
 - Triple Lindy implementation guide: `triple_lindy_complete with CSL.md`
 
-### Fusion backend status (v1.1)
+### Fusion backend status (v1.2)
 - Features: thin extrude, rib, fillet/chamfer (per-edge groups), draft (query-targeted), holes (taper/drill angle/cbore/csink), threads (ISO/UNC/UNF/NPT; cosmetic/modeled), move/offset/replace face, split by face/profile, patterns (grid/path, table fallback), booleans (multi-tool/keep-tools), sweep/loft (guide rails, orientation hints).
 - Sketch: spline/NURBS, ellipse/elliptical arc, text; constraints and dimensions mapped.
 - Selection/queries: lineage-based `created_by`, `owner_feature==`, `pattern_instances`, `tangent_connected`, `largest_by`, curvature/radius/area≈, `by_material`.
