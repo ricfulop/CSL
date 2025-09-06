@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/csl_v1_3_schema.json",
+  "title": "CSL v1.3 (Draft)",
+  "type": "object",
+  "required": ["csl", "meta"],
+  "properties": {
+    "csl": { "type": "string", "const": "1.3" },
+    "meta": { "type": "object" },
+    "params": { "type": "array", "items": {"type": "object"} },
+    "sketches": { "type": "array", "items": {"type": "object"} },
+    "features": { "type": "array", "items": {"type": "object"} },
+    "materials": { "type": "array", "items": {"type": "object"} },
+    "pmi": { "type": "array", "items": {"type": "object"} },
+    "assemblies": { "type": "array", "items": {"type": "object"} }
+  },
+  "additionalProperties": true
+}
+
+
