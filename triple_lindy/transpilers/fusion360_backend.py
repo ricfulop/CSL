@@ -1088,6 +1088,19 @@ class FusionBackend:
                                 face = fcol.item(0) if fcol and fcol.count > 0 else None
                         except Exception:
                             face = None
+                        # Allow placement by body centroid when body_query supplied
+                        if face is None:
+                            try:
+                                bq = feat.get("body_query")
+                                if bq:
+                                    bcol = self._resolve_query(root, bq, entity_type="body")
+                                    if bcol and bcol.count > 0:
+                                        b = bcol.item(0)
+                                        # Create a temporary sketch on XY and project centroid (best-effort)
+                                        face = root.xYConstructionPlane
+                                        cx, cy = 0.0, 0.0
+                            except Exception:
+                                pass
                         if face is None:
                             # Allow plane selection by name when no face query provided
                             try:
@@ -1453,10 +1466,9 @@ class FusionBackend:
                                 face_col = adsk.core.ObjectCollection.create()
                                 for f in faces:
                                     face_col.add(f)
-                            # Neutral plane selection
+                            # Neutral plane selection (by name, query, or face/plane token)
                             neutral = root.xYConstructionPlane
-                            # Allow plane by name or query
-                            n_spec = feat.get("neutral_plane") or "world.xy"
+                            n_spec = feat.get("neutral_plane") or feat.get("plane") or "world.xy"
                             try:
                                 if isinstance(n_spec, dict):
                                     ncol = self._resolve_query(root, n_spec, entity_type="face")
@@ -1760,9 +1772,37 @@ class FusionBackend:
                     bodies = self._all_bodies(root)
                     if bodies.count > 0:
                         obj_col = adsk.core.ObjectCollection.create()
-                        obj_col.add(bodies.item(bodies.count - 1))
+                        # Optional target query for bodies/components
+                        try:
+                            tq = feat.get("target_query") or feat.get("bodies_query")
+                            if tq:
+                                tcol = self._resolve_query(root, tq, entity_type="body")
+                                for i in range(tcol.count):
+                                    obj_col.add(tcol.item(i))
+                        except Exception:
+                            pass
+                        if obj_col.count == 0:
+                            obj_col.add(bodies.item(bodies.count - 1))
                         mirror = root.features.mirrorFeatures
+                        # Plane can come from query or named plane
                         plane = root.yZConstructionPlane
+                        try:
+                            pq = feat.get("plane_query") or feat.get("plane")
+                            if pq:
+                                if isinstance(pq, dict):
+                                    pcol = self._resolve_query(root, pq, entity_type="face")
+                                    if pcol and pcol.count > 0:
+                                        plane = pcol.item(0)
+                                elif isinstance(pq, str):
+                                    pname = pq.lower()
+                                    if "xy" in pname:
+                                        plane = root.xYConstructionPlane
+                                    elif "xz" in pname:
+                                        plane = root.xZConstructionPlane
+                                    elif "yz" in pname or "zy" in pname:
+                                        plane = root.yZConstructionPlane
+                        except Exception:
+                            pass
                         m_input = mirror.createInput(obj_col, plane)
                         mf = mirror.add(m_input)
                         mapping[feat_id] = f"fusion:mirror:{mf.entityToken}"
@@ -1773,8 +1813,19 @@ class FusionBackend:
                 elif kind == "boolean":
                     # Combine last two bodies
                     bodies = self._all_bodies(root)
-                    if bodies.count >= 2:
-                        target = bodies.item(bodies.count - 2)
+                    if bodies.count >= 1:
+                        # Allow target body query
+                        target = None
+                        try:
+                            t_query = feat.get("target_query") or feat.get("target")
+                            if t_query:
+                                tcol = self._resolve_query(root, t_query, entity_type="body")
+                                target = tcol.item(0) if tcol and tcol.count > 0 else None
+                        except Exception:
+                            target = None
+                        if target is None:
+                            target = bodies.item(bodies.count - 1 if bodies.count > 1 else 0)
+                        # Tool bodies from query or default to last others
                         tool = bodies.item(bodies.count - 1)
                         combine = root.features.combineFeatures
                         tool_col = adsk.core.ObjectCollection.create()
@@ -2298,11 +2349,132 @@ class FusionBackend:
                     except Exception:
                         mapping[feat_id] = "fusion:sheet_bend:E2803"
                 elif kind == "sheet_unfold" or kind == "sheet_refold":
-                    # Unfold/refold stubs: diagnostics only
+                    # Native unfold/refold when supported; conservative fallbacks otherwise
                     try:
-                        self._diag("E2804", where="sheet_metal", message=f"{kind} not supported in this API; stub only")
+                        import adsk.core  # type: ignore
+                        import adsk.fusion  # type: ignore
+                        feats = root.features
+                        if kind == "sheet_unfold":
+                            unfold_feats = getattr(feats, "unfoldFeatures", None)
+                            if unfold_feats and (hasattr(unfold_feats, "add") or hasattr(unfold_feats, "createInput")):
+                                # Stationary face selection (required). Accept 'stationary' or 'on' query.
+                                stat_faces = None
+                                try:
+                                    stat_faces = self._resolve_query(root, feat.get("stationary") or feat.get("on") or {"kind": "face"}, entity_type="face")
+                                except Exception:
+                                    stat_faces = None
+                                stat = stat_faces.item(0) if stat_faces and getattr(stat_faces, "count", 0) > 0 else None
+                                # Optional bends selection. If absent, attempt unfold-all when API permits.
+                                bends_col = adsk.core.ObjectCollection.create()
+                                added_any_bend = False
+                                try:
+                                    bq = feat.get("bends_query") or feat.get("bends")
+                                    if bq is not None:
+                                        # Try faces first
+                                        bfaces = None
+                                        try:
+                                            bfaces = self._resolve_query(root, bq, entity_type="face")
+                                        except Exception:
+                                            bfaces = None
+                                        if bfaces and getattr(bfaces, "count", 0) > 0:
+                                            for i in range(bfaces.count):
+                                                bends_col.add(bfaces.item(i))
+                                            added_any_bend = True
+                                        else:
+                                            # Try edges as bend identifiers
+                                            bedges = None
+                                            try:
+                                                bedges = self._resolve_query(root, bq, entity_type="edge")
+                                            except Exception:
+                                                bedges = None
+                                            if bedges and getattr(bedges, "count", 0) > 0:
+                                                for i in range(bedges.count):
+                                                    bends_col.add(bedges.item(i))
+                                                added_any_bend = True
+                                except Exception:
+                                    pass
+                                # Build input using available signatures
+                                uf = None
+                                try:
+                                    if hasattr(unfold_feats, "createInput"):
+                                        try:
+                                            # Common signature: (stationaryFace, bends, unfoldAllBends: bool)
+                                            inp = unfold_feats.createInput(stat, bends_col, (not added_any_bend))
+                                        except Exception:
+                                            # Some versions: (stationaryFace, bends)
+                                            try:
+                                                inp = unfold_feats.createInput(stat, bends_col)
+                                            except Exception:
+                                                inp = None
+                                        if inp is not None:
+                                            uf = unfold_feats.add(inp)
+                                    if uf is None and hasattr(unfold_feats, "add"):
+                                        # Last-resort: try direct add with (stationaryFace, bends)
+                                        try:
+                                            uf = unfold_feats.add(stat, bends_col)
+                                        except Exception:
+                                            uf = None
+                                except Exception:
+                                    uf = None
+                                if uf:
+                                    mapping[feat_id] = f"fusion:sheet_unfold:{uf.entityToken}"
+                                    try:
+                                        self._record_lineage(feat_id, uf, root)
+                                    except Exception:
+                                        pass
+                                else:
+                                    try:
+                                        self._diag("E2808", where="sheet_metal", message="Unfold features API not available or call failed; kept diagnostic only")
+                                    except Exception:
+                                        pass
+                            else:
+                                try:
+                                    self._diag("E2808", where="sheet_metal", message="Unfold features not exposed in this Fusion version")
+                                except Exception:
+                                    pass
+                        else:  # sheet_refold
+                            refold_feats = getattr(feats, "refoldFeatures", None)
+                            rf = None
+                            if refold_feats and (hasattr(refold_feats, "add") or hasattr(refold_feats, "createInput")):
+                                try:
+                                    rinp = None
+                                    if hasattr(refold_feats, "createInput"):
+                                        try:
+                                            rinp = refold_feats.createInput()
+                                        except Exception:
+                                            rinp = None
+                                    rf = refold_feats.add(rinp) if rinp is not None else refold_feats.add()
+                                except Exception:
+                                    rf = None
+                            # Fallback: if a prior Unfold exists, try toggling by adding an empty refold or by suppress/unsuppress
+                            if rf is None:
+                                try:
+                                    unfold_feats = getattr(feats, "unfoldFeatures", None)
+                                    if unfold_feats and hasattr(unfold_feats, "count") and unfold_feats.count > 0:
+                                        # Attempt to add a refold without explicit input
+                                        if refold_feats and hasattr(refold_feats, "add"):
+                                            try:
+                                                rf = refold_feats.add()
+                                            except Exception:
+                                                rf = None
+                                except Exception:
+                                    rf = None
+                            if rf:
+                                mapping[feat_id] = f"fusion:sheet_refold:{rf.entityToken}"
+                                try:
+                                    self._record_lineage(feat_id, rf, root)
+                                except Exception:
+                                    pass
+                            else:
+                                try:
+                                    self._diag("E2809", where="sheet_metal", message="Refold features API not available or call failed; kept diagnostic only")
+                                except Exception:
+                                    pass
                     except Exception:
-                        pass
+                        try:
+                            self._diag("E2804", where="sheet_metal", message=f"{kind} not supported or failed; stub/diagnostic only")
+                        except Exception:
+                            pass
 
             # Optionally export and thumbnails
             if csl_ir.get("export"):

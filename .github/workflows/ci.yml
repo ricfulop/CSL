@@ -4,6 +4,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-test:
@@ -26,6 +27,24 @@ jobs:
       - name: Perf baseline
         run: |
           make perf || true
+
+  aps:
+    runs-on: ubuntu-latest
+    env:
+      APS_CLIENT_ID: ${{ secrets.APS_CLIENT_ID }}
+      APS_CLIENT_SECRET: ${{ secrets.APS_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: APS auth
+        run: |
+          make aps-auth
+      - name: APS Design Automation list engines
+        run: |
+          make aps-da-list-engines
 name: CI
 
 on:

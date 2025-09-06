@@ -1,5 +1,7 @@
 # Fusion Backend Feature Coverage (vs Fusion 360 API)
 
+![Coverage](https://img.shields.io/badge/Fusion%20Coverage-63%25-yellowgreen)
+
 Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diagnostics only; [Todo] not implemented.
 
 - Sketch entities
@@ -47,7 +49,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Surface Ops
   - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — best-effort; API-version dependent
 - Sheet Metal
-  - [Partial] base flange, edge flange, bend stubs; unfold/refold emits diagnostics
+  - [Partial] base flange, edge flange, bend stubs; unfold/refold attempt native Fusion features when available with graceful diagnostics fallback
 - Materials/PMI
   - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos; density override → [Diag]
 - Selection/Queries
@@ -59,7 +61,6 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - APS Orchestration
   - [Done] token cache/refresh, bucket ensure, upload retries/backoff, telemetry, configurable buckets
 
-Notes / Gallery
+Notes
 - Where explicit options (e.g., G2 loft, variable transitions) are requested but unavailable, the backend emits diagnostics and avoids silent fallbacks.
 - Constraint set can be expanded to cover curvature continuity, equal arrays, and additional geometric relations as needed.
- - Examples gallery (CSL_v1_1/examples): l_bracket.csl, threaded_plate.csl, lofted_connector.csl, assembly_plate_spacers_bolts.csl, ecad_board_example.csl

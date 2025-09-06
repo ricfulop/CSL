@@ -64,4 +64,50 @@ aps-da-pipeline:
 	# Required env: APS_ENGINE, APS_BUNDLE_ZIP; optional: APS_BUNDLE_NAME, APS_ACTIVITY_NAME, APS_INPUT_URL, APS_OUTPUT_URL
 	PYTHONPATH=$(PWD) python3 scripts/aps_da_pipeline.py
 
+# Fusion Automation API (GA) helpers
+fusion-auto-hello:
+	# Requires APS_CLIENT_ID/APS_CLIENT_SECRET or out/token_3l.json; uses DA (Automation v3)
+	python3 scripts/fusion_auto_submit.py
 
+fusion-auto-status:
+	# Requires DA_WORKITEM_ID (or out/fusion_auto_submit.json) and uses DA (Automation v3)
+	python3 scripts/fusion_auto_status.py
+
+fusion-auto-hello-msg:
+	# Usage: make fusion-auto-hello-msg MSG="adsk.log('hi')"
+	# Env: FUSION_TASK_SCRIPT overrides inline script, FUSION_PAT required
+	FUSION_TASK_SCRIPT="$(MSG)" python3 scripts/fusion_auto_submit.py
+
+fusion-auto-status-logs:
+	# Poll and download report; DA_FETCH_REPORT=1 to fetch logs
+	DA_FETCH_REPORT=1 python3 scripts/fusion_auto_status.py
+
+# Compute Fusion feature coverage and update badge in FUSION_FEATURE_COVERAGE.md
+fusion-cov:
+	PYTHONPATH=$(PWD) python3 scripts/compute_fusion_coverage.py
+
+fusion-auto-unfold-test:
+	# Runs the TS script that creates a sheet base, unfolds, then refolds
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_unfold_test.ts python3 scripts/fusion_auto_submit.py
+
+fusion-auto-unfold-status:
+	# Poll and download report/logs for the last unfold/refold run
+	DA_FETCH_REPORT=1 python3 scripts/fusion_auto_status.py
+
+# 3-legged OAuth helper for Fusion Automation (uses Traditional Web App creds)
+oauth3l-login:
+	# Set APS_CLIENT_ID/APS_CLIENT_SECRET (Traditional Web App) and optional APS_REDIRECT_URI; saves out/token_3l.json
+	python3 scripts/oauth3l_login.py
+
+oauth3l-exchange:
+	# Usage: make oauth3l-exchange URL='<redirected_url_with_code>'
+	python3 scripts/oauth3l_exchange.py "$(URL)"
+
+# Design Automation (DA) v3 helpers (US-East)
+da-submit:
+	# Set DA_ACTIVITY_ID (e.g., MyActivity+v1) and FUSION_PAT (Fusion Personal Access Token)
+	python3 scripts/da_submit_workitem.py
+
+da-status:
+	# Set DA_WORKITEM_ID or ensure out/da_workitem_submit.json is present
+	python3 scripts/da_workitem_status.py
