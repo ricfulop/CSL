@@ -9,10 +9,10 @@
       "type": "markdown"
     },
     {
-      "path": "PRODUCT_PLAN_AGENT.md",
-      "title": "Cursor-for-CAD: Product Plan and Architecture (Draft)",
+      "path": "RFC-0001_CAD_Agent.md",
+      "title": "RFC-0001: Cursor-for-CAD – Product Plan and Architecture (Draft)",
       "summary": "Product plan for a Cursor-like CAD agent: extension-first UX, agent service, backends, roadmap, and milestones.",
-      "keywords": ["product", "plan", "architecture", "CAD", "agent"],
+      "keywords": ["RFC", "product", "plan", "architecture", "CAD", "agent"],
       "type": "markdown"
     },
     {

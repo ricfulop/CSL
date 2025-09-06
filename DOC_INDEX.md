@@ -9,7 +9,7 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 - [CSL_GLOSSARY.md](CSL_GLOSSARY.md)
   - Summary: Comprehensive glossary of CSL constructs and syntax across v1.0–v1.2; quick lookup with version tags.
   - Keywords: glossary, syntax, reference, v1.0, v1.1, v1.2
-- [PRODUCT_PLAN_AGENT.md](PRODUCT_PLAN_AGENT.md)
+- [RFC-0001_CAD_Agent.md](RFC-0001_CAD_Agent.md)
   - Summary: Product plan and architecture for a Cursor-like CAD agent (editor extension + agent service, backends, roadmap).
   - Keywords: product, plan, architecture, agent, VS Code, FastAPI
 - [BACKLOG_FUSION_IMPLEMENTATION.md](BACKLOG_FUSION_IMPLEMENTATION.md)
