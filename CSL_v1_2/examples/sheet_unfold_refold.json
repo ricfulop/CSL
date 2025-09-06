@@ -1,0 +1,15 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Sheet Unfold/Refold", "units": "mm"},
+  "sketches": [
+    {"id":"s","plane":"world.xy","entities":[{"kind":"rect","id":"p","p1":"0,0","p2":"80 mm,40 mm"}]}
+  ],
+  "features": [
+    {"kind":"sheet_base","id":"SB","profile":"p","thickness":"1 mm"},
+    {"kind":"edge_flange","id":"EF","edge":"query.created_by('SB')","length":"10 mm","angle":"90 deg"},
+    {"kind":"unfold","id":"UF"},
+    {"kind":"refold","id":"RF"}
+  ]
+}
+
+

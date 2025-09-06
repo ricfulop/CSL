@@ -137,6 +137,131 @@
         }}}
       }}}}}
     }
+  ,
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "hole"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "type": {"type": "string", "enum": ["simple","counterbore","countersink","taper"]},
+        "diameter": {},
+        "depth": {},
+        "drill_angle": {},
+        "cbore": {"type": "object", "properties": {"diameter": {}, "depth": {}}},
+        "csink": {"type": "object", "properties": {"diameter": {}, "angle": {}}},
+        "taper": {"type": "object", "properties": {"angle": {}}},
+        "on": {},
+        "pattern": {"type": "object"}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "sweep"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "path": {},
+        "profile": {},
+        "orientation": {"type": "string", "enum": ["path","fixed","binormal","frenet"]},
+        "twist": {},
+        "scale": {},
+        "rail": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "thin_extrude"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "profile": {}, "thickness": {}, "side": {"type": "string", "enum": ["one_side","two_sides","center"]}, "dual_wall": {"type": "boolean"}, "extent": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "rib"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "path": {}, "thickness": {}, "draft": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "move_face"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"faces": {}, "translate": {}, "rotate": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "offset_face"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"faces": {}, "distance": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "replace_face"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"target": {}, "with": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "split"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"body": {}, "by": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "mirror"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"bodies": {}, "across": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "unfold"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "refold"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "thread"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"target": {}}}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "pattern"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "kind": {"type": "string", "enum": ["linear","circular","grid","path","table"]},
+        "linear": {"type": "object", "properties": {"axis1": {}, "axis2": {}, "spacing": {}, "extent": {}}},
+        "circular": {"type": "object", "properties": {"axis": {}, "angle": {}, "count": {} }},
+        "path": {"type": "object", "properties": {"path": {}, "spacing": {}, "align_to_path": {"type": "boolean"}}}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "assemblies": { "contains": { "properties": { "instances": { "type": "array" } } } } } },
+      "then": {
+        "properties": {
+          "assemblies": {
+            "items": {
+              "properties": {
+                "instances": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "of": {},
+                      "at": {
+                        "type": "object",
+                        "properties": {
+                          "transform": {
+                            "type": "object",
+                            "properties": {
+                              "matrix": { "type": "array", "items": { "type": "number" }, "minItems": 16, "maxItems": 16 },
+                              "translate": {},
+                              "rotate": {},
+                              "scale": {}
+                            },
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "helix"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {"axis": {}, "pitch": {}, "turns": {}, "height": {}, "start_radius": {}}}}}}
+    },
+    {
+      "if": { "properties": { "pmi": {"type": "array"}}},
+      "then": { "properties": { "pmi": {"items": {"type": "object", "properties": {"kind": {"type": "string", "enum": ["note","gdt"]}, "target": {}, "text": {}, "frame": {}}}}}}
+    }
   ]
 }
 

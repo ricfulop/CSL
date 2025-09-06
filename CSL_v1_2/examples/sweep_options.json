@@ -1,0 +1,13 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Sweep Options", "units": "mm"},
+  "sketches": [
+    {"id":"path_sk","plane":"world.xy","entities":[{"kind":"spline","id":"sp","through":["0,0","20,10","40,0"],"degree":3}]},
+    {"id":"prof_sk","plane":"world.xz","entities":[{"kind":"circle","id":"c","center":"0,0","d":"4 mm"}]}
+  ],
+  "features": [
+    {"kind":"sweep","id":"Sw","path":"path_sk.curve(sp)","profile":"prof_sk.profile(c)","orientation":"frenet","twist":"30 deg","scale":"1.0","rail":"path_sk.curve(sp)"}
+  ]
+}
+
+

@@ -1,0 +1,9 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Helix Curve", "units": "mm"},
+  "features": [
+    {"kind":"helix","id":"HX","axis":"world.z","pitch":"1.5 mm","turns":10,"start_radius":"3 mm"}
+  ]
+}
+
+

@@ -1,0 +1,14 @@
+{
+  "csl": "1.2",
+  "meta": {"name": "Face Ops", "units": "mm"},
+  "sketches": [
+    {"id":"s","plane":"world.xy","entities":[{"kind":"rect","id":"p","p1":"0,0","p2":"40 mm,40 mm"}]}
+  ],
+  "features": [
+    {"kind":"extrude","id":"E","profile":"p","distance":"6 mm","op":"new_solid","result":"part"},
+    {"kind":"move_face","id":"MF","faces":"query.created_by('E')","translate":"0 mm,0 mm,1 mm"},
+    {"kind":"offset_face","id":"OF","faces":"query.created_by('E')","distance":"0.5 mm"}
+  ]
+}
+
+
