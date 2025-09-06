@@ -135,6 +135,31 @@
       "id": "pmi_gdt_notes",
       "ok": true,
       "errors": 10
+    },
+    {
+      "id": "v12_holes_variants",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "v12_sweep_options",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "v12_face_ops",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "v12_sheet_unfold_refold",
+      "ok": true,
+      "errors": 10
+    },
+    {
+      "id": "v12_emboss_project",
+      "ok": true,
+      "errors": 10
     }
   ]
 }

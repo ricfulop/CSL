@@ -1359,6 +1359,291 @@
           "message": "Fusion API unavailable; returned dry-run mapping."
         }
       ]
+    },
+    {
+      "id": "v12_holes_variants",
+      "ok": true,
+      "mapping_size": 4,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "export",
+          "message": "Fusion API unavailable; dry-run export."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "export",
+          "message": "Fusion API unavailable; dry-run export."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
+    },
+    {
+      "id": "v12_sweep_options",
+      "ok": true,
+      "mapping_size": 1,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "export",
+          "message": "Fusion API unavailable; dry-run export."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
+    },
+    {
+      "id": "v12_face_ops",
+      "ok": true,
+      "mapping_size": 3,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "export",
+          "message": "Fusion API unavailable; dry-run export."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
+    },
+    {
+      "id": "v12_sheet_unfold_refold",
+      "ok": true,
+      "mapping_size": 4,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
+    },
+    {
+      "id": "v12_emboss_project",
+      "ok": true,
+      "mapping_size": 3,
+      "errors": [
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        },
+        {
+          "code": "E3000",
+          "where": "realize",
+          "message": "Fusion API unavailable; returned dry-run mapping."
+        }
+      ]
     }
   ]
 }

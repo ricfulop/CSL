@@ -591,6 +591,109 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # --- v1.2 additions ---
+
+    # v1.2: Holes variants (use face_query for backend compatibility)
+    cases.append({
+        "id": "v12_holes_variants",
+        "ir": {
+            "csl": "1.2",
+            "meta": {"name": "Holes v12", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "p", "p1": "0,0", "p2": "40 mm,40 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "E", "profile": "p", "distance": "6 mm", "op": "new_solid", "result": "part"},
+                {"kind": "hole", "id": "H1", "type": "simple", "diameter": "6 mm", "depth": "6 mm", "face_query": {"kind": "face", "created_by": "E"}},
+                {"kind": "hole", "id": "H2", "type": "counterbore", "diameter": "4 mm", "depth": "6 mm", "cb_d": "8 mm", "cb_depth": "2 mm", "face_query": {"kind": "face", "created_by": "E"}},
+                {"kind": "hole", "id": "H3", "type": "countersink", "diameter": "4 mm", "depth": "6 mm", "cs_d": "8 mm", "cs_angle": "82", "face_query": {"kind": "face", "created_by": "E"}}
+            ]
+        }
+    })
+
+    # v1.2: Sweep with orientation/twist and guide rail (use guide_query)
+    cases.append({
+        "id": "v12_sweep_options",
+        "ir": {
+            "csl": "1.2",
+            "meta": {"name": "Sweep v12", "units": "mm"},
+            "sketches": [
+                {"id": "path_sk", "plane": "world.xy", "entities": [
+                    {"kind": "spline", "id": "sp", "points": ["0,0", "20 mm, 10 mm", "40 mm, 0"]}
+                ]},
+                {"id": "prof_sk", "plane": "world.xz", "entities": [
+                    {"kind": "circle", "id": "c", "center": "0,0", "d": "4 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "sweep", "id": "Sw", "path": "path_sk", "profile": "prof_sk", "orientation": "frenet", "twist": "30 deg", "guide_query": {"kind": "edge", "of": "path_sk"}}
+            ]
+        }
+    })
+
+    # v1.2: Face operations (move/offset)
+    cases.append({
+        "id": "v12_face_ops",
+        "ir": {
+            "csl": "1.2",
+            "meta": {"name": "Face Ops v12", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "p", "p1": "0,0", "p2": "40 mm,40 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "E", "profile": "p", "distance": "6 mm", "op": "new_solid", "result": "part"},
+                {"kind": "move_face", "id": "MF", "faces_query": {"kind": "face", "created_by": "E"}, "translate": "0 mm,0 mm,1 mm"},
+                {"kind": "offset_face", "id": "OF", "faces_query": {"kind": "face", "created_by": "E"}, "distance": "0.5 mm"}
+            ]
+        }
+    })
+
+    # v1.2: Sheet metal unfold/refold (best-effort)
+    cases.append({
+        "id": "v12_sheet_unfold_refold",
+        "ir": {
+            "csl": "1.2",
+            "meta": {"name": "Sheet v12", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "p", "p1": "0,0", "p2": "80 mm,40 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "sheet_base", "id": "SB", "profile": "p", "thickness": "1 mm"},
+                {"kind": "edge_flange", "id": "EF", "edge": {"kind": "edge", "created_by": "SB"}, "length": "10 mm", "angle": "90 deg"},
+                {"kind": "unfold", "id": "UF"},
+                {"kind": "refold", "id": "RF"}
+            ]
+        }
+    })
+
+    # v1.2: Emboss/Project (use backend fields sketch/on for compatibility)
+    cases.append({
+        "id": "v12_emboss_project",
+        "ir": {
+            "csl": "1.2",
+            "meta": {"name": "Emboss/Project v12", "units": "mm"},
+            "sketches": [
+                {"id": "s1", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "40 mm,20 mm"}
+                ]},
+                {"id": "logo", "plane": "world.xz", "entities": [
+                    {"kind": "text", "id": "t", "at": "0,0", "text": "CSL", "height": "3 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "3 mm", "op": "new_solid", "result": "part"},
+                {"kind": "emboss", "id": "em", "sketch": "logo", "on": {"kind": "face", "created_by": "e"}, "depth": "0.3 mm", "draft": "0 deg"},
+                {"kind": "project", "id": "pr", "sketch": "logo", "on": {"kind": "face", "created_by": "e"}}
+            ]
+        }
+    })
+
     return cases
 
 
