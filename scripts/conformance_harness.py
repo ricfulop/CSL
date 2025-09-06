@@ -368,6 +368,27 @@ def build_cases() -> List[Dict[str, Any]]:
         }
     })
 
+    # Surface operations: patch, extend, trim, knit (best-effort)
+    cases.append({
+        "id": "surface_ops",
+        "ir": {
+            "csl": "1.1",
+            "meta": {"name": "Surface Ops", "units": "mm"},
+            "sketches": [
+                {"id": "s", "plane": "world.xy", "entities": [
+                    {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "30 mm,20 mm"}
+                ]}
+            ],
+            "features": [
+                {"kind": "extrude", "id": "e", "profile": "plate", "distance": "2 mm", "op": "new_solid", "result": "part"},
+                {"kind": "patch", "id": "p1"},
+                {"kind": "extend", "id": "ex1", "distance": "1.0 mm"},
+                {"kind": "trim", "id": "t1"},
+                {"kind": "knit", "id": "k1", "tolerance": "0.1 mm", "to_solid": False}
+            ]
+        }
+    })
+
     # Wrap/Emboss placeholder (will emit diagnostics or best-effort)
     cases.append({
         "id": "emboss_text",

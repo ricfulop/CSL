@@ -82,6 +82,11 @@
       "errors": 10
     },
     {
+      "id": "surface_ops",
+      "ok": true,
+      "errors": 10
+    },
+    {
       "id": "emboss_text",
       "ok": true,
       "errors": 10

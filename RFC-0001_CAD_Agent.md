@@ -1,14 +1,14 @@
-# Cursor-for-CAD: Product Plan and Architecture (Draft)
+# Multi tool agentic control for CAD and engineering software: Plan and Architecture (Draft)
 
 ## Vision
-A Cursor-like experience for CAD: natural language to complex, deterministic geometry and assemblies, across multiple CAD backends, with schema-validated CSL as the lingua franca.
+An AI agent driven like experience for CAD and engineering software: natural language to complex, deterministic geometry and assemblies, across multiple CAD backends, with schema-validated CSL as the lingua franca.
 
 ## Core UX
-- NL prompt → CSL (preview) → Validate → Run → Artifacts (STEP/STL/thumbnail) + Diagnostics
-- Editor-first (VS Code/Cursor extension), upgrade to standalone app as needed
-- Quick fixes for units/queries; capability-aware hints and fallbacks
+- NL prompt → CSL (preview) → Validate → Run → CAD system operates and generates geometry in a remote control mode via the API + Diagnostics
+- Editor-first (VS Code/Cursor like extension), upgrade to standalone app as needed
+- Quick fixes for units/queries; capability-aware hints and fallbacks and maintains sync of history tree and units and other global settings with the CAD system via the API
 
-## MVP (Week 1)
+## MVP 
 - VS Code extension
   - CSL Language Server (LSP):
     - Validation via `CSL_v1_2/csl_v1_2_schema.json`
@@ -17,18 +17,18 @@ A Cursor-like experience for CAD: natural language to complex, deterministic geo
   - Commands:
     - “Generate CSL from Natural Language” (LLM)
     - “Validate CSL” (schema)
-    - “Run with Fusion” (exec backend; dry‑run fallback)
+    - “Run with sselected CAD system” (exec backend; dry‑run fallback)
   - Artifact panel (webview): Three.js for STL/3MF; thumbnails + logs
 - Agent service (Python/FastAPI)
   - NL → CSL → IR pipeline with retries/auto‑fixes
   - Capability planning using backend `get_capabilities()`
-  - Execute via Fusion backend (`triple_lindy/transpilers/fusion360_backend.py`)
+  - Execute via Fusion or alternate CAD backend (`triple_lindy/transpilers/fusion360_backend.py`)
   - Persist run outputs under `out/run_<ts>/`
 - CI
   - Keep schema validation (already present)
   - Add extension lint/build job
 
-## v1.0 (Weeks 2–6)
+## v1.0 
 - Backends
   - Onshape: FeatureScript/API translation + export
   - FreeCAD: Python headless path
@@ -39,6 +39,8 @@ A Cursor-like experience for CAD: natural language to complex, deterministic geo
   - Auto‑tagging; query strengthening; ambiguous selection failure with guidance
 - Project context
   - Param sheets, prior CSL, geometry snippets
+- Billing with standard pricing plans to support paying for LLM and AI costs as well as high end Cerberas accelerated engineering option
+- Stretch goal is implementation of lossless .cslx CAD export 
 
 ## v2.0 (Post‑PMF)
 - Standalone desktop (Tauri/Electron) embedding Monaco + multi‑pane CAD UX (model tree, params, joints inspector)
