@@ -14,7 +14,48 @@
     "pmi": { "type": "array", "items": {"type": "object"} },
     "assemblies": { "type": "array", "items": {"type": "object"} }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "patch"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "edges_query": {}, "loop_query": {}, "tangent": {"type": "boolean"}, "merge": {"type": "boolean"}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "extend"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "faces_query": {}, "face_query": {}, "distance": {}, "side": {"type": "string"}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "trim"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "target_query": {}, "faces_query": {}, "tool_query": {}, "plane_query": {}, "keep": {"type": "boolean"}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "knit"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "faces_query": {}, "surfaces_query": {}, "tolerance": {}, "to_solid": {"type": "boolean"}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "pattern"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "instances": {"type": "array", "items": {"type": "object"}}, "table": {"type": "array", "items": {"type": "object"}}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "loft"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "sections": {"type": "array"}, "guides": {"type": "array"}, "rail": {}, "centerline": {},
+        "continuity": {"type": "string", "enum": ["G0","G1","G2"]},
+        "sections_continuity": {"type": "array", "items": {"type": "string", "enum": ["G0","G1","G2"]}},
+        "orientation": {"type": "string", "enum": ["frenet","fixed_normal","binormal"]}
+      }}}}}
+    },
+    { "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "export"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "format": {"type": "string"}, "path": {}, "resolution": {"type": "string"}, "binary": {"type": "boolean"},
+        "units": {"type": "string"}, "deviation": {}, "normal_deviation_deg": {}, "aspect_ratio": {}, "max_edge_length": {}
+      }}}}}
+    }
+  ]
 }
 
 
