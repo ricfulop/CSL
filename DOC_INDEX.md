@@ -37,6 +37,23 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Key Sections: 0) Goals & Scope; 1) File Header & Metadata; 2) Core Concepts; 3) Parameters & Expressions; 4) Coordinate Frames & Planes; 5) Sketches/Constraints/Dimensions; 6) Features (incl. 6.1 Export & Visualization, 6.2 Geometry); 7) Selection & Query; 8) Materials & Properties; 9) Assemblies & Joints; 10) ECAD; 11) Backend Adapter Hints; 12) Errors/Determinism/IDs; 13) Minimal Grammar; 14) Canonical JSON IR; 15) Cross-Tool Mapping; 16) Backend Capabilities; 17) Security; 18) Version History; 19) Quick Reference.
   - Keywords: CSL, v1.1, spec, parameters, sketches, features, export, thumbnail, queries, assemblies, ECAD, backend capabilities
 
+### CSL v1.2 (Draft)
+- [Specification: `CSL_v1_2/csl_v1_2_spec.md`](CSL_v1_2/csl_v1_2_spec.md)
+  - Summary: Draft spec extending v1.1 with richer sketches, loft continuity/orientation, variable fillet/chamfer, draft controls, wrap/emboss/project, thread designations, expanded selection predicates, and enhanced joints.
+  - Keywords: CSL, v1.2, spec, spline, text, ellipse, continuity, fillet, chamfer, draft, emboss, thread, predicates, joints
+
+- [JSON Schema: `CSL_v1_2/csl_v1_2_schema.json`](CSL_v1_2/csl_v1_2_schema.json)
+  - Summary: Canonical JSON IR schema for v1.2 additions including loft continuity/orientation, variable fillet/chamfer, draft, emboss/project, threads, and pattern table.
+  - Keywords: schema, JSON, IR, loft, fillet, chamfer, draft, emboss, thread, pattern
+
+- [Migration: `MIGRATION_v1_1_to_v1_2.md`](MIGRATION_v1_1_to_v1_2.md)
+  - Summary: Practical guide to adopt v1.2 features with examples; encourages capability checks and diagnostics handling.
+  - Keywords: migration, upgrade, v1.1, v1.2, examples, capabilities
+
+- [Conformance Checklist: `CSL_v1_2/conformance/README.md`](CSL_v1_2/conformance/README.md)
+  - Summary: Checklist for adapter support of new v1.2 items.
+  - Keywords: conformance, checklist, adapters
+
 - [JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`](CSL_v1_1/csl_v1_1_schema.json)
   - Summary: Canonical JSON IR schema for CSL v1.1 including export and thumbnail operations and backend capability structure.
   - Keywords: schema, JSON, IR, validation, export, thumbnail, capabilities

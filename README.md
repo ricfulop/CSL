@@ -53,9 +53,10 @@ Optional backends
 - Blender: `bpy`/Geometry Nodes realization; render/export for visualization.
 
 ### Language and schema
-- Spec: `CSL_v1_1/csl_v1_1_spec.md`
-- JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`
-- Conformance kit: `CSL_v1_1/conformance/README.md`
+- Spec (v1.2 Draft): `CSL_v1_2/csl_v1_2_spec.md` (extends v1.1)
+- JSON Schema (v1.2 Draft): `CSL_v1_2/csl_v1_2_schema.json`
+- Migration: `MIGRATION_v1_1_to_v1_2.md`
+- Conformance checklists: `CSL_v1_1/conformance/README.md`, `CSL_v1_2/conformance/README.md`
 - Examples: `CSL_v1_1/examples/`
   - New: `constraints_patterns_demo.csl` showcases construction/driven constraints and per-instance patterns.
 

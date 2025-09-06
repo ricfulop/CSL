@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/csl_v1_2_schema.json",
+  "title": "CSL v1.2",
+  "type": "object",
+  "required": ["csl", "meta"],
+  "properties": {
+    "csl": { "type": "string", "const": "1.2" },
+    "meta": { "type": "object" },
+    "params": { "type": "array", "items": {"type": "object"} },
+    "sketches": { "type": "array", "items": {"type": "object"} },
+    "features": { "type": "array", "items": {"type": "object"} },
+    "materials": { "type": "array", "items": {"type": "object"} },
+    "export": { "type": "array", "items": {"type": "object"} },
+    "thumbnail": { "type": "array", "items": {"type": "object"} }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": { "properties": { "sketches": {"contains": {"properties": {"entities": {"contains": {"properties": {"kind": {"const": "spline"}}}}}}}}},
+      "then": { "properties": { "sketches": {"items": {"properties": {"entities": {"items": {"properties": {"degree": {"type": "integer", "minimum": 1}}}}}}}} }
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "loft"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "sections": {"type": "array"},
+        "guides": {"type": "array"},
+        "rail": {},
+        "centerline": {},
+        "continuity": {"type": "string", "enum": ["G0", "G1", "G2"]},
+        "sections_continuity": {"type": "array", "items": {"type": "string", "enum": ["G0","G1","G2"]}},
+        "orientation": {"type": "string", "enum": ["frenet","fixed_normal","binormal"]}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "fillet"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "edges": {"type": "array", "items": {"type": "object"}},
+        "transitions": {"type": "string", "enum": ["setback", "rolling"]}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "chamfer"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "edges": {"type": "array", "items": {"type": "object"}}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "draft"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "faces": {},
+        "neutral_plane": {},
+        "angle": {},
+        "pull_dir": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "emboss"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "onto": {},
+        "depth": {},
+        "draft": {},
+        "direction": {}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "thread"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "designation": {"type": "string"},
+        "class": {"type": "string"},
+        "pitch": {},
+        "handedness": {"type": "string", "enum": ["right","left"]},
+        "mode": {"type": "string", "enum": ["modeled","cosmetic"]}
+      }}}}}
+    },
+    {
+      "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "pattern"}}}}}},
+      "then": { "properties": { "features": {"items": {"properties": {
+        "table": {"type": "array", "items": {"type": "object"}}
+      }}}}}
+    }
+  ]
+}
+
+
