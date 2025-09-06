@@ -86,6 +86,76 @@
       "type": "markdown"
     },
     {
+      "path": "CSL_v1_2/examples/hole_variants.json",
+      "title": "Hole Variants (IR)",
+      "summary": "Simple/counterbore/countersink holes with placement on face.",
+      "keywords": ["hole", "counterbore", "countersink"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_2/examples/hole_variants.csl",
+      "title": "Hole Variants (CSL)",
+      "summary": "CSL text version of hole variants example.",
+      "keywords": ["hole", "counterbore", "countersink"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_2/examples/sweep_options.json",
+      "title": "Sweep Options (IR)",
+      "summary": "Sweep with orientation, twist, scale, and rail.",
+      "keywords": ["sweep", "orientation", "twist", "scale", "rail"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_2/examples/sweep_options.csl",
+      "title": "Sweep Options (CSL)",
+      "summary": "CSL text for sweep options.",
+      "keywords": ["sweep", "orientation", "twist", "scale", "rail"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_2/examples/face_ops.json",
+      "title": "Face Ops (IR)",
+      "summary": "Move and offset face operations.",
+      "keywords": ["move_face", "offset_face"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_2/examples/face_ops.csl",
+      "title": "Face Ops (CSL)",
+      "summary": "CSL text for face operations.",
+      "keywords": ["move_face", "offset_face"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_2/examples/sheet_unfold_refold.json",
+      "title": "Sheet Unfold/Refold (IR)",
+      "summary": "Sheet metal base + edge flange + unfold/refold.",
+      "keywords": ["sheet metal", "unfold", "refold"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_2/examples/sheet_unfold_refold.csl",
+      "title": "Sheet Unfold/Refold (CSL)",
+      "summary": "CSL text for sheet metal unfold/refold.",
+      "keywords": ["sheet metal", "unfold", "refold"],
+      "type": "csl"
+    },
+    {
+      "path": "CSL_v1_2/examples/helix.json",
+      "title": "Helix (IR)",
+      "summary": "Curve generator for threads and springs.",
+      "keywords": ["helix", "curve"],
+      "type": "json"
+    },
+    {
+      "path": "CSL_v1_2/examples/helix.csl",
+      "title": "Helix (CSL)",
+      "summary": "CSL text for helix curve.",
+      "keywords": ["helix", "curve"],
+      "type": "csl"
+    },
+    {
       "path": "CSL_v1_1/csl_v1_1_spec.md",
       "title": "CSL (CAD-Specific Language) – Version 1.1",
       "summary": "Full language spec covering goals, metadata, params, sketches, features, queries, assemblies, ECAD, exports/thumbnails, backend capabilities, and cheatsheet.",

@@ -1,0 +1,14 @@
+csl 1.2
+name "Sweep Options"
+units mm
+
+sketch path_sk on world.xy {
+  spline id:sp through [(0,0),(20,10),(40,0)] degree 3
+}
+
+sketch prof_sk on world.xz {
+  circle id:c center (0,0) d 4 mm
+}
+
+feature sweep Sw path path_sk.curve(sp) profile prof_sk.profile(c) orientation frenet twist 30 deg scale 1.0 rail path_sk.curve(sp)
+

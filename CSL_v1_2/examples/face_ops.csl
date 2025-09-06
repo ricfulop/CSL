@@ -1,0 +1,13 @@
+csl 1.2
+name "Face Ops"
+units mm
+
+sketch s on world.xy {
+  rect id:p p1 (0,0) p2 (40 mm,40 mm)
+}
+
+feature extrude E profile p distance 6 mm op new_solid result part
+
+feature move_face MF faces query.created_by("E") translate (0 mm,0 mm,1 mm)
+feature offset_face OF faces query.created_by("E") distance 0.5 mm
+

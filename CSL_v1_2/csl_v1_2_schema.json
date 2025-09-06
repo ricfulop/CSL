@@ -69,14 +69,17 @@
       "then": { "properties": { "features": {"items": {"properties": {
         "onto": {},
         "depth": {},
-        "direction": {}
+        "direction": {},
+        "method": {"type": "string", "enum": ["geodesic","shortest"]},
+        "source": {}
       }}}}}
     },
     {
       "if": { "properties": { "features": {"contains": {"properties": {"kind": {"const": "project"}}}}}},
       "then": { "properties": { "features": {"items": {"properties": {
         "onto": {},
-        "along": {}
+        "along": {},
+        "source": {}
       }}}}}
     },
     {
@@ -128,7 +131,7 @@
       "then": { "properties": { "assemblies": {"items": {"properties": {
         "instances": {"type": "array", "items": {"type": "object"}},
         "joints": {"type": "array", "items": {"type": "object", "properties": {
-          "type": {"type": "string", "enum": ["rigid","revolute","slider","cylindrical","pin_slot"]},
+          "type": {"type": "string", "enum": ["rigid","revolute","slider","cylindrical","pin_slot","planar","ball"]},
           "between": {"type": "array", "items": {}},
           "axis": {},
           "limits": {"type": "object", "properties": {"linear": {"type": "object"}, "angular": {"type": "object"}}},

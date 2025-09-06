@@ -1,0 +1,6 @@
+csl 1.2
+name "Helix Curve"
+units mm
+
+feature helix HX axis world.z pitch 1.5 mm turns 10 start_radius 3 mm
+

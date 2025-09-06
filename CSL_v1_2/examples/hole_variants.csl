@@ -1,0 +1,16 @@
+csl 1.2
+name "Hole Variants"
+units mm
+
+sketch s on world.xy {
+  rect id:p p1 (0,0) p2 (40 mm,40 mm)
+}
+
+feature extrude E profile p distance 6 mm op new_solid result part
+
+feature hole H1 type simple diameter 6 mm depth 6 mm on query.created_by("E")
+feature hole H2 type counterbore diameter 4 mm depth 6 mm cbore { diameter 8 mm depth 2 mm } on query.created_by("E")
+feature hole H3 type countersink diameter 4 mm depth 6 mm csink { diameter 8 mm angle 82 deg } on query.created_by("E")
+
+export step id:out format STEP path "out/hole_variants.step" target part
+

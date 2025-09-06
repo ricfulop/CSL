@@ -1,0 +1,13 @@
+csl 1.2
+name "Sheet Unfold Refold"
+units mm
+
+sketch s on world.xy {
+  rect id:p p1 (0,0) p2 (80 mm,40 mm)
+}
+
+feature sheet_base SB profile p thickness 1 mm
+feature edge_flange EF edge query.created_by("SB") length 10 mm angle 90 deg
+feature unfold UF
+feature refold RF
+

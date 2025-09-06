@@ -58,6 +58,13 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: Guided introduction to v1.2 language, syntax, examples, and best practices.
   - Keywords: user guide, tutorial, v1.2, syntax, examples
 
+#### v1.2 Examples (JSON IR and CSL)
+- Hole variants: `CSL_v1_2/examples/hole_variants.{json,csl}`
+- Sweep options: `CSL_v1_2/examples/sweep_options.{json,csl}`
+- Face ops: `CSL_v1_2/examples/face_ops.{json,csl}`
+- Sheet unfold/refold: `CSL_v1_2/examples/sheet_unfold_refold.{json,csl}`
+- Helix: `CSL_v1_2/examples/helix.{json,csl}`
+
 - [JSON Schema: `CSL_v1_1/csl_v1_1_schema.json`](CSL_v1_1/csl_v1_1_schema.json)
   - Summary: Canonical JSON IR schema for CSL v1.1 including export and thumbnail operations and backend capability structure.
   - Keywords: schema, JSON, IR, validation, export, thumbnail, capabilities
