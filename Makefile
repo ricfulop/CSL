@@ -94,6 +94,21 @@ fusion-auto-unfold-status:
 	# Poll and download report/logs for the last unfold/refold run
 	DA_FETCH_REPORT=1 python3 scripts/fusion_auto_status.py
 
+# Fillet transition/setback test
+fusion-auto-fillet-test:
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_fillet_test.ts python3 scripts/fusion_auto_submit.py
+
+# Chamfer variants test
+fusion-auto-chamfer-test:
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_chamfer_test.ts python3 scripts/fusion_auto_submit.py
+
+# Loft and Sweep tests
+fusion-auto-loft-test:
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_loft_test.ts python3 scripts/fusion_auto_submit.py
+
+fusion-auto-sweep-test:
+	FUSION_SCRIPT_FILE=scripts/fusion_auto_sweep_test.ts python3 scripts/fusion_auto_submit.py
+
 # 3-legged OAuth helper for Fusion Automation (uses Traditional Web App creds)
 oauth3l-login:
 	# Set APS_CLIENT_ID/APS_CLIENT_SECRET (Traditional Web App) and optional APS_REDIRECT_URI; saves out/token_3l.json

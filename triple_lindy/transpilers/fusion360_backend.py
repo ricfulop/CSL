@@ -672,10 +672,59 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
-                    # Transitions not mapped; setbacks supported via helper when provided
+                    # Transitions: support 'setback' at feature level when possible
                     if feat.get("transitions"):
                         try:
-                            self._diag("E2320", where="fillet", message="Transitions not mapped; applying per-group/variable where possible.")
+                            trans = feat.get("transitions")
+                            # Alias: transitions.setbacks or transitions.setback -> feature-level setbacks
+                            if isinstance(trans, dict) and (trans.get("setbacks") or trans.get("setback") or trans.get("d")):
+                                # Prefer explicit vertex list if provided, else apply uniform setback to all vertices of target edges
+                                explicit_list = trans.get("setbacks") if isinstance(trans.get("setbacks"), list) else None
+                                target_query = feat.get("edges_query") or feat.get("edges")
+                                fil_feats = root.features.filletFeatures
+                                if explicit_list and (isinstance(target_query, dict)):
+                                    grp = {"edges_query": target_query, "setbacks": explicit_list}
+                                    var_feat = self._apply_variable_fillet(root, fil_feats, grp)
+                                    if var_feat:
+                                        mapping[f"{feat_id}:setbacks"] = f"fusion:fillet:{var_feat.entityToken}"
+                                        # Continue with remaining logic but skip default constant fillet when variable handled
+                                        continue
+                                # Uniform setback distance
+                                d_mm = self._parse_length_mm(trans.get("setback") or trans.get("d") or trans.get("distance"))
+                                if d_mm is not None:
+                                    try:
+                                        import adsk.core  # type: ignore
+                                        # Build edge collection from query or all edges
+                                        ecol = None
+                                        if isinstance(target_query, dict):
+                                            ecol = self._resolve_query(root, target_query, entity_type="edge")
+                                        ecol = ecol or self._all_body_edges(root)
+                                        if ecol and ecol.count > 0 and hasattr(fil_feats, "createSetbackFilletDefinition"):
+                                            sdef = fil_feats.createSetbackFilletDefinition(ecol)
+                                            # Collect unique corner vertices from the edges
+                                            seen = set()
+                                            for i in range(ecol.count):
+                                                try:
+                                                    e = ecol.item(i)
+                                                    for v in (getattr(e, "startVertex", None), getattr(e, "endVertex", None)):
+                                                        if v is None:
+                                                            continue
+                                                        vid = getattr(v, "entityToken", None) or id(v)
+                                                        if vid in seen:
+                                                            continue
+                                                        seen.add(vid)
+                                                        sdef.setSetbackDistance(v, adsk.core.ValueInput.createByReal(d_mm/10.0))
+                                                except Exception:
+                                                    continue
+                                            sf = fil_feats.add(sdef)
+                                            mapping[f"{feat_id}:setbacks"] = f"fusion:fillet:{sf.entityToken}"
+                                            # Skip the default constant fillet when setback applied
+                                            continue
+                                    except Exception:
+                                        pass
+                            else:
+                                # Unknown transition type -> diagnostic only
+                                self._diag("E2320", where="fillet", message="Requested fillet transitions not supported; proceeding without transitions")
                         except Exception:
                             pass
                     # Feature-level setbacks across provided edges (requires edges_query/q spec)
