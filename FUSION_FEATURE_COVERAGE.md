@@ -19,25 +19,25 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Revolve
   - [Done] full 360 default (profile + axis)
 - Sweep
-  - [Partial] orientation hints; optional guide rail
+  - [Partial] orientation mapping (path/fixed/binormal best‑effort); optional guide rail
 - Loft
-  - [Partial] sections; continuity mapping (G1/G2 via enums) best-effort; orientation hints; optional rails/centerline; [Diag] when unsupported
+  - [Partial] sections; continuity mapping (G0/G1/G2 incl. per‑section when exposed); orientation mapping; optional rails/centerline; [Diag] when unsupported
 - Shell
   - [Partial] whole-body inward by thickness
 - Draft
   - [Partial] face set + neutral plane + angle; pull direction fixed
 - Fillet
-  - [Partial] per-edge groups; variable radius; vertex setbacks (API-dependent); transitions → [Diag]
+  - [Partial] per‑edge groups; variable radius; vertex setbacks (API‑dependent); feature‑level uniform setbacks when supported; other transitions → [Diag]
 - Chamfer
-  - [Partial] equal-distance; points variant; angle+distance variant (best-effort); transitions/setbacks → [Diag]
+  - [Partial] equal‑distance; two‑distances; distance+angle (best‑effort); feature‑level definitions across groups; complex transitions → [Diag]
 - Wrap/Emboss/Project
-  - [Partial] native EmbossFeatures when available; otherwise [Diag]
+  - [Partial] native EmbossFeatures when available (depth/draft/direction best‑effort); otherwise [Diag]
 - Hole
   - [Done] simple, counterbore, countersink, taper; drill angle; sketch-driven placement on face
 - Threads
   - [Partial] cosmetic/modeled; designation/class/handedness mapping; selection simplified to last-body cylindrical faces
 - Patterns
-  - [Partial] rectangular/grid, circular, path; per-instance via `instances`/`table` (fallback) and native element transforms when exposed
+  - [Partial] rectangular/grid, circular, path; per‑instance transforms via table/native element transforms when exposed
 - Boolean
   - [Done] union/subtract/intersect; keep tools
 - Move/Offset/Replace Face
@@ -47,7 +47,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Mirror
   - [Done] last body across plane
 - Surface Ops
-  - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — best-effort; API-version dependent
+  - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — improved best‑effort; API‑version dependent
 - Sheet Metal
   - [Partial] base flange, edge flange, bend stubs; unfold/refold attempt native Fusion features when available with graceful diagnostics fallback
 - Materials/PMI
