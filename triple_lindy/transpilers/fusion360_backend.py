@@ -808,10 +808,74 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
-                    # Transitions not mapped yet
-                    if feat.get("transitions"):
+                    # Transitions: support feature-level distance/angle variants across groups
+                    if feat.get("transitions") and isinstance(feat.get("transitions"), dict):
                         try:
-                            self._diag("E2321", where="chamfer", message="Transitions not mapped; applying per-group where possible.")
+                            trans = feat.get("transitions")
+                            d1 = self._parse_length_mm(trans.get("d") or trans.get("distance"))
+                            d2 = self._parse_length_mm(trans.get("d2") or trans.get("distance2")) if trans.get("d2") or trans.get("distance2") else None
+                            ang_deg = None
+                            if trans.get("angle") is not None:
+                                try:
+                                    ang_deg = float(self._parse_length_mm(str(trans.get("angle"))) or 0.0)
+                                except Exception:
+                                    ang_deg = None
+                            if (d1 is not None or d2 is not None or ang_deg is not None):
+                                chf = root.features.chamferFeatures
+                                # Apply on all edges when no per-groups present
+                                def _apply_feature_def(edge_set):
+                                    try:
+                                        if d2 is not None and hasattr(chf, "createTwoDistancesChamferDefinition"):
+                                            return chf.createTwoDistancesChamferDefinition(
+                                                edge_set,
+                                                adsk.core.ValueInput.createByReal((d1 or d_mm) / 10.0),
+                                                adsk.core.ValueInput.createByReal((d2 or d_mm) / 10.0),
+                                                False,
+                                            )
+                                        if (ang_deg is not None or ang_deg_global is not None) and hasattr(chf, "createDistanceAndAngleChamferDefinition"):
+                                            ang = ang_deg if ang_deg is not None else (ang_deg_global if ang_deg_global is not None else 45.0)
+                                            return chf.createDistanceAndAngleChamferDefinition(
+                                                edge_set,
+                                                adsk.core.ValueInput.createByReal((d1 or d_mm) / 10.0),
+                                                adsk.core.ValueInput.createByReal(((ang) / 180.0) * 3.141592653589793),
+                                                False,
+                                            )
+                                        return chf.createEqualDistanceChamferDefinition(edge_set, adsk.core.ValueInput.createByReal((d1 or d_mm) / 10.0), False)
+                                    except Exception:
+                                        return None
+                                # Prefer groups when provided
+                                per_groups = feat.get("edges") or []
+                                applied_any = False
+                                if isinstance(per_groups, list) and len(per_groups) > 0:
+                                    for grp in per_groups:
+                                        if not isinstance(grp, dict):
+                                            continue
+                                        grp_edges = None
+                                        try:
+                                            qg = grp.get("q") or grp.get("edges_query") or grp.get("edges")
+                                            if qg:
+                                                grp_edges = self._resolve_query(root, qg, entity_type="edge")
+                                        except Exception:
+                                            grp_edges = None
+                                        grp_edges = grp_edges or edge_col
+                                        defn = _apply_feature_def(grp_edges)
+                                        if defn is not None:
+                                            try:
+                                                ch = chf.add(defn)
+                                                mapping[f"{feat_id}:grp"] = f"fusion:chamfer:{ch.entityToken}"
+                                                applied_any = True
+                                            except Exception:
+                                                pass
+                                if not applied_any:
+                                    defn = _apply_feature_def(edge_col)
+                                    if defn is not None:
+                                        try:
+                                            ch = chf.add(defn)
+                                            mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                                            # Skip default block
+                                            continue
+                                        except Exception:
+                                            pass
                         except Exception:
                             pass
                     if edges.count > 0:
@@ -975,152 +1039,92 @@ class FusionBackend:
                         mapping[feat_id] = "fusion:rib:E2306"
                 elif kind in ("wrap", "emboss", "project"):
                     try:
-                        if kind == "project":
-                            # Project sketch curves onto a target face/direction
-                            tgt = None
-                            try:
-                                fq = feat.get("onto") or feat.get("face_query")
-                                if fq:
-                                    fcol = self._resolve_query(root, fq, entity_type="face")
-                                    tgt = fcol.item(0) if fcol and fcol.count > 0 else None
-                            except Exception:
-                                tgt = None
-                            # Direction: along +X/+Y/+Z/-X/-Y/-Z or vector; if absent, default normal
-                            dir_vec = None
-                            try:
-                                along = feat.get("along") or feat.get("direction")
-                                if isinstance(along, str):
-                                    key = along.strip().upper()
-                                    axes = {"+X": (1,0,0), "+Y": (0,1,0), "+Z": (0,0,1), "-X": (-1,0,0), "-Y": (0,-1,0), "-Z": (0,0,-1)}
-                                    if key in axes:
-                                        v = axes[key]
-                                        dir_vec = adsk.core.Vector3D.create(v[0], v[1], v[2])
-                                elif isinstance(along, (list, tuple)) and len(along) == 3:
-                                    dir_vec = adsk.core.Vector3D.create(float(along[0]), float(along[1]), float(along[2]))
-                            except Exception:
-                                dir_vec = None
-                            if tgt is not None:
-                                # Create a new sketch on the face and note direction for diagnostics
-                                sk = root.sketches.add(tgt)
-                                if dir_vec is None and feat.get("along"):
-                                    try:
-                                        self._diag("E2314", where="project", message="Vector direction not applied; using face normal")
-                                    except Exception:
-                                        pass
-                                mapping[feat_id] = f"fusion:project:{sk.entityToken}"
-                            else:
-                                mapping[feat_id] = "fusion:project:E2310"
-                                self._diag("E2310", where="project", message="No target face for project.")
+                        import adsk.core  # type: ignore
+                        import adsk.fusion  # type: ignore
+                        emb = getattr(root.features, "embossFeatures", None)
+                        if not emb:
+                            self._diag("E2311", where=kind, message="Emboss/Wrap not available in this Fusion version")
                         else:
-                            # Native emboss/wrap using EmbossFeatures if available
-                            emb = getattr(root.features, "embossFeatures", None)
-                            if emb is None:
-                                mapping[feat_id] = f"fusion:{kind}:E2311"
-                                self._diag("E2311", where=kind, message="Emboss/Wrap not available in this Fusion version")
+                            src_sk = None
+                            if isinstance(feat.get("sketch"), str):
+                                for sk in root.sketches:
+                                    if getattr(sk, "name", "") == feat.get("sketch"):
+                                        src_sk = sk
+                                        break
+                            if src_sk is None and root.sketches.count > 0:
+                                src_sk = root.sketches.item(0)
+                            tgt_faces = self._resolve_query(root, feat.get("on") or {"kind": "face"}, entity_type="face")
+                            if not tgt_faces or tgt_faces.count == 0:
+                                self._diag("E2312", where=kind, message="Missing source sketch or target faces for emboss/wrap.")
                             else:
-                                # Source curves from a named sketch (from_sketch) or last created sketch
-                                src_sk = None
-                                src_name = feat.get("from_sketch") or feat.get("sketch") or feat.get("source")
-                                if src_name and isinstance(src_name, str):
-                                    src_sk = sketch_map.get(src_name) or None
-                                    if src_sk is None:
-                                        # scan by name
-                                        try:
-                                            for s in root.sketches:
-                                                if getattr(s, "name", "") == src_name:
-                                                    src_sk = s
-                                                    break
-                                        except Exception:
-                                            pass
-                                if src_sk is None and len(sketch_map) > 0:
-                                    # fallback to any existing sketch if not specified
+                                depth_mm = self._parse_length_mm(feat.get("depth") or "1.0") or 1.0
+                                angle_deg = None
+                                if feat.get("draft") is not None:
                                     try:
-                                        src_sk = next(iter(sketch_map.values()))
+                                        angle_deg = float(self._parse_length_mm(str(feat.get("draft"))) or 0.0)
                                     except Exception:
-                                        src_sk = None
-                                # Target faces
-                                tgt_faces = None
-                                face_q = feat.get("onto") or feat.get("face_query")
-                                if face_q:
-                                    fcol = self._resolve_query(root, face_q, entity_type="face")
-                                    if fcol and fcol.count > 0:
-                                        tgt_faces = fcol
-                                if src_sk is None or tgt_faces is None or tgt_faces.count == 0:
-                                    mapping[feat_id] = f"fusion:{kind}:E2312"
-                                    self._diag("E2312", where=kind, message="Missing source sketch or target faces for emboss/wrap.")
-                                else:
-                                    # Depth/angle parameters and wrap mode
-                                    depth_mm = self._parse_length_mm(feat.get("depth") or "1") or 1.0
-                                    depth = adsk.core.ValueInput.createByReal(depth_mm / 10.0)
-                                    angle_deg = self._parse_length_mm(str(feat.get("angle") or "0")) or 0.0
-                                    angle = adsk.core.ValueInput.createByReal((angle_deg / 180.0) * 3.141592653589793)
-                                    # Mode: emboss vs wrap; engrave if negative depth requested
-                                    is_wrap = (kind == "wrap") or str(feat.get("method") or "").lower() == "wrap"
-                                    is_engrave = bool(feat.get("engrave") or (depth_mm < 0))
-                                    # Optional project along direction for project/emboss variants
-                                    along = feat.get("along") or feat.get("direction")
-                                    along_vec = None
+                                        angle_deg = None
+                                depth = adsk.core.ValueInput.createByReal(depth_mm / 10.0)
+                                draft = adsk.core.ValueInput.createByReal(((angle_deg or 0.0) / 180.0) * 3.141592653589793)
+                                is_wrap = (kind == "wrap") or str(feat.get("method") or "").lower() == "wrap"
+                                project_dir = None
+                                try:
+                                    if feat.get("direction"):
+                                        v = self._parse_point(str(feat.get("direction")))
+                                        if v:
+                                            project_dir = adsk.core.Vector3D.create(float(v[0]), float(v[1]), float((v[2] if len(v) > 2 else 1.0)))
+                                except Exception:
+                                    project_dir = None
+                                ein = None
+                                # Attempt multiple API signatures
+                                for api_variant in ("createInput", "createEmbossFeatureInput", "createWrapFeatureInput"):
                                     try:
-                                        if isinstance(along, str):
-                                            key = along.strip().upper()
-                                            axes = {"+X": (1,0,0), "+Y": (0,1,0), "+Z": (0,0,1), "-X": (-1,0,0), "-Y": (0,-1,0), "-Z": (0,0,-1)}
-                                            if key in axes:
-                                                v = axes[key]
-                                                along_vec = adsk.core.Vector3D.create(v[0], v[1], v[2])
-                                        elif isinstance(along, (list, tuple)) and len(along) == 3:
-                                            along_vec = adsk.core.Vector3D.create(float(along[0]), float(along[1]), float(along[2]))
-                                    except Exception:
-                                        along_vec = None
-                                    # Attempt API variations
-                                    created = None
-                                    for api_variant in ("createInput", "createEmbossFeatureInput"):
-                                        try:
-                                            if hasattr(emb, api_variant):
-                                                # Common signature guesses: (sketch, faces, isWrap?, depth, angle?)
-                                                if api_variant == "createInput":
+                                        if hasattr(emb, api_variant):
+                                            if api_variant == "createInput":
+                                                # (sketch, faces, isWrap?, depth, angle?)
+                                                try:
                                                     ein = emb.createInput(src_sk, tgt_faces, is_wrap)
-                                                    # Optional params on input
-                                                    for attr, val in (("depth", depth), ("angle", angle), ("isEngrave", is_engrave)):
-                                                        if hasattr(ein, attr):
-                                                            try:
-                                                                setattr(ein, attr, val)
-                                                            except Exception:
-                                                                pass
-                                                    # Direction if supported (best-effort)
-                                                    if along_vec is not None and hasattr(ein, "direction"):
-                                                        try:
-                                                            ein.direction = along_vec
-                                                        except Exception:
-                                                            pass
-                                                    created = emb.add(ein)
-                                                else:
-                                                    ein = emb.createEmbossFeatureInput(src_sk, tgt_faces, depth, is_wrap)
-                                                    if hasattr(ein, "isEngrave"):
-                                                        try:
-                                                            ein.isEngrave = is_engrave
-                                                        except Exception:
-                                                            pass
-                                                    if along_vec is not None and hasattr(ein, "direction"):
-                                                        try:
-                                                            ein.direction = along_vec
-                                                        except Exception:
-                                                            pass
-                                                    created = emb.add(ein)
-                                                if created:
-                                                    break
-                                        except Exception:
-                                            created = None
-                                    if created:
-                                        mapping[feat_id] = f"fusion:{kind}:{created.entityToken}"
-                                        try:
-                                            self._record_lineage(feat_id, created, root)
-                                        except Exception:
-                                            pass
-                                    else:
-                                        mapping[feat_id] = f"fusion:{kind}:E2313"
-                                        self._diag("E2313", where=kind, message="Emboss/Wrap API call failed on this Fusion version.")
+                                                    try:
+                                                        if hasattr(ein, "depth"):
+                                                            ein.depth = depth
+                                                        if hasattr(ein, "draftAngle") and angle_deg is not None:
+                                                            ein.draftAngle = draft
+                                                        if project_dir and hasattr(ein, "direction"):
+                                                            ein.direction = project_dir
+                                                    except Exception:
+                                                        pass
+                                                except Exception:
+                                                    ein = None
+                                            else:
+                                                try:
+                                                    # Prefer depth/angle overload if available
+                                                    ein = getattr(emb, api_variant)(src_sk, tgt_faces, depth, is_wrap)
+                                                    try:
+                                                        if angle_deg is not None and hasattr(ein, "draftAngle"):
+                                                            ein.draftAngle = draft
+                                                        if project_dir and hasattr(ein, "direction"):
+                                                            ein.direction = project_dir
+                                                    except Exception:
+                                                        pass
+                                                except Exception:
+                                                    try:
+                                                        ein = getattr(emb, api_variant)(src_sk, tgt_faces, is_wrap)
+                                                    except Exception:
+                                                        ein = None
+                                    except Exception:
+                                        ein = None
+                                    if ein is not None:
+                                        break
+                                if ein is None:
+                                    self._diag("E2313", where=kind, message="Emboss/Wrap API call failed on this Fusion version.")
+                                else:
+                                    try:
+                                        ef = emb.add(ein)
+                                        mapping[feat_id] = f"fusion:{kind}:{ef.entityToken}"
+                                    except Exception:
+                                        self._diag("E2313", where=kind, message="Emboss/Wrap add failed.")
                     except Exception:
-                        mapping[feat_id] = f"fusion:{kind}:E2311"
+                        self._diag("E2311", where=kind, message="Emboss/Wrap not available in this environment")
                 elif kind == "hole":
                     try:
                         hole_feats = root.features.holeFeatures
@@ -2367,23 +2371,68 @@ class FusionBackend:
                     except Exception:
                         mapping[feat_id] = "fusion:sheet_base_flange:E2801"
                 elif kind == "sheet_edge_flange":
-                    # Edge flange stub: offset face then thin extrude along edge normal; log relief/angle requests
+                    # Attempt native edge flange; fallback to offset/thin extrude
                     try:
                         import adsk.core  # type: ignore
-                        faces = self._resolve_query(root, feat.get("on") or {"kind":"face"}, entity_type="face")
-                        face = faces.item(0) if faces and faces.count > 0 else None
-                        if face:
-                            offs = root.features.offsetFacesFeatures
-                            off_val = adsk.core.ValueInput.createByReal((self._parse_length_mm(feat.get("height") or "10 mm") or 10.0)/10.0)
-                            of = offs.add(self._get_all_faces(root), off_val)
-                            mapping[feat_id] = f"fusion:sheet_edge_flange:{of.entityToken}"
+                        import adsk.fusion  # type: ignore
+                        app, ui, design = self._ensure_design()
+                        sm_root = design.rootComponent
+                        sm_feats = getattr(sm_root.features, "sheetMetalFeatures", None)
+                        ef_feats = getattr(sm_feats, "flangeFeatures", None) if sm_feats else None
+                        edge = None
+                        try:
+                            edges = self._resolve_query(root, feat.get("on") or {"kind": "edge"}, entity_type="edge")
+                            edge = edges.item(0) if edges and edges.count > 0 else None
+                        except Exception:
+                            edge = None
+                        height_mm = self._parse_length_mm(feat.get("height") or "10 mm") or 10.0
+                        angle_deg = None
+                        if feat.get("angle") is not None:
                             try:
-                                if feat.get("angle") is not None or feat.get("relief") is not None:
-                                    self._diag("E2807", where="sheet_metal", message="Edge flange angle/relief not supported in stub mode")
+                                angle_deg = float(self._parse_length_mm(str(feat.get("angle"))) or 90.0)
+                            except Exception:
+                                angle_deg = None
+                        relief = str(feat.get("relief") or "").lower() or None
+                        if ef_feats and edge and hasattr(ef_feats, "add") and hasattr(ef_feats, "createInput"):
+                            try:
+                                h = adsk.core.ValueInput.createByReal(height_mm / 10.0)
+                                ein = ef_feats.createInput(edge, h)
+                                try:
+                                    if angle_deg is not None and hasattr(ein, "angle"):
+                                        ein.angle = adsk.core.ValueInput.createByReal((angle_deg / 180.0) * 3.141592653589793)
+                                except Exception:
+                                    pass
+                                try:
+                                    if relief and hasattr(ein, "reliefType"):
+                                        # Best-effort mapping of relief types
+                                        rt = getattr(adsk.fusion, "SheetMetalReliefTypes", None)
+                                        if rt:
+                                            pick = None
+                                            for cand in ("RoundReliefType", "TearReliefType", "SquareReliefType"):
+                                                if relief in cand.lower() and hasattr(rt, cand):
+                                                    pick = getattr(rt, cand)
+                                                    break
+                                            if pick is None and hasattr(rt, "RoundReliefType"):
+                                                pick = getattr(rt, "RoundReliefType")
+                                            if pick is not None:
+                                                ein.reliefType = pick
+                                except Exception:
+                                    pass
+                                ef = ef_feats.add(ein)
+                                mapping[feat_id] = f"fusion:sheet_edge_flange:{ef.entityToken}"
+                                continue
                             except Exception:
                                 pass
-                    except Exception:
-                        mapping[feat_id] = "fusion:sheet_edge_flange:E2802"
+                        # Fallback
+                        try:
+                            offs = root.features.offsetFacesFeatures
+                            off_val = adsk.core.ValueInput.createByReal((height_mm)/10.0)
+                            of = offs.add(self._get_all_faces(root), off_val)
+                            mapping[feat_id] = f"fusion:sheet_edge_flange:{of.entityToken}"
+                            if angle_deg is not None or relief is not None:
+                                self._diag("E2807", where="sheet_metal", message="Edge flange angle/relief not supported in stub mode")
+                        except Exception:
+                            mapping[feat_id] = "fusion:sheet_edge_flange:E2802"
                 elif kind == "sheet_bend":
                     # Bend stub: draft faces near an edge to simulate bend
                     try:
