@@ -4022,8 +4022,25 @@ class FusionBackend:
                                 target_material = None
                     if target_material:
                         try:
-                            for b in root_comp.bRepBodies:
-                                b.material = target_material
+                            # Apply to specific targets if provided; else all bodies
+                            targets: List[Any] = []
+                            try:
+                                tq = m.get("targets_query") or m.get("target_query")
+                                if tq:
+                                    tcol = self._resolve_query(root_comp, tq, entity_type="body")
+                                    if tcol and tcol.count > 0:
+                                        for i in range(tcol.count):
+                                            targets.append(tcol.item(i))
+                            except Exception:
+                                targets = []
+                            if not targets:
+                                for b in root_comp.bRepBodies:
+                                    targets.append(b)
+                            for b in targets:
+                                try:
+                                    b.material = target_material
+                                except Exception:
+                                    pass
                         except Exception:
                             pass
 
@@ -4049,8 +4066,24 @@ class FusionBackend:
                             appearance_obj = None
                         if appearance_obj:
                             try:
-                                for b in root_comp.bRepBodies:
-                                    b.appearance = appearance_obj
+                                targets: List[Any] = []
+                                tq2 = m.get("targets_query") or m.get("target_query")
+                                if tq2:
+                                    try:
+                                        tcol = self._resolve_query(root_comp, tq2, entity_type="body")
+                                        if tcol and tcol.count > 0:
+                                            for i in range(tcol.count):
+                                                targets.append(tcol.item(i))
+                                    except Exception:
+                                        targets = []
+                                if not targets:
+                                    for b in root_comp.bRepBodies:
+                                        targets.append(b)
+                                for b in targets:
+                                    try:
+                                        b.appearance = appearance_obj
+                                    except Exception:
+                                        pass
                             except Exception:
                                 pass
                         elif is_hex:
@@ -4161,10 +4194,15 @@ class FusionBackend:
                                 label = "|" + "|".join(comps) + "|"
                         if not label:
                             continue
-                        # Use top-level XY plane and place at origin unless specified
+                        # Use top-level XY plane unless a face is provided via 'on'
+                        face_target = None
                         plane = root_comp.xYConstructionPlane
                         try:
-                            if frame.get("plane"):
+                            if frame.get("on"):
+                                fcol = self._resolve_query(root_comp, frame.get("on"), entity_type="face")
+                                if fcol and fcol.count > 0:
+                                    face_target = fcol.item(0)
+                            if frame.get("plane") and face_target is None:
                                 n = str(frame.get("plane")).lower()
                                 if "xz" in n:
                                     plane = root_comp.xZConstructionPlane
@@ -4172,7 +4210,7 @@ class FusionBackend:
                                     plane = root_comp.yZConstructionPlane
                         except Exception:
                             pass
-                        sk = root_comp.sketches.add(plane)
+                        sk = root_comp.sketches.add(face_target or plane)
                         h_mm = self._parse_length_mm(frame.get("height") or "4") or 4.0
                         pos = self._parse_point(frame.get("at") or "0,0") or [0.0, 0.0]
                         inp = sk.sketchTexts.createInput(label, h_mm / 10.0)

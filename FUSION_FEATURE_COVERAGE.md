@@ -51,7 +51,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Sheet Metal
   - [Done] base flange; edge flange native attempt with fallbacks; native bend (with relief) where available; unfold/refold native when available with diagnostics fallback
 - Materials/PMI
-  - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos and optional frames; minimal GD&T frames with datum callouts; density override → [Diag]
+  - [Done] library material refs + appearance overrides (with targeted bodies); PMI notes on faces/planes with frames; GD&T frames on faces/planes with datum callouts; density override → [Diag]
 - Selection/Queries
   - [Partial] created_by, owner_feature==, pattern_instances, tangent_connected(tol), largest_by, curvature≈/radius≈/area≈, by_material; lineage tags; cross-session persistence (basic)
 - Export/Thumbnail
