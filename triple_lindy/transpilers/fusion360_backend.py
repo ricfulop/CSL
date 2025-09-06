@@ -777,6 +777,38 @@ class FusionBackend:
                                         grp_edges = None
                                     grp_edges = grp_edges or edge_col
                                     const_def = fil_feats.createConstantRadiusFilletDefinition(grp_edges, adsk.core.ValueInput.createByReal(r_cm), is_tc)
+                                    # Apply per-group transition options (corner type / chordal) if provided
+                                    try:
+                                        trans = grp.get("transitions") or grp.get("transition") or {}
+                                        if isinstance(trans, dict):
+                                            # Corner type mapping
+                                            corner = str(trans.get("corner") or trans.get("corner_type") or trans.get("type") or "").lower()
+                                            if corner and hasattr(const_def, "cornerType"):
+                                                try:
+                                                    import adsk.fusion  # type: ignore
+                                                    enum_t = getattr(adsk.fusion, "FilletCornerTypes", None)
+                                                    if enum_t:
+                                                        pick = None
+                                                        if "roll" in corner:
+                                                            pick = getattr(enum_t, "RollingBallCornerType", None)
+                                                        elif "setback" in corner:
+                                                            pick = getattr(enum_t, "SetbackCornerType", None)
+                                                        if pick is not None:
+                                                            const_def.cornerType = pick
+                                                except Exception:
+                                                    pass
+                                            # Chordal radius mode best-effort
+                                            mode = str(trans.get("mode") or trans.get("radius_mode") or "").lower()
+                                            if mode and ("chord" in mode or "chordal" in mode):
+                                                for attr in ("isChordalRadius", "useChordLength", "isUsingChordalRadius"):
+                                                    if hasattr(const_def, attr):
+                                                        try:
+                                                            setattr(const_def, attr, True)
+                                                            break
+                                                        except Exception:
+                                                            pass
+                                    except Exception:
+                                        pass
                                     fil = fil_feats.add(const_def)
                                     mapping[f"{feat_id}:grp"] = f"fusion:fillet:{fil.entityToken}"
                                 # Skip the single-feature path when per-groups are processed
@@ -785,6 +817,36 @@ class FusionBackend:
                             pass
                         is_tc_global = bool(feat.get("tangent_chain") or feat.get("tangent") or False)
                         const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), is_tc_global)
+                        # Apply feature-level transition options on the constant def as well
+                        try:
+                            trans = feat.get("transitions") or {}
+                            if isinstance(trans, dict):
+                                corner = str(trans.get("corner") or trans.get("corner_type") or trans.get("type") or "").lower()
+                                if corner and hasattr(const_def, "cornerType"):
+                                    try:
+                                        import adsk.fusion  # type: ignore
+                                        enum_t = getattr(adsk.fusion, "FilletCornerTypes", None)
+                                        if enum_t:
+                                            pick = None
+                                            if "roll" in corner:
+                                                pick = getattr(enum_t, "RollingBallCornerType", None)
+                                            elif "setback" in corner:
+                                                pick = getattr(enum_t, "SetbackCornerType", None)
+                                            if pick is not None:
+                                                const_def.cornerType = pick
+                                    except Exception:
+                                        pass
+                                mode = str(trans.get("mode") or trans.get("radius_mode") or "").lower()
+                                if mode and ("chord" in mode or "chordal" in mode):
+                                    for attr in ("isChordalRadius", "useChordLength", "isUsingChordalRadius"):
+                                        if hasattr(const_def, attr):
+                                            try:
+                                                setattr(const_def, attr, True)
+                                                break
+                                            except Exception:
+                                                pass
+                        except Exception:
+                            pass
                         fil = fil_feats.add(const_def)
                         mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
                         try:

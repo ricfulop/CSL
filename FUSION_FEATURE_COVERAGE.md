@@ -27,7 +27,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Draft
   - [Partial] face set + neutral plane + angle; pull direction fixed
 - Fillet
-  - [Partial] per‑edge groups; variable radius; vertex setbacks (API‑dependent); feature‑level uniform setbacks when supported; other transitions → [Diag]
+  - [Partial] per‑edge groups; variable radius; vertex setbacks (API‑dependent); feature‑level setbacks; corner type (rolling/setback) and chordal mode best‑effort; complex transitions → [Diag]
 - Chamfer
   - [Partial] equal‑distance; two‑distances; distance+angle (best‑effort); feature‑level definitions across groups; complex transitions → [Diag]
 - Wrap/Emboss/Project
