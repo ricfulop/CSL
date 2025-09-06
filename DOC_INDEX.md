@@ -9,9 +9,9 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 - [BACKLOG_FUSION_IMPLEMENTATION.md](BACKLOG_FUSION_IMPLEMENTATION.md)
   - Summary: Fusion backend status with Completed vs Remaining; links to tracking issues.
   - Keywords: backlog, Fusion, implementation, features, tracking
-- [CSL_v1_2_proposal.md](CSL_v1_2_proposal.md)
-  - Summary: Proposed v1.2 syntax/schema to reach Fusion parity and cross-backend extensions; includes APS Design Automation note.
-  - Keywords: v1.2, Fusion parity, schema, APS, Design Automation
+- [archive/CSL_v1_2_proposal.md](archive/CSL_v1_2_proposal.md)
+  - Summary: Historical v1.2 proposal (superseded by v1.2 draft spec and schema).
+  - Keywords: archived, v1.2 proposal
 
 - [LICENSE](LICENSE)
   - Summary: MIT License (c) 2025 Ric Fulop.

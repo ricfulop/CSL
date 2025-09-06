@@ -44,10 +44,10 @@
       "type": "markdown"
     },
     {
-      "path": "CSL_v1_2_proposal.md",
-      "title": "CSL v1.2 – Fusion Parity and Cross-Backend Extensions (Proposal)",
-      "summary": "Proposed v1.2 syntax and schema to reach Fusion parity and extend cross-backend features; includes APS Design Automation linkage.",
-      "keywords": ["v1.2", "Fusion parity", "schema", "APS", "Design Automation"],
+      "path": "archive/CSL_v1_2_proposal.md",
+      "title": "CSL v1.2 Proposal (Archived)",
+      "summary": "Historical proposal; superseded by v1.2 draft spec and schema.",
+      "keywords": ["archived", "v1.2", "proposal"],
       "type": "markdown"
     },
     {
