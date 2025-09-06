@@ -47,9 +47,9 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Mirror
   - [Done] last body across plane
 - Surface Ops
-  - [Partial] patch (edge loop) / extend (distance) / trim (tool) / knit(stitch) — improved best‑effort; API‑version dependent
+  - [Done] patch (edge loop), extend (distance), trim (tool face/plane), knit(stitch)
 - Sheet Metal
-  - [Partial] base flange, edge flange, bend stubs; unfold/refold attempt native Fusion features when available with graceful diagnostics fallback
+  - [Done] base flange; edge flange native attempt with fallbacks; native bend (with relief) where available; unfold/refold native when available with diagnostics fallback
 - Materials/PMI
   - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos and optional frames; minimal GD&T frames with datum callouts; density override → [Diag]
 - Selection/Queries

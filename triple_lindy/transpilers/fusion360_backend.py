@@ -2788,16 +2788,60 @@ class FusionBackend:
                         except Exception:
                             mapping[feat_id] = "fusion:sheet_edge_flange:E2802"
                 elif kind == "sheet_bend":
-                    # Bend stub: draft faces near an edge to simulate bend
+                    # Native bend if available; fallback to draft
                     try:
                         import adsk.core  # type: ignore
-                        dft = root.features.draftFeatures
-                        faces = self._get_all_faces(root)
+                        import adsk.fusion  # type: ignore
+                        app, ui, design = self._ensure_design()
+                        sm_root = design.rootComponent
+                        sm_feats = getattr(sm_root.features, "sheetMetalFeatures", None)
+                        bend_feats = getattr(sm_feats, "bendFeatures", None) if sm_feats else None
+                        edge = None
+                        try:
+                            eq = feat.get("on") or feat.get("edge_query") or {"kind": "edge"}
+                            ecol = self._resolve_query(root, eq, entity_type="edge")
+                            edge = ecol.item(0) if ecol and ecol.count > 0 else None
+                        except Exception:
+                            edge = None
                         angle_deg = float(self._parse_length_mm(feat.get("angle") or "90") or 90.0)
                         angle = adsk.core.ValueInput.createByReal((angle_deg/180.0)*3.141592653589793)
-                        di = dft.createInput(faces, root.xZConstructionPlane, angle, adsk.fusion.DraftDirectionsType.PullDirectionType)
-                        df = dft.add(di)
-                        mapping[feat_id] = f"fusion:sheet_bend:{df.entityToken}"
+                        if bend_feats and edge is not None and hasattr(bend_feats, "add"):
+                            try:
+                                bi = bend_feats.createInput(edge, angle)
+                                # Relief type best-effort
+                                rel = str(feat.get("relief") or "").lower()
+                                try:
+                                    rt = getattr(adsk.fusion, "SheetMetalReliefTypes", None)
+                                    if rt and hasattr(bi, "reliefType"):
+                                        pick = None
+                                        for cand in ("RoundReliefType", "TearReliefType", "SquareReliefType"):
+                                            if rel in cand.lower() and hasattr(rt, cand):
+                                                pick = getattr(rt, cand)
+                                                break
+                                        if pick is not None:
+                                            bi.reliefType = pick
+                                except Exception:
+                                    pass
+                                bf = bend_feats.add(bi)
+                                mapping[feat_id] = f"fusion:sheet_bend:{bf.entityToken}"
+                            except Exception:
+                                mapping[feat_id] = "fusion:sheet_bend:E2803"
+                        else:
+                            # Fallback: draft faces near an edge to simulate bend
+                            dft = root.features.draftFeatures
+                            faces = self._get_all_faces(root)
+                            di = dft.createInput(faces, root.xZConstructionPlane, angle, adsk.fusion.DraftDirectionsType.PullDirectionType)
+                            df = dft.add(di)
+                            mapping[feat_id] = f"fusion:sheet_bend:{df.entityToken}"
+                        # Best-effort: set K-factor if rule exposure exists
+                        try:
+                            if feat.get("k_factor") is not None and hasattr(design, "activeSheetMetalRule"):
+                                rule = getattr(design, "activeSheetMetalRule", None)
+                                if rule and hasattr(rule, "kFactor"):
+                                    kf = float(self._parse_length_mm(str(feat.get("k_factor"))) or 0.5)
+                                    rule.kFactor = kf
+                        except Exception:
+                            pass
                     except Exception:
                         mapping[feat_id] = "fusion:sheet_bend:E2803"
                 elif kind == "sheet_unfold" or kind == "sheet_refold":
