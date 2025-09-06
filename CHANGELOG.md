@@ -1,3 +1,19 @@
+## v1.2.0-draft (CSL v1.2 Draft: schema/spec/examples, CI, conformance)
+
+Highlights
+- Language: Introduced CSL v1.2 draft spec and schema (richer sketches; loft continuity/orientation; variable fillet/chamfer; draft controls; wrap/emboss/project; threads with designations; expanded queries; assemblies/joints with limits; sheet metal unfold/refold; helix; light PMI).
+- Examples: Added v1.2 `.csl` and JSON IR examples (loft continuity, sweep options, hole variants, face ops, sheet unfold/refold, helix, threads/emboss), all validating against the schema.
+- Docs: Comprehensive v1.2 User Guide; migration guide v1.1 → v1.2; conformance checklist; updated README with “What’s new in v1.2” and CI badge.
+- Conformance: Extended harness with v1.2 cases (holes, sweep, face ops, sheet, emboss/project); golden summary preserved; dry‑run friendly.
+- CI: GitHub Actions workflow to validate all v1.2 JSON IR examples on push/PR.
+
+Commits
+- Add `CSL_v1_2/csl_v1_2_spec.md`, schema, user guide, migration notes, and conformance checklist.
+- Extend schema for holes/sweep/thin_extrude/rib/face ops/sheet metal/patterns/assemblies/helix/PMI; add validating examples.
+- Update DOC_INDEX, docs_index.json, and README (v1.2 status, examples, CI badge, what’s new).
+- Add validator script and Make targets; CI workflow to run validation.
+- Expand conformance harness with v1.2 coverage and generate reports.
+
 ## v0.2.0 (Fusion backend enhancements, docs, and conformance)
 
 Highlights
