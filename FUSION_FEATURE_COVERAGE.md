@@ -19,7 +19,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Revolve
   - [Done] full 360 default (profile + axis)
 - Sweep
-  - [Partial] orientation mapping (path/fixed/binormal best‑effort); optional guide rail
+  - [Done] orientation mapping (path/fixed/binormal), guide rail; twist angle and scaling best‑effort
 - Loft
   - [Partial] sections; continuity mapping (G0/G1/G2 incl. per‑section when exposed); orientation mapping; optional rails/centerline; [Diag] when unsupported
 - Shell

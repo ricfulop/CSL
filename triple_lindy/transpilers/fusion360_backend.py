@@ -1512,9 +1512,29 @@ class FusionBackend:
                     except Exception:
                         pass
                 elif kind == "sweep":
-                    # Sweep first profile along first sketch curve found
-                    prof = self._first_profile(root)
-                    path = self._first_path(root)
+                    # Sweep profile along path with orientation/rail/twist/scale best-effort
+                    # Resolve profile
+                    prof = None
+                    try:
+                        pq = feat.get("profile_query") or feat.get("profile")
+                        if pq:
+                            pcol = self._resolve_query(root, pq, entity_type="profile")
+                            if pcol and pcol.count > 0:
+                                prof = pcol.item(0)
+                    except Exception:
+                        prof = None
+                    prof = prof or self._first_profile(root)
+                    # Resolve path
+                    path = None
+                    try:
+                        path_q = feat.get("path_query") or feat.get("path")
+                        if path_q:
+                            pcol2 = self._resolve_query(root, path_q, entity_type="edge")
+                            if pcol2 and pcol2.count > 0:
+                                path = pcol2.item(0)
+                    except Exception:
+                        path = None
+                    path = path or self._first_path(root)
                     if prof and path:
                         sw = root.features.sweepFeatures
                         sw_input = sw.createInput(prof, path, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
@@ -1522,20 +1542,50 @@ class FusionBackend:
                         try:
                             orient = (feat.get("orientation") or "frenet").lower()
                             if hasattr(sw_input, "orientation"):
-                                if orient == "fixed_normal":
+                                if orient in ("fixed_normal", "path"):
                                     sw_input.orientation = adsk.fusion.SweepOrientationTypes.PathOrientationType
-                                elif orient == "binormal":
+                                elif orient in ("binormal", "guide", "guide_rail"):
                                     sw_input.orientation = adsk.fusion.SweepOrientationTypes.GuideRailOrientationType
                                 else:
                                     sw_input.orientation = adsk.fusion.SweepOrientationTypes.PerpendicularOrientationType
                         except Exception:
                             pass
-                        # Optional guide surface/rail via query
+                        # Optional guide rail via query
                         try:
                             if feat.get("guide_query"):
                                 gcol = self._resolve_query(root, feat.get("guide_query"), entity_type="edge")
-                                if gcol and hasattr(sw_input, "guideRail"):
+                                if gcol and hasattr(sw_input, "guideRail") and gcol.count > 0:
                                     sw_input.guideRail = gcol.item(0)
+                        except Exception:
+                            pass
+                        # Optional twist angle (deg)
+                        try:
+                            tw_deg = None
+                            if feat.get("twist") is not None:
+                                tw_deg = float(self._parse_length_mm(str(feat.get("twist"))) or 0.0)
+                            if tw_deg is not None and hasattr(sw_input, "twistAngle"):
+                                sw_input.twistAngle = adsk.core.ValueInput.createByReal((tw_deg / 180.0) * 3.141592653589793)
+                        except Exception:
+                            pass
+                        # Optional profile scaling
+                        try:
+                            scale = None
+                            if feat.get("scale") is not None:
+                                scale = float(self._parse_length_mm(str(feat.get("scale"))) or 1.0)
+                            if scale is not None:
+                                for attr in ("profileScaling", "scale"):
+                                    if hasattr(sw_input, attr):
+                                        try:
+                                            setattr(sw_input, attr, scale)
+                                            break
+                                        except Exception:
+                                            pass
+                        except Exception:
+                            pass
+                        # Solid/operation override
+                        try:
+                            if hasattr(sw_input, "isSolid") and feat.get("is_solid") is not None:
+                                sw_input.isSolid = bool(feat.get("is_solid"))
                         except Exception:
                             pass
                         sw_feat = sw.add(sw_input)
