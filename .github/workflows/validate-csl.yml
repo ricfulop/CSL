@@ -1,0 +1,33 @@
+name: Validate CSL IR
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install jsonschema==4.22.0; fi
+
+      - name: Validate CSL v1.2 examples
+        run: |
+          make validate-v12
+
+      - name: Validate CSL v1.1 examples (best-effort)
+        run: |
+          make validate-v11 || true
+
