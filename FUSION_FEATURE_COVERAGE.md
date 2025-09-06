@@ -51,7 +51,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Sheet Metal
   - [Partial] base flange, edge flange, bend stubs; unfold/refold attempt native Fusion features when available with graceful diagnostics fallback
 - Materials/PMI
-  - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos; density override → [Diag]
+  - [Partial] library material refs + appearance overrides; PMI notes on faces/planes with height/angle/pos and optional frames; minimal GD&T frames with datum callouts; density override → [Diag]
 - Selection/Queries
   - [Partial] created_by, owner_feature==, pattern_instances, tangent_connected(tol), largest_by, curvature≈/radius≈/area≈, by_material; lineage tags; cross-session persistence (basic)
 - Export/Thumbnail

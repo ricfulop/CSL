@@ -3689,6 +3689,20 @@ class FusionBackend:
                         radians = (rot_deg/180.0) * 3.141592653589793
                         ti.setAsMultiLine(p, radians, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
                         sketch.sketchTexts.add(ti)
+                        # Optional: draw a simple rectangular frame
+                        try:
+                            if bool(note.get("frame")):
+                                lines = sketch.sketchCurves.sketchLines
+                                w = float(note.get("frame_w") or 1.2) * height
+                                h = float(note.get("frame_h") or 0.6) * height
+                                x0, y0 = pt[0], pt[1]
+                                p0 = adsk.core.Point3D.create(x0, y0, 0)
+                                p1 = adsk.core.Point3D.create(x0 + w, y0, 0)
+                                p2 = adsk.core.Point3D.create(x0 + w, y0 - h, 0)
+                                p3 = adsk.core.Point3D.create(x0, y0 - h, 0)
+                                lines.addByTwoPoints(p0, p1); lines.addByTwoPoints(p1, p2); lines.addByTwoPoints(p2, p3); lines.addByTwoPoints(p3, p0)
+                        except Exception:
+                            pass
                     except Exception:
                         # Best-effort: ignore any one PMI failure without stopping others
                         pass
@@ -3739,6 +3753,28 @@ class FusionBackend:
                         p = adsk.core.Point3D.create(pos[0], pos[1], 0)
                         inp.setAsMultiLine(p, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.TopVerticalAlignment, 0.0)
                         sk.sketchTexts.add(inp)
+                        # Optional datum callouts linked to frame (visual only)
+                        try:
+                            datums = frame.get("datums") or []
+                            if isinstance(datums, list) and len(datums) > 0:
+                                lines = sk.sketchCurves.sketchLines
+                                for i, d in enumerate(datums):
+                                    if not isinstance(d, dict):
+                                        continue
+                                    name = str(d.get("name") or d.get("id") or "D")
+                                    dx = float(d.get("dx") or 0.0)
+                                    dy = float(d.get("dy") or -((i+1) * (h_mm / 10.0)))
+                                    pt2 = adsk.core.Point3D.create(pos[0] + dx, pos[1] + dy, 0)
+                                    ti2 = sk.sketchTexts.createInput(f"⟂ {name}", h_mm / 10.0)
+                                    ti2.setAsSingleLine(pt2, 0.0, adsk.core.HorizontalAlignments.LeftHorizontalAlignment, adsk.core.VerticalAlignments.MiddleVerticalAlignment)
+                                    sk.sketchTexts.add(ti2)
+                                    try:
+                                        p1 = adsk.core.Point3D.create(pos[0], pos[1], 0)
+                                        lines.addByTwoPoints(p1, pt2)
+                                    except Exception:
+                                        pass
+                        except Exception:
+                            pass
                     except Exception:
                         continue
         except Exception:
