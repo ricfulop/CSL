@@ -9,6 +9,13 @@
       "type": "markdown"
     },
     {
+      "path": "PRODUCT_PLAN_AGENT.md",
+      "title": "Cursor-for-CAD: Product Plan and Architecture (Draft)",
+      "summary": "Product plan for a Cursor-like CAD agent: extension-first UX, agent service, backends, roadmap, and milestones.",
+      "keywords": ["product", "plan", "architecture", "CAD", "agent"],
+      "type": "markdown"
+    },
+    {
       "path": "CSL_GLOSSARY.md",
       "title": "CSL Glossary (v1.0  v1.2)",
       "summary": "Comprehensive glossary of CSL constructs and syntax across versions; quick lookup.",

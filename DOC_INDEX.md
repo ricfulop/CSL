@@ -4,11 +4,14 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 
 ### Root
 - [README.md](README.md)
+  - Summary: AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.
+  - Keywords: CSL, AI agent, meta-parametric, Fusion 360, Onshape, SolidWorks, FreeCAD, Blender
 - [CSL_GLOSSARY.md](CSL_GLOSSARY.md)
   - Summary: Comprehensive glossary of CSL constructs and syntax across v1.0–v1.2; quick lookup with version tags.
   - Keywords: glossary, syntax, reference, v1.0, v1.1, v1.2
-  - Summary: AI agent-driven meta-parametric design across CAD/CAE/CAM, BOM, factory automation; Fusion-first multi-backend.
-  - Keywords: CSL, AI agent, meta-parametric, Fusion 360, Onshape, SolidWorks, FreeCAD, Blender
+- [PRODUCT_PLAN_AGENT.md](PRODUCT_PLAN_AGENT.md)
+  - Summary: Product plan and architecture for a Cursor-like CAD agent (editor extension + agent service, backends, roadmap).
+  - Keywords: product, plan, architecture, agent, VS Code, FastAPI
 - [BACKLOG_FUSION_IMPLEMENTATION.md](BACKLOG_FUSION_IMPLEMENTATION.md)
   - Summary: Fusion backend status with Completed vs Remaining; links to tracking issues.
   - Keywords: backlog, Fusion, implementation, features, tracking
