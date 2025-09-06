@@ -7,7 +7,7 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Sketch entities
   - [Done] rect, circle, line, arc, point, spline, ellipse, elliptical_arc, text
 - Sketch constraints and dimensions
-  - [Partial] coincident (incl. coincident-to-spline), collinear, parallel, perpendicular, concentric, equal, horizontal, vertical, symmetry, tangent, midpoint, fix/lock, equal-length arrays
+  - [Partial] coincident (incl. point-on-curve), collinear, parallel, perpendicular, concentric, equal, horizontal, vertical, symmetry, tangent, midpoint, fix/lock, equal-length arrays
   - [Partial] dimensions: diameter, radius, distance, angle (values applied; driven/reference supported best-effort)
   - [Diag] curvature continuity (emits diagnostic when unsupported)
 - Extrude

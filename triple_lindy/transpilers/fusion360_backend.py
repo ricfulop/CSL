@@ -387,6 +387,11 @@ class FusionBackend:
                                 cons.addCoincident(a, b)
                             except Exception:
                                 pass
+                        elif ckind in ("point_on", "point_on_curve", "point_on_line", "point_on_circle", "point_on_arc", "coincident_to_curve") and a and b:
+                            try:
+                                cons.addCoincident(a, b)
+                            except Exception:
+                                pass
                         elif ckind == "colinear" and a and b:
                             cons.addCollinear(a, b)
                         elif ckind == "parallel" and a and b:
@@ -499,6 +504,75 @@ class FusionBackend:
                                             pass
                                         try:
                                             ad.parameter.isDriven = bool(driven)
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
+                            except Exception:
+                                pass
+                        elif ckind in ("radius", "radial") and a:
+                            # Radius dimension for arcs/circles
+                            try:
+                                dim_pt = adsk.core.Point3D.create(0, 0, 0)
+                                rd = None
+                                if hasattr(dims, "addRadiusDimension"):
+                                    rd = dims.addRadiusDimension(a, dim_pt)
+                                elif hasattr(dims, "addRadialDimension"):
+                                    rd = dims.addRadialDimension(a, dim_pt)
+                                if rd is not None and cst.get("value") is not None:
+                                    r_mm = self._parse_length_mm(cst.get("value")) or 0.0
+                                    try:
+                                        rd.parameter.value = (r_mm / 10.0)
+                                    except Exception:
+                                        pass
+                                # Reference/driven handling
+                                try:
+                                    driven = cst.get("driven")
+                                    if driven is None:
+                                        driven = cst.get("reference")
+                                    if driven is not None and rd is not None:
+                                        for attr in ("isDriving", "isReference"):
+                                            if hasattr(rd, attr):
+                                                try:
+                                                    setattr(rd, attr, False if attr == "isDriving" and bool(driven) else (True if attr == "isReference" and bool(driven) else getattr(rd, attr)))
+                                                except Exception:
+                                                    pass
+                                        try:
+                                            if hasattr(rd, "parameter") and hasattr(rd.parameter, "isDriving"):
+                                                rd.parameter.isDriving = (not bool(driven))
+                                        except Exception:
+                                            pass
+                                except Exception:
+                                    pass
+                            except Exception:
+                                pass
+                        elif ckind in ("diameter", "dia") and a:
+                            # Diameter dimension for circles
+                            try:
+                                dim_pt = adsk.core.Point3D.create(0, 0, 0)
+                                dd = None
+                                if hasattr(dims, "addDiameterDimension"):
+                                    dd = dims.addDiameterDimension(a, dim_pt)
+                                if dd is not None and cst.get("value") is not None:
+                                    d_mm = self._parse_length_mm(cst.get("value")) or 0.0
+                                    try:
+                                        dd.parameter.value = (d_mm / 10.0)
+                                    except Exception:
+                                        pass
+                                try:
+                                    driven = cst.get("driven")
+                                    if driven is None:
+                                        driven = cst.get("reference")
+                                    if driven is not None and dd is not None:
+                                        for attr in ("isDriving", "isReference"):
+                                            if hasattr(dd, attr):
+                                                try:
+                                                    setattr(dd, attr, False if attr == "isDriving" and bool(driven) else (True if attr == "isReference" and bool(driven) else getattr(dd, attr)))
+                                                except Exception:
+                                                    pass
+                                        try:
+                                            if hasattr(dd, "parameter") and hasattr(dd.parameter, "isDriving"):
+                                                dd.parameter.isDriving = (not bool(driven))
                                         except Exception:
                                             pass
                                 except Exception:
