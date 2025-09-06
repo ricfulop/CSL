@@ -23,9 +23,9 @@ Status keys: [Done] implemented; [Partial] subset/best-effort; [Diag] emits diag
 - Loft
   - [Partial] sections; continuity mapping (G0/G1/G2 incl. per‑section when exposed); orientation mapping; optional rails/centerline; [Diag] when unsupported
 - Shell
-  - [Partial] whole-body inward by thickness
+  - [Done] whole-body by thickness; remove-faces query; inside/outside direction when supported
 - Draft
-  - [Partial] face set + neutral plane + angle; pull direction fixed
+  - [Done] face set + neutral plane + angle; pull/push direction; optional fixed faces
 - Fillet
   - [Partial] per‑edge groups; variable radius; vertex setbacks (API‑dependent); feature‑level setbacks; corner type (rolling/setback) and chordal mode best‑effort; complex transitions → [Diag]
 - Chamfer

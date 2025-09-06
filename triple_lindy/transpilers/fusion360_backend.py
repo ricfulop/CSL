@@ -1767,12 +1767,27 @@ class FusionBackend:
                         shell = root.features.shellFeatures
                         faces = bodies.item(bodies.count - 1).faces
                         face_col = adsk.core.ObjectCollection.create()
-                        # As a placeholder, shell entire body inward by thickness if provided
-                        for f in faces:
-                            face_col.add(f)
-                        t_mm = self._parse_length_mm(feat.get("thickness")) or 2.0
+                        # Faces to remove can be provided via query or default to all (hollow)
+                        try:
+                            rm = feat.get("remove_faces_query") or feat.get("remove")
+                            if rm:
+                                rcol = self._resolve_query(root, rm, entity_type="face")
+                                if rcol and rcol.count > 0:
+                                    face_col = rcol
+                        except Exception:
+                            pass
+                        if face_col.count == 0:
+                            for f in faces:
+                                face_col.add(f)
+                        t_mm = self._parse_length_mm(feat.get("thickness") or feat.get("t") or "2") or 2.0
                         t_cm = t_mm / 10.0
                         s_in = shell.createShellFeatureInput(face_col, adsk.core.ValueInput.createByReal(t_cm))
+                        # Inside/outside direction if supported
+                        try:
+                            if hasattr(s_in, "isInsideThickness") and feat.get("inside") is not None:
+                                s_in.isInsideThickness = bool(feat.get("inside"))
+                        except Exception:
+                            pass
                         s = shell.add(s_in)
                         mapping[feat_id] = f"fusion:shell:{s.entityToken}"
                         try:
@@ -1842,7 +1857,21 @@ class FusionBackend:
                                         pass
                             except Exception:
                                 pass
+                            # Set faces as fixed (optional) if supported
+                            fixed_faces = None
+                            try:
+                                if feat.get("fixed_faces_query"):
+                                    fcol = self._resolve_query(root, feat.get("fixed_faces_query"), entity_type="face")
+                                    if fcol and fcol.count > 0:
+                                        fixed_faces = fcol
+                            except Exception:
+                                fixed_faces = None
                             d_in = draft.createInput(face_col, neutral, angle, False, pull)
+                            try:
+                                if fixed_faces is not None and hasattr(d_in, "setFixedFaces"):
+                                    d_in.setFixedFaces(fixed_faces)
+                            except Exception:
+                                pass
                             d = draft.add(d_in)
                             mapping[feat_id] = f"fusion:draft:{d.entityToken}"
                             try:
