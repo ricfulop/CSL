@@ -27,11 +27,19 @@ import math
 import traceback
 import threading
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+# Note: typing might not be available in older Fusion Python
+try:
+    from typing import Dict, List, Any, Optional
+except ImportError:
+    # Fallback for older Python versions
+    Dict = dict
+    List = list
+    Any = object
+    Optional = object
 
 # Global variables
-_app: Optional[adsk.core.Application] = None
-_ui: Optional[adsk.core.UserInterface] = None
+_app = None  # adsk.core.Application
+_ui = None   # adsk.core.UserInterface
 _running = False
 _checkpoints = {}
 _event_handlers = {}
@@ -51,24 +59,51 @@ def run(context):
         _app = adsk.core.Application.get()
         _ui = _app.userInterface
         
+        # Test imports first
+        try:
+            test_imports()
+        except Exception as e:
+            _ui.messageBox(f"Import error: {str(e)}\n\nThis might be a Python version issue.")
+            return
+        
         # Load configuration
-        load_config()
+        try:
+            load_config()
+        except Exception as e:
+            _ui.messageBox(f"Config error: {str(e)}\n\nUsing defaults.")
         
         # Start file watcher in a separate thread
         _running = True
-        watcher_thread = threading.Thread(target=watch_for_commands, daemon=True)
-        watcher_thread.start()
+        try:
+            watcher_thread = threading.Thread(target=watch_for_commands, daemon=True)
+            watcher_thread.start()
+        except Exception as e:
+            _ui.messageBox(f"Threading error: {str(e)}\n\n{traceback.format_exc()}")
+            return
         
         _ui.messageBox("Triple Lindy Enhanced v2.0.0 started!\nWatching for commands...")
         
     except Exception as e:
         if _ui:
-            _ui.messageBox(f"Failed to start: {str(e)}")
+            _ui.messageBox(f"Failed to start: {str(e)}\n\nDetails:\n{traceback.format_exc()}")
+        else:
+            print(f"Failed to start (no UI): {str(e)}\n\n{traceback.format_exc()}")
 
 def stop(context):
     """Clean up when add-in stops"""
     global _running
     _running = False
+
+def test_imports():
+    """Test that all required imports work"""
+    import json
+    import time
+    import os
+    import math
+    import threading
+    from pathlib import Path
+    # If we get here, all imports work
+    return True
 
 def load_config():
     """Load configuration from file"""
@@ -1224,12 +1259,22 @@ def process_command(data, status_file):
 
 def watch_for_commands():
     """Watch file for commands with robust error handling"""
-    global _running, _app
+    global _running, _app, _ui
     
     try:
+        # Import Path here to avoid issues
+        from pathlib import Path
+        
         command_file = Path.home() / "Documents" / "CSL" / "live_command.json"
         status_file = Path.home() / "Documents" / "CSL" / "live_status.json"
-        command_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Create directory if it doesn't exist
+        try:
+            command_file.parent.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            if _ui:
+                _ui.messageBox(f"Cannot create CSL directory: {str(e)}")
+            return
         
         # Initial status
         status_file.write_text(json.dumps({
