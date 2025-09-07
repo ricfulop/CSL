@@ -894,8 +894,10 @@ class FusionBackend:
                         # Re-raise to make failure visible
                         raise Exception(error_msg)
                 elif kind == "fillet":
+                    print(f"[DEBUG] Processing fillet feature: {feat_id}")
                     rad_mm = self._parse_length_mm(feat.get("radius")) or 1.0
                     rad_cm = rad_mm / 10.0
+                    print(f"[DEBUG] Fillet radius: {rad_mm}mm ({rad_cm}cm)")
                     # Resolve edges via query if provided; else use all edges
                     edges = None
                     try:
@@ -905,6 +907,7 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
+                    print(f"[DEBUG] Found {edges.count if edges else 0} edges to fillet")
                     # Transitions: support 'setback' at feature level when possible
                     if feat.get("transitions"):
                         try:
@@ -971,10 +974,12 @@ class FusionBackend:
                         except Exception:
                             pass
                     if edges.count > 0:
+                        print(f"[DEBUG] Creating fillet with {edges.count} edges")
                         fil_feats = root.features.filletFeatures
                         edge_col = adsk.core.ObjectCollection.create()
                         for e in edges:
                             edge_col.add(e)
+                        print(f"[DEBUG] Edge collection created with {edge_col.count} edges")
                         # If per-edge groups provided, create separate constant fillets for each group
                         try:
                             per_groups = feat.get("edges") or []
