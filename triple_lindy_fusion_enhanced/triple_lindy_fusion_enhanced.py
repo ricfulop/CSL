@@ -25,6 +25,7 @@ import time
 import os
 import math
 import traceback
+import threading
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
@@ -53,11 +54,12 @@ def run(context):
         # Load configuration
         load_config()
         
-        # Start file watcher
+        # Start file watcher in a separate thread
         _running = True
-        watch_for_commands()
+        watcher_thread = threading.Thread(target=watch_for_commands, daemon=True)
+        watcher_thread.start()
         
-        _ui.messageBox("Triple Lindy Enhanced started successfully!")
+        _ui.messageBox("Triple Lindy Enhanced v2.0.0 started!\nWatching for commands...")
         
     except Exception as e:
         if _ui:
@@ -1224,38 +1226,39 @@ def watch_for_commands():
     """Watch file for commands with robust error handling"""
     global _running, _app
     
-    command_file = Path.home() / "Documents" / "CSL" / "live_command.json"
-    status_file = Path.home() / "Documents" / "CSL" / "live_status.json"
-    command_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    # Initial status
-    status_file.write_text(json.dumps({
-        "status": "ready",
-        "version": "2.0.0",
-        "timestamp": time.time()
-    }))
-    
-    last_modified = 0
-    error_count = 0
-    
-    while _running:
-        try:
-            # Check for file changes
-            if command_file.exists():
-                current_modified = command_file.stat().st_mtime
-                
-                if current_modified > last_modified:
-                    # Read and process command
-                    with open(command_file, 'r') as f:
-                        data = json.load(f)
+    try:
+        command_file = Path.home() / "Documents" / "CSL" / "live_command.json"
+        status_file = Path.home() / "Documents" / "CSL" / "live_status.json"
+        command_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Initial status
+        status_file.write_text(json.dumps({
+            "status": "ready",
+            "version": "2.0.0",
+            "timestamp": time.time()
+        }))
+        
+        last_modified = 0
+        error_count = 0
+        
+        while _running:
+            try:
+                # Check for file changes
+                if command_file.exists():
+                    current_modified = command_file.stat().st_mtime
                     
-                    # Process safely
-                    process_command(data, status_file)
-                    last_modified = current_modified
-                    error_count = 0  # Reset error count on success
-            
-            # Small delay to prevent CPU spinning
-            time.sleep(0.1)
+                    if current_modified > last_modified:
+                        # Read and process command
+                        with open(command_file, 'r') as f:
+                            data = json.load(f)
+                        
+                        # Process safely
+                        process_command(data, status_file)
+                        last_modified = current_modified
+                        error_count = 0  # Reset error count on success
+                
+                # Small delay to prevent CPU spinning
+                time.sleep(0.2)  # Slightly longer delay for stability
             
         except json.JSONDecodeError as e:
             # Invalid JSON in command file
@@ -1285,9 +1288,12 @@ def watch_for_commands():
             # Critical error threshold
             if error_count > 50:
                 _running = False
-                if _ui:
-                    _ui.messageBox(f"Triple Lindy Enhanced stopped due to repeated errors: {str(e)}")
                 break
+    except Exception as e:
+        # Catch any initialization errors
+        if _ui:
+            _ui.messageBox(f"File watcher error: {str(e)}")
+        _running = False
 
 # ============================================================================
 # TEST SUITE
