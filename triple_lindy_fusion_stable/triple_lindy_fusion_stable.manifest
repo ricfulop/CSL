@@ -1,0 +1,13 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "triple_lindy_fusion_stable",
+  "author": "CSL Team",
+  "description": {
+    "": "Stable file-based live control for Fusion 360 with crash protection"
+  },
+  "version": "1.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac|linux",
+  "editEnabled": true
+}

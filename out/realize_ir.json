@@ -1,0 +1,16 @@
+{
+  "ir": {
+    "csl": "1.1",
+    "meta": { "name": "CSL Live Test", "units": "mm" },
+    "sketches": [
+      {"id": "s", "plane": "world.xy", "entities": [
+        {"kind": "rect", "id": "plate", "p1": "0,0", "p2": "60 mm, 40 mm"},
+        {"kind": "circle", "id": "c1", "center": "15 mm, 15 mm", "d": "6 mm"}
+      ]}
+    ],
+    "features": [
+      {"kind": "extrude", "id": "E", "profile": "plate - c1", "distance": "6 mm", "op": "new_solid", "result": "part"},
+      {"kind": "fillet", "id": "F", "edges": "query.edges(part)", "radius": "3 mm"}
+    ]
+  }
+}

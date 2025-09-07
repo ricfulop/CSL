@@ -167,12 +167,23 @@ class FusionBackend:
 
             # Create sketches (limited support: rect, circle)
             sketch_map: Dict[str, Any] = {}
+            entity_to_sketch: Dict[str, Any] = {}  # Map entity IDs to their parent sketch
             for sk in csl_ir.get("sketches", []) or []:
                 if not isinstance(sk, dict):
                     continue
                 sk_id = sk.get("id", "sketch")
                 plane_name = (sk.get("plane") or "world.xy").lower()
-                plane = root.sketches.add(plane)
+                # Resolve construction plane and add sketch
+                try:
+                    plane_obj = self._plane_from_name(root, plane_name)
+                except Exception:
+                    plane_obj = root.xYConstructionPlane
+                sketch = root.sketches.add(plane_obj)
+                try:
+                    if hasattr(sketch, "name"):
+                        sketch.name = str(sk_id)
+                except Exception:
+                    pass
                 ent_objects: Dict[str, Any] = {}
                 # Entities
                 for ent in sk.get("entities", []) or []:
@@ -203,6 +214,7 @@ class FusionBackend:
                                 pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = rect_obj
+                                entity_to_sketch[ent.get("id")] = sketch
                     elif kind == "circle":
                         c = self._parse_point(ent.get("center"))
                         d_mm = self._parse_length_mm(ent.get("d"))
@@ -218,6 +230,7 @@ class FusionBackend:
                                 pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = circle_obj
+                                entity_to_sketch[ent.get("id")] = sketch
                     elif kind == "point":
                         at = self._parse_point(ent.get("at"))
                         if at:
@@ -230,6 +243,7 @@ class FusionBackend:
                                 pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = pt_obj
+                                entity_to_sketch[ent.get("id")] = sketch
                     elif kind == "line":
                         p1 = self._parse_point(ent.get("p1"))
                         p2 = self._parse_point(ent.get("p2"))
@@ -245,6 +259,7 @@ class FusionBackend:
                                 pass
                             if ent.get("id") is not None:
                                 ent_objects[ent.get("id")] = line_obj
+                                entity_to_sketch[ent.get("id")] = sketch
                     elif kind == "arc":
                         ctr = self._parse_point(ent.get("center"))
                         ps = self._parse_point(ent.get("start"))
@@ -263,6 +278,7 @@ class FusionBackend:
                                     pass
                                 if ent.get("id") is not None:
                                     ent_objects[ent.get("id")] = arc_obj
+                                    entity_to_sketch[ent.get("id")] = sketch
                             except Exception:
                                 pass
                     elif kind == "spline":
@@ -309,6 +325,7 @@ class FusionBackend:
                                     pass
                                 if ent.get("id") is not None:
                                     ent_objects[ent.get("id")] = ell_obj
+                                    entity_to_sketch[ent.get("id")] = sketch
                             except Exception:
                                 pass
                     elif kind == "elliptical_arc":
@@ -787,25 +804,69 @@ class FusionBackend:
                     pass
 
             # Execute features (limited: extrude, fillet)
+            print(f"[DEBUG] Processing {len(csl_ir.get('features', []))} features")
             for feat in csl_ir.get("features", []) or []:
                 if not isinstance(feat, dict):
                     continue
                 kind = (feat.get("kind") or "").lower()
                 feat_id = feat.get("id") or kind
+                print(f"[DEBUG] Processing feature: {kind} (id: {feat_id})")
                 if kind == "extrude":
-                    # Use first available profile if profile string is ambiguous
-                    profile = self._first_profile(root)
+                    # Resolve profile from feature specification
+                    profile = None
+                    profile_spec = feat.get("profile")
+                    
+                    # Try to find the profile based on the profile specification
+                    print(f"[DEBUG] Looking for profile: {profile_spec}")
+                    print(f"[DEBUG] entity_to_sketch keys: {list(entity_to_sketch.keys())}")
+                    if profile_spec and isinstance(profile_spec, str):
+                        # Check if profile_spec is an entity ID that we tracked
+                        if profile_spec in entity_to_sketch:
+                            # Get the sketch that contains this entity
+                            target_sketch = entity_to_sketch[profile_spec]
+                            if target_sketch.profiles.count > 0:
+                                # Use the first profile from this sketch
+                                # TODO: Better profile selection if multiple profiles exist
+                                profile = target_sketch.profiles.item(0)
+                        
+                        # If not found, check if it's a sketch ID
+                        elif profile_spec in sketch_map:
+                            target_sketch = sketch_map[profile_spec]
+                            if target_sketch.profiles.count > 0:
+                                profile = target_sketch.profiles.item(0)
+                    
+                    # If no profile found yet, use the most recently created sketch with profiles
+                    if profile is None and root.sketches.count > 0:
+                        # Iterate backwards through sketches (most recent first)
+                        for i in range(root.sketches.count - 1, -1, -1):
+                            sk = root.sketches.item(i)
+                            if sk.profiles.count > 0:
+                                profile = sk.profiles.item(0)
+                                break
+                    
+                    # Final fallback to first available profile
+                    if profile is None:
+                        profile = self._first_profile(root)
+                    
                     if profile is None:
                         continue
+                        
                     dist_mm = self._parse_length_mm(feat.get("distance")) or 10.0
                     dist_cm = dist_mm / 10.0
                     distance = adsk.core.ValueInput.createByReal(dist_cm)
                     ext_feats = root.features.extrudeFeatures
                     op = self._feature_operation(feat.get("operation") or feat.get("op"))
-                    ext_input = ext_feats.createInput(profile, op)
-                    ext_input.setDistanceExtent(False, distance)
-                    ext = ext_feats.add(ext_input)
-                    mapping[feat_id] = f"fusion:extrude:{ext.entityToken}"
+                    try:
+                        ext_input = ext_feats.createInput(profile, op)
+                        ext_input.setDistanceExtent(False, distance)
+                        ext = ext_feats.add(ext_input)
+                        mapping[feat_id] = f"fusion:extrude:{ext.entityToken}"
+                    except Exception as e:
+                        error_msg = f"Extrude '{feat_id}' failed: {str(e)}"
+                        print(f"ERROR: {error_msg}")
+                        mapping[feat_id] = f"error:{error_msg}"
+                        # Re-raise to make failure visible
+                        raise Exception(error_msg)
                 elif kind == "fillet":
                     rad_mm = self._parse_length_mm(feat.get("radius")) or 1.0
                     rad_cm = rad_mm / 10.0
@@ -2768,7 +2829,7 @@ class FusionBackend:
                     except Exception:
                         mapping[feat_id] = "fusion:joint:E2401"
                 elif kind == "mate_connector":
-                    # Best-effort: create a construction axis/point to serve as a connector
+                    # Best-effort: create a construction point and oriented axis to serve as a connector
                     try:
                         import adsk.core  # type: ignore
                         target_q = feat.get("on") or feat.get("target") or {"kind": "face"}
@@ -2777,18 +2838,84 @@ class FusionBackend:
                         if face is None:
                             bodies = self._all_bodies(root)
                             face = bodies.item(bodies.count - 1).faces.item(0) if bodies.count > 0 else None
-                        if face is not None:
-                            axes = root.constructionAxes
-                            ai = axes.createInput()
-                            try:
+                        # Parse optional origin and axes from CSL
+                        origin_cm = None
+                        try:
+                            origin_cm = self._parse_point3d(feat.get("origin") if isinstance(feat.get("origin"), str) else None)
+                        except Exception:
+                            origin_cm = None
+                        # Determine orientation triad vectors from axes mapping
+                        dir_vec = None
+                        x_vec = None
+                        y_vec = None
+                        z_vec = None
+                        try:
+                            axes_spec = feat.get("axes") or {}
+                            # Expect keys like "X","Y","Z" with values of form "+X","-Z", etc.
+                            x_map = str(axes_spec.get("X") or axes_spec.get("x") or "").strip()
+                            y_map = str(axes_spec.get("Y") or axes_spec.get("y") or "").strip()
+                            z_map = str(axes_spec.get("Z") or axes_spec.get("z") or "").strip()
+                            x_vec = self._vector_from_axis_map(x_map) if x_map else None
+                            y_vec = self._vector_from_axis_map(y_map) if y_map else None
+                            z_vec = self._vector_from_axis_map(z_map) if z_map else None
+                            # Backwards-compat: dir_vec is used for the construction axis line direction
+                            if z_vec is not None:
+                                dir_vec = z_vec
+                        except Exception:
+                            dir_vec = None
+                            x_vec = None
+                            y_vec = None
+                            z_vec = None
+                        axes = root.constructionAxes
+                        ai = axes.createInput()
+                        try:
+                            if origin_cm is not None and dir_vec is not None:
+                                p = adsk.core.Point3D.create(origin_cm[0], origin_cm[1], origin_cm[2])
+                                v = adsk.core.Vector3D.create(dir_vec[0], dir_vec[1], dir_vec[2])
+                                ai.setByLine(adsk.core.InfiniteLine3D.create(p, v))
+                            elif face is not None:
                                 ai.setByNormalToSurface(face, face.pointOnFace)
-                            except Exception:
-                                # Fallback: use model Z
-                                z = adsk.core.Vector3D.create(0,0,1)
-                                p = adsk.core.Point3D.create(0,0,0)
+                            else:
+                                # Fallback: world Z at origin
+                                z = adsk.core.Vector3D.create(0, 0, 1)
+                                p = adsk.core.Point3D.create(0, 0, 0)
                                 ai.setByLine(adsk.core.InfiniteLine3D.create(p, z))
-                            ax = axes.add(ai)
-                            mapping[feat_id] = f"fusion:mate_connector:{ax.entityToken}"
+                        except Exception:
+                            # Final fallback
+                            z = adsk.core.Vector3D.create(0, 0, 1)
+                            p = adsk.core.Point3D.create(0, 0, 0)
+                            ai.setByLine(adsk.core.InfiniteLine3D.create(p, z))
+                        ax = axes.add(ai)
+                        # Add construction point at origin if provided
+                        try:
+                            if origin_cm is not None:
+                                cpts = root.constructionPoints
+                                cpts.addFixed(adsk.core.Point3D.create(origin_cm[0], origin_cm[1], origin_cm[2]))
+                        except Exception:
+                            pass
+                        # Tag attributes for traceability, tags, and full basis
+                        try:
+                            self._tag_attribute(ax, "csl_feat", feat_id)
+                            tags_val = feat.get("tags") or feat.get("tag")
+                            if isinstance(tags_val, list):
+                                self._tag_attribute(ax, "csl_tags", ",".join([str(t) for t in tags_val]))
+                            elif isinstance(tags_val, str):
+                                self._tag_attribute(ax, "csl_tags", tags_val)
+                            # Record basis and origin for downstream use
+                            try:
+                                import json  # type: ignore
+                                basis = {
+                                    "origin_cm": origin_cm if origin_cm is not None else [0.0, 0.0, 0.0],
+                                    "x_dir": list(x_vec) if x_vec is not None else [1.0, 0.0, 0.0],
+                                    "y_dir": list(y_vec) if y_vec is not None else [0.0, 1.0, 0.0],
+                                    "z_dir": list(z_vec) if z_vec is not None else ([dir_vec[0], dir_vec[1], dir_vec[2]] if dir_vec is not None else [0.0, 0.0, 1.0])
+                                }
+                                self._tag_attribute(ax, "csl_basis", json.dumps(basis))
+                            except Exception:
+                                pass
+                        except Exception:
+                            pass
+                        mapping[feat_id] = f"fusion:mate_connector:{ax.entityToken}"
                     except Exception:
                         mapping[feat_id] = "fusion:mate_connector:E2701"
                 elif kind == "assembly_pattern":
@@ -2812,6 +2939,32 @@ class FusionBackend:
                             mapping[feat_id] = f"fusion:assembly_pattern:{pf.entityToken}"
                             try:
                                 self._record_lineage(feat_id, pf, root)
+                            except Exception:
+                                pass
+                            # Compute and tag per-occurrence transforms (translation + optional rotation)
+                            try:
+                                import json  # type: ignore
+                                occs = []
+                                angle_deg = None
+                                try:
+                                    angle_deg = float(self._parse_length_mm(str(feat.get("angle"))) or 0.0)
+                                except Exception:
+                                    angle_deg = None
+                                for i in range(count1):
+                                    for j in range(count2):
+                                        tx_cm = (sp1_mm / 10.0) * i
+                                        ty_cm = (sp2_mm / 10.0) * j
+                                        entry = {"i": i, "j": j, "translate_cm": [tx_cm, ty_cm, 0.0]}
+                                        if angle_deg is not None and angle_deg != 0.0:
+                                            entry["rotate_deg_z"] = angle_deg
+                                        occs.append(entry)
+                                self._tag_attribute(pf, "csl_occ_transforms", json.dumps(occs))
+                            except Exception:
+                                pass
+                            # If explicit per-instance overrides provided, attempt native application
+                            try:
+                                if isinstance(feat.get("instances"), list) and len(feat.get("instances")) > 0:
+                                    self._apply_per_instance_pattern(pf, feat.get("instances"))
                             except Exception:
                                 pass
                     except Exception:
@@ -3454,6 +3607,39 @@ class FusionBackend:
             return None
         return [x, y]
 
+    def _parse_point3d(self, value: Optional[str]) -> Optional[List[float]]:
+        if not value:
+            return None
+        # Expect formats like "x, y, z" with units allowed per component
+        parts = [p.strip() for p in value.split(",")]
+        if len(parts) < 3:
+            # Allow 2D input, infer z=0
+            pt2 = self._parse_point(value)
+            if pt2 is None:
+                return None
+            return [pt2[0], pt2[1], 0.0]
+        x = self._parse_length_cm(parts[0])
+        y = self._parse_length_cm(parts[1])
+        z = self._parse_length_cm(parts[2])
+        if x is None or y is None or z is None:
+            return None
+        return [x, y, z]
+
+    def _vector_from_axis_map(self, axis_map: str) -> Optional[Tuple[float, float, float]]:
+        try:
+            s = axis_map.strip()
+            if not s:
+                return None
+            sign = -1.0 if s.startswith("-") else 1.0
+            base = s[-1:].upper()
+            if base == "X":
+                return (sign, 0.0, 0.0)
+            if base == "Y":
+                return (0.0, sign, 0.0)
+            return (0.0, 0.0, sign)
+        except Exception:
+            return None
+
     def _parse_length_mm(self, value: Optional[str]) -> Optional[float]:
         if value is None:
             return None
@@ -3473,6 +3659,27 @@ class FusionBackend:
             if sk.profiles.count > 0:
                 return sk.profiles.item(0)
         return None
+    
+    def _feature_operation(self, op_str: Optional[str]) -> Any:
+        """Convert operation string to Fusion FeatureOperation enum"""
+        import adsk.fusion  # type: ignore
+        
+        if not op_str:
+            op_str = "new_solid"
+        
+        op_str = op_str.lower()
+        
+        if op_str in ("new_solid", "new", "new_body"):
+            return adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+        elif op_str in ("join", "union", "add"):
+            return adsk.fusion.FeatureOperations.JoinFeatureOperation
+        elif op_str in ("cut", "subtract", "difference"):
+            return adsk.fusion.FeatureOperations.CutFeatureOperation
+        elif op_str in ("intersect", "intersection"):
+            return adsk.fusion.FeatureOperations.IntersectFeatureOperation
+        else:
+            # Default to new body
+            return adsk.fusion.FeatureOperations.NewBodyFeatureOperation
 
     def _collect_profiles(self, root, max_count: int = 3) -> List[Any]:
         profiles: List[Any] = []

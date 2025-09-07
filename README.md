@@ -54,12 +54,22 @@ Optional backends
 - Blender: `bpy`/Geometry Nodes realization; render/export for visualization.
 
 ### Language and schema
+- Spec (v1.3 Draft): `CSL_v1_3/csl_v1_3_spec.md`
+- JSON Schema (v1.3 Draft): `CSL_v1_3/csl_v1_3_schema.json`
 - Spec (v1.2 Draft): `CSL_v1_2/csl_v1_2_spec.md` (extends v1.1)
 - JSON Schema (v1.2 Draft): `CSL_v1_2/csl_v1_2_schema.json`
 - Migration: `MIGRATION_v1_1_to_v1_2.md`
 - Conformance checklists: `CSL_v1_1/conformance/README.md`, `CSL_v1_2/conformance/README.md`
 - Examples: `CSL_v1_2/examples/` (v1.2) and `CSL_v1_1/examples/` (v1.1)
   - Notable v1.1 example: `constraints_patterns_demo.csl` (construction/driven constraints, per-instance patterns)
+
+### What's new in v1.3
+- Surface ops with explicit queries (patch/extend/trim/knit).
+- Patterns per‑instance controls (`instances`/`table`).
+- Constraints QoL: construction flags, reference (driven) dims, equal‑length arrays, curvature continuity diagnostics.
+- Loft: continuity (G0/G1/G2), per‑section continuity, orientation options, rails/centerline.
+- Export: STL tessellation controls (deviation, angular tolerance, aspect ratio, max edge length).
+- Capabilities: refined JSON and versioned publishing (`make publish-caps`).
 
 ### What's new in v1.2
 - Sketch: `spline`, `ellipse`, `elliptical_arc`, `text`.
@@ -76,10 +86,10 @@ Optional backends
 - Validation: `make validate-v12` checks IR against the v1.2 schema.
 
 ### Gap analysis and roadmap
-- Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md` (includes proposed v1.2 features such as splines, text, variable fillet/chamfer, G2 continuity, richer joints and predicates, materials/PMI).
-- Roadmap priorities: Fusion 360 adapter completeness, robust selection predicates, assembly/joint limits, and manufacturing exports.
+- Backend parity and gaps: `BACKEND_GAP_ANALYSIS.md`.
+- Roadmap priorities: Fusion adapter completeness, robust selection predicates, manufacturing exports.
 
-See Production-Grade Closure Plan in `BACKEND_GAP_ANALYSIS.md` for remaining items (loft continuity, fillet transitions/setbacks, native wrap/emboss, cross-session stable IDs, units parity tests, full joints, materials/PMI, APS hardening).
+See Production-Grade Closure Plan in `BACKEND_GAP_ANALYSIS.md` for remaining items (native wrap/emboss, cross-session stable IDs, units parity tests, full joints, materials/PMI, APS hardening).
 
 ### Conformance harness (Fusion backend)
 Run representative cases (loft continuity G1/G2 with rail, variable fillet/chamfer including angle, emboss/native where available, joints with revolute/slider limits) and emit a JSON report.
@@ -160,13 +170,10 @@ wc -l triple_lindy/transpilers/fusion360_backend.py
 - CSL Glossary: `CSL_GLOSSARY.md`
 - Triple Lindy implementation guide: `triple_lindy_complete with CSL.md`
 
-### Fusion backend status (v1.2)
-- Features: thin extrude, rib, fillet/chamfer (per-edge groups), draft (query-targeted), holes (taper/drill angle/cbore/csink), threads (ISO/UNC/UNF/NPT; cosmetic/modeled), move/offset/replace face, split by face/profile, patterns (grid/path, table fallback), booleans (multi-tool/keep-tools), sweep/loft (guide rails, orientation hints).
-- Sketch: spline/NURBS, ellipse/elliptical arc, text; constraints and dimensions mapped.
-- Selection/queries: lineage-based `created_by`, `owner_feature==`, `pattern_instances`, `tangent_connected`, `largest_by`, curvature/radius/area≈, `by_material`.
-- Diagnostics: structured E-codes; capabilities published for planning.
-- Export/thumbnail: STL resolution/units parity (best-effort), deterministic view/style/background.
-- Assemblies/joints: creation with limits; basic damping/preload mapping.
+### Fusion backend status (v1.3)
+- Adds: surface ops explicit queries, patterns per‑instance (`instances`/`table`), constraints QoL, loft continuity/orientation/rails, STL controls.
+- Continues: v1.2 features (loft, sweep, wrap/emboss/project, threads, face ops, patterns, booleans), robust queries, diagnostics, export/thumbnail.
+- Assemblies/joints: creation with limits; best‑effort mate connectors and assembly patterns.
 - APS: token/bucket upload helpers and an `orchestrate(plan)` helper for local/hosted agent models.
 
 ### Query determinism and tolerances
