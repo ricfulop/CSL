@@ -1148,12 +1148,13 @@ class FusionBackend:
                             print(f"[ERROR] Failed to add fillet: {str(e)}")
                             mapping[feat_id] = f"error:fillet_failed:{str(e)}"
                     # End of if edges.count > 0 for fillet
-                # CHAMFER - This elif must be at the same level as the fillet elif, not inside it!
+                    else:
+                        # If fillet has no edges, record error
+                        mapping[feat_id] = f"error:fillet_no_edges"
+                # End of fillet block completely
                 elif kind == "chamfer":
-                    mapping[f"{feat_id}_step1"] = f"chamfer:entered_block"
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
-                    mapping[f"{feat_id}_step2"] = f"chamfer:distance_{d_mm}mm"
                     ang_deg_global = None
                     if feat.get("angle") is not None:
                         try:
@@ -1173,8 +1174,6 @@ class FusionBackend:
                     if not edges or edges.count == 0:
                         mapping[feat_id] = f"error:no_edges_for_chamfer"
                         continue
-                    
-                    mapping[feat_id] = f"chamfer:found_{edges.count}_edges"
                     
                     # Transitions: support feature-level distance/angle variants across groups
                     if feat.get("transitions") and isinstance(feat.get("transitions"), dict):
@@ -1247,7 +1246,6 @@ class FusionBackend:
                         except Exception:
                             pass
                     if edges.count > 0:
-                        mapping[feat_id] = f"chamfer:creating_collection"
                         chf = root.features.chamferFeatures
                         edge_col = adsk.core.ObjectCollection.create()
                         for i in range(edges.count):
