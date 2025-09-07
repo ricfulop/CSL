@@ -15,7 +15,7 @@ CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry
 - Backend capabilities: adapters declare feature support; the agent plans fallbacks.
 
 ### Multi-backend
-- **Production ready**: Fusion 360 via Python API with real-time control
+- **Production ready**: Fusion 360 via Python API with real-time control (v12 - fully functional)
 - **In development**: FreeCAD (Python), Onshape (REST API/FeatureScript)
 - **Planned**: SolidWorks (.NET/COM), NX, Blender (Geometry Nodes)
 - Adapters publish capabilities so agents can pick the highest-fidelity route with graceful degradation.
