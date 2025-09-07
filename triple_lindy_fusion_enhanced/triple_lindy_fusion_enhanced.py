@@ -1113,16 +1113,37 @@ def handle_query(data, status_file):
 def handle_csl_ir(data, status_file):
     """Process CSL intermediate representation"""
     try:
-        from triple_lindy.transpilers.fusion360_backend import FusionBackend
-        
         # Debug: Log the IR being processed
         ir = data.get("ir", {})
         debug_info = {
             "has_sketches": "sketches" in ir,
             "num_sketches": len(ir.get("sketches", [])) if "sketches" in ir else 0,
             "has_features": "features" in ir,
-            "num_features": len(ir.get("features", [])) if "features" in ir else 0
+            "num_features": len(ir.get("features", [])) if "features" in ir else 0,
+            "ir_keys": list(ir.keys()) if ir else []
         }
+        
+        # Add the AddIns directory to Python path so we can import triple_lindy
+        import sys
+        import os
+        addins_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if addins_path not in sys.path:
+            sys.path.insert(0, addins_path)
+            debug_info["path_added"] = addins_path
+        
+        # Try importing the backend
+        try:
+            from triple_lindy.transpilers.fusion360_backend import FusionBackend
+            debug_info["backend_import"] = "success"
+        except ImportError as e:
+            debug_info["backend_import"] = f"failed: {str(e)}"
+            # Fallback: try direct creation for debugging
+            return {
+                "status": "import_error",
+                "error": f"Cannot import FusionBackend: {str(e)}",
+                "debug": debug_info,
+                "timestamp": time.time()
+            }
         
         backend = FusionBackend()
         backend.open_session()
@@ -1147,6 +1168,7 @@ def handle_csl_ir(data, status_file):
                 "timestamp": time.time()
             }
         else:
+            # Always include debug info for troubleshooting
             return {
                 "status": "success",
                 "mapping": result if result else {},
