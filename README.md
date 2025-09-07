@@ -15,9 +15,17 @@ CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry
 - Backend capabilities: adapters declare feature support; the agent plans fallbacks.
 
 ### Multi-backend
-- Initial backend: Fusion 360 (default) via Python API (`adsk.core`, `adsk.fusion`).
-- Additional backends: Onshape (FeatureScript/API), SolidWorks (.NET/COM), FreeCAD (Python), Blender (`bpy`/Geometry Nodes).
-- Adapters publish capabilities so the agent can pick the highest-fidelity route with graceful degradation.
+- **Production ready**: Fusion 360 via Python API with real-time control
+- **In development**: FreeCAD (Python), Onshape (REST API/FeatureScript)
+- **Planned**: SolidWorks (.NET/COM), NX, Blender (Geometry Nodes)
+- Adapters publish capabilities so agents can pick the highest-fidelity route with graceful degradation.
+
+### Triple Lindy Real-time Control
+- **File-based protocol** for reliable communication with CAD software
+- **Universal client** (`file_client.py`) works across all backends
+- **Query system** for debugging and state inspection
+- **Direct API** and **CSL transpilation** modes
+- **No silent failures** - comprehensive error reporting
 
 ### Beyond CAD: end-to-end program automation
 - CAE: link meshing/solvers and optimization runs to design parameters.
@@ -32,19 +40,24 @@ CSL (CAD-Specific Language) is a compact DSL and JSON IR that describes geometry
 - Adapter executes features, applies selections, exports files and thumbnails.
 - Capabilities and diagnostics guide planning, fallbacks, and error reporting.
 
-### Quick start (starting with Fusion 360 first but hopefully others soon)
+### Quick start (Fusion 360 with real-time control)
 ```bash
 # 1) Clone
 git clone https://github.com/ricfulop/CSL.git
 cd CSL
 
-# 2) Install Triple Lindy as a Fusion add-in (macOS example)
-cp -r triple_lindy "$HOME/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/triple_lindy"
+# 2) Install Triple Lindy Fusion add-in (macOS example)
+cp -r triple_lindy_fusion_stable "$HOME/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/"
 
-# 3) Enable and run the add-in in Fusion 360
+# 3) In Fusion 360: Scripts & Add-Ins (Shift+S) → Add-Ins tab → Run "triple_lindy_fusion_stable"
 
-# 4) Try the v1.2 examples in CSL_v1_2/examples/*.csl (loft continuity, sweep, holes, face ops, sheet metal)
-#    Or v1.1 examples in CSL_v1_1/examples/*.csl
+# 4) Test real-time control
+python3 triple_lindy_daemon/file_client.py ping    # Test connection
+python3 triple_lindy_daemon/file_client.py query   # Query current state
+python3 triple_lindy_daemon/file_client.py direct  # Create geometry via API
+
+# 5) Execute CSL v1.3 examples
+python3 triple_lindy_daemon/file_client.py file --file CSL_v1_2/examples/loft_continuity_demo.json
 ```
 
 Optional backends
