@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "triple_lindy_fusion_debug",
+  "author": "Debug",
+  "description": "Debug version to test startup issues",
+  "version": "1.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac|linux",
+  "editEnabled": true
+}

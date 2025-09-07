@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "triple_lindy_fusion_minimal",
+  "author": "Triple Lindy Team",
+  "description": "Minimal stable version with core features",
+  "version": "1.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac|linux",
+  "editEnabled": true
+}

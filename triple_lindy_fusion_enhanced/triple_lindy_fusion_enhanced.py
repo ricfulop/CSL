@@ -1259,36 +1259,36 @@ def watch_for_commands():
                 
                 # Small delay to prevent CPU spinning
                 time.sleep(0.2)  # Slightly longer delay for stability
-            
-        except json.JSONDecodeError as e:
-            # Invalid JSON in command file
-            status_file.write_text(json.dumps({
-                "status": "error",
-                "error": f"Invalid JSON: {str(e)}",
-                "timestamp": time.time()
-            }))
-            time.sleep(1)
-            
-        except Exception as e:
-            # Other errors
-            error_count += 1
-            status_file.write_text(json.dumps({
-                "status": "error",
-                "error": str(e),
-                "error_count": error_count,
-                "timestamp": time.time()
-            }))
-            
-            # If too many errors, slow down
-            if error_count > 10:
-                time.sleep(5)
-            else:
+                
+            except json.JSONDecodeError as e:
+                # Invalid JSON in command file
+                status_file.write_text(json.dumps({
+                    "status": "error",
+                    "error": f"Invalid JSON: {str(e)}",
+                    "timestamp": time.time()
+                }))
                 time.sleep(1)
-            
-            # Critical error threshold
-            if error_count > 50:
-                _running = False
-                break
+                
+            except Exception as e:
+                # Other errors
+                error_count += 1
+                status_file.write_text(json.dumps({
+                    "status": "error",
+                    "error": str(e),
+                    "error_count": error_count,
+                    "timestamp": time.time()
+                }))
+                
+                # If too many errors, slow down
+                if error_count > 10:
+                    time.sleep(5)
+                else:
+                    time.sleep(1)
+                
+                # Critical error threshold
+                if error_count > 50:
+                    _running = False
+                    break
     except Exception as e:
         # Catch any initialization errors
         if _ui:
