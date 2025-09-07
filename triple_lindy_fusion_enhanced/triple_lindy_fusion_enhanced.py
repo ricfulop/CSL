@@ -254,6 +254,7 @@ def handle_timeline(data, status_file):
             for i in range(start, min(end + 1, timeline.count)):
                 timeline.item(i).isSuppressed = True
             return {"status": "success", "suppressed_range": [start, end]}
+        return {"status": "error", "error": "No target specified for suppress"}
     
     elif sub_action == "unsuppress":
         if "feature_name" in data:
@@ -640,43 +641,46 @@ def handle_view(data, status_file):
     if sub_action == "set":
         orientation = data.get("orientation", "iso")
         
-        # Set standard views
-        if orientation == "front":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(0, 0, 1),  # eye
-                adsk.core.Vector3D.create(0, 1, 0)   # up
-            )
-        elif orientation == "back":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(0, 0, -1),
-                adsk.core.Vector3D.create(0, 1, 0)
-            )
-        elif orientation == "top":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(0, 1, 0),
-                adsk.core.Vector3D.create(0, 0, 1)
-            )
-        elif orientation == "bottom":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(0, -1, 0),
-                adsk.core.Vector3D.create(0, 0, 1)
-            )
-        elif orientation == "left":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(-1, 0, 0),
-                adsk.core.Vector3D.create(0, 1, 0)
-            )
-        elif orientation == "right":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(1, 0, 0),
-                adsk.core.Vector3D.create(0, 1, 0)
-            )
-        elif orientation == "iso":
-            camera.setOrientation(
-                adsk.core.Vector3D.create(1, 1, 1),
-                adsk.core.Vector3D.create(0, 1, 0)
-            )
+        # Get current camera settings
+        eye = camera.eye
+        target = camera.target
+        up = camera.upVector
         
+        # Calculate distance from target
+        dist = eye.distanceTo(target)
+        
+        # Set standard views by positioning the eye
+        if orientation == "front":
+            eye = adsk.core.Point3D.create(target.x, target.y, target.z + dist)
+            up = adsk.core.Vector3D.create(0, 1, 0)
+        elif orientation == "back":
+            eye = adsk.core.Point3D.create(target.x, target.y, target.z - dist)
+            up = adsk.core.Vector3D.create(0, 1, 0)
+        elif orientation == "top":
+            eye = adsk.core.Point3D.create(target.x, target.y + dist, target.z)
+            up = adsk.core.Vector3D.create(0, 0, -1)
+        elif orientation == "bottom":
+            eye = adsk.core.Point3D.create(target.x, target.y - dist, target.z)
+            up = adsk.core.Vector3D.create(0, 0, 1)
+        elif orientation == "left":
+            eye = adsk.core.Point3D.create(target.x - dist, target.y, target.z)
+            up = adsk.core.Vector3D.create(0, 1, 0)
+        elif orientation == "right":
+            eye = adsk.core.Point3D.create(target.x + dist, target.y, target.z)
+            up = adsk.core.Vector3D.create(0, 1, 0)
+        elif orientation == "iso":
+            # Isometric view
+            offset = dist / 1.732  # dist / sqrt(3)
+            eye = adsk.core.Point3D.create(
+                target.x + offset,
+                target.y + offset,
+                target.z + offset
+            )
+            up = adsk.core.Vector3D.create(0, 1, 0)
+        
+        # Apply the new camera settings
+        camera.eye = eye
+        camera.upVector = up
         camera.isFitView = True
         viewport.camera = camera
         return {"status": "success", "view": orientation}
