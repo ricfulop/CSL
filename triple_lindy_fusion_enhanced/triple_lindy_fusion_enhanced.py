@@ -1184,6 +1184,50 @@ def handle_csl_ir(data, status_file):
             "timestamp": time.time()
         }
 
+def handle_direct_fillet_test(data, status_file):
+    """Test creating a fillet directly"""
+    try:
+        design = _app.activeProduct
+        if not design:
+            return {"status": "error", "error": "No active design"}
+        
+        root = design.rootComponent
+        
+        # Create a simple box
+        sketch = root.sketches.add(root.xYConstructionPlane)
+        rect = sketch.sketchCurves.sketchLines.addTwoPointRectangle(
+            adsk.core.Point3D.create(-2, -2, 0),
+            adsk.core.Point3D.create(2, 2, 0)
+        )
+        
+        # Extrude it
+        prof = sketch.profiles.item(0)
+        extrudes = root.features.extrudeFeatures
+        ext_input = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+        ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(3.0))
+        ext = extrudes.add(ext_input)
+        
+        # Try to add a fillet
+        body = root.bRepBodies.item(root.bRepBodies.count - 1)
+        edges = adsk.core.ObjectCollection.create()
+        for edge in body.edges:
+            edges.add(edge)
+        
+        fil_feats = root.features.filletFeatures
+        try:
+            const_def = fil_feats.createConstantRadiusFilletDefinition(
+                edges, 
+                adsk.core.ValueInput.createByReal(0.2),  # 2mm radius
+                False  # not tangent chain
+            )
+            fil = fil_feats.add(const_def)
+            return {"status": "success", "fillet_created": True, "token": fil.entityToken}
+        except Exception as e:
+            return {"status": "error", "error": f"Fillet failed: {str(e)}"}
+            
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
 def handle_direct_cylinders(data, status_file):
     """Create cylinders using direct API"""
     design = _app.activeProduct
@@ -1240,6 +1284,8 @@ def process_command(data, status_file):
             result = handle_query(data, status_file)
         elif action == "direct_cylinders":
             result = handle_direct_cylinders(data, status_file)
+        elif action == "direct_fillet_test":
+            result = handle_direct_fillet_test(data, status_file)
         
         # New enhanced actions
         elif action == "param":

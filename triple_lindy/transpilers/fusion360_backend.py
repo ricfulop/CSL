@@ -146,9 +146,12 @@ class FusionBackend:
 
         Stub: when Fusion is not available, return a plausible mapping.
         """
+        import time
+        load_time = time.strftime("%H:%M:%S")
+        print(f"[FusionBackend.realize] VERSION: v10-debug-{load_time}")
         print(f"[FusionBackend.realize] Starting with IR: {list(csl_ir.keys())}")
         print(f"[FusionBackend.realize] Fusion available: {self._fusion_available}")
-        mapping: Dict[str, str] = {}
+        mapping: Dict[str, str] = {"_version": f"v12-{load_time}"}
         if not self._fusion_available:
             # Return a minimal stable mapping for CI/doc examples.
             for feat in csl_ir.get("features", []):
@@ -173,11 +176,13 @@ class FusionBackend:
             
             sketches_list = csl_ir.get("sketches", []) or []
             print(f"[FusionBackend.realize] Processing {len(sketches_list)} sketches")
+            mapping["debug_sketches_count"] = len(sketches_list)
             
             for sk in sketches_list:
                 if not isinstance(sk, dict):
                     continue
                 sk_id = sk.get("id", "sketch")
+                mapping[f"debug_sketch_{sk_id}"] = f"entities={len(sk.get('entities', []))}"
                 plane_name = (sk.get("plane") or "world.xy").lower()
                 # Resolve construction plane and add sketch
                 try:
@@ -193,11 +198,17 @@ class FusionBackend:
                 ent_objects: Dict[str, Any] = {}
                 # Entities
                 for ent in sk.get("entities", []) or []:
-                    kind = (ent.get("kind") or "").lower()
+                    kind = (ent.get("type") or ent.get("kind") or "").lower()
+                    print(f"[DEBUG] Processing entity type: '{kind}', entity: {ent}")
+                    mapping[f"debug_entity_{ent.get('id', 'unknown')}"] = f"type={kind}"
                     if kind == "rect":
+                        mapping[f"debug_rect_{ent.get('id', 'unknown')}_start"] = "processing"
                         # Handle both formats: p1/p2 or center/w/h
                         p1 = self._parse_point(ent.get("p1"))
                         p2 = self._parse_point(ent.get("p2"))
+                        print(f"[DEBUG] Rectangle p1={p1}, p2={p2}")
+                        mapping[f"debug_rect_{ent.get('id', 'unknown')}_p1"] = str(p1)
+                        mapping[f"debug_rect_{ent.get('id', 'unknown')}_p2"] = str(p2)
                         
                         # If p1/p2 not provided, try center/w/h format
                         if not (p1 and p2):
@@ -212,12 +223,16 @@ class FusionBackend:
                                 p2 = (center[0] + w_cm/2, center[1] + h_cm/2, 0)
                         
                         if p1 and p2:
-                            print(f"[DEBUG] Creating rectangle from p1={p1}, p2={p2}")
+                            # Convert mm to cm (Fusion uses cm internally)
+                            p1_cm = (p1[0]/10.0, p1[1]/10.0, p1[2]/10.0) if len(p1) > 2 else (p1[0]/10.0, p1[1]/10.0, 0)
+                            p2_cm = (p2[0]/10.0, p2[1]/10.0, p2[2]/10.0) if len(p2) > 2 else (p2[0]/10.0, p2[1]/10.0, 0)
+                            print(f"[DEBUG] Creating rectangle from p1_cm={p1_cm}, p2_cm={p2_cm}")
                             rect_obj = sketch.sketchCurves.sketchLines.addTwoPointRectangle(
-                                adsk.core.Point3D.create(p1[0], p1[1], 0),
-                                adsk.core.Point3D.create(p2[0], p2[1], 0),
+                                adsk.core.Point3D.create(p1_cm[0], p1_cm[1], 0),
+                                adsk.core.Point3D.create(p2_cm[0], p2_cm[1], 0),
                             )
                             print(f"[DEBUG] Rectangle created, type: {type(rect_obj)}")
+                            mapping[f"debug_rect_{ent.get('id', 'unknown')}_created"] = "success"
                             try:
                                 if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
                                     # addTwoPointRectangle returns a collection of lines in many API versions
@@ -833,10 +848,12 @@ class FusionBackend:
             for feat in features_list:
                 if not isinstance(feat, dict):
                     continue
-                kind = (feat.get("kind") or "").lower()
-                print(f"[FusionBackend.realize] Processing feature kind: {kind}, id: {feat.get('id')}")
+                kind = (feat.get("type") or feat.get("kind") or "").lower()
                 feat_id = feat.get("id") or kind
-                print(f"[DEBUG] Processing feature: {kind} (id: {feat_id})")
+                print(f"[FusionBackend.realize] Processing feature kind: {kind}, id: {feat_id}")
+                
+                # Add to mapping immediately to track what we're trying to process
+                mapping[feat_id] = f"processing_{kind}"
                 if kind == "extrude":
                     # Resolve profile from feature specification
                     profile = None
@@ -845,21 +862,26 @@ class FusionBackend:
                     # Try to find the profile based on the profile specification
                     print(f"[DEBUG] Looking for profile: {profile_spec}")
                     print(f"[DEBUG] entity_to_sketch keys: {list(entity_to_sketch.keys())}")
+                    print(f"[DEBUG] sketch_map keys: {list(sketch_map.keys())}")
                     if profile_spec and isinstance(profile_spec, str):
                         # Check if profile_spec is an entity ID that we tracked
                         if profile_spec in entity_to_sketch:
                             # Get the sketch that contains this entity
                             target_sketch = entity_to_sketch[profile_spec]
+                            print(f"[DEBUG] Found sketch for entity {profile_spec}, profiles: {target_sketch.profiles.count}")
                             if target_sketch.profiles.count > 0:
                                 # Use the first profile from this sketch
                                 # TODO: Better profile selection if multiple profiles exist
                                 profile = target_sketch.profiles.item(0)
+                                print(f"[DEBUG] Using profile from entity's sketch")
                         
                         # If not found, check if it's a sketch ID
                         elif profile_spec in sketch_map:
                             target_sketch = sketch_map[profile_spec]
+                            print(f"[DEBUG] Found sketch {profile_spec}, profiles: {target_sketch.profiles.count}")
                             if target_sketch.profiles.count > 0:
                                 profile = target_sketch.profiles.item(0)
+                                print(f"[DEBUG] Using profile from sketch ID")
                     
                     # If no profile found yet, use the most recently created sketch with profiles
                     if profile is None and root.sketches.count > 0:
@@ -875,6 +897,9 @@ class FusionBackend:
                         profile = self._first_profile(root)
                     
                     if profile is None:
+                        error_msg = f"No profile found for extrude '{feat_id}'"
+                        print(f"ERROR: {error_msg}")
+                        mapping[feat_id] = f"error:no_profile"
                         continue
                         
                     dist_mm = self._parse_length_mm(feat.get("distance")) or 10.0
@@ -894,22 +919,37 @@ class FusionBackend:
                         # Re-raise to make failure visible
                         raise Exception(error_msg)
                 elif kind == "fillet":
+                    mapping[feat_id] = "fillet:starting"
                     print(f"[DEBUG] Processing fillet feature: {feat_id}")
                     rad_mm = self._parse_length_mm(feat.get("radius")) or 1.0
                     rad_cm = rad_mm / 10.0
                     print(f"[DEBUG] Fillet radius: {rad_mm}mm ({rad_cm}cm)")
+                    mapping[feat_id] = f"fillet:radius_{rad_mm}mm"
+                    
                     # Resolve edges via query if provided; else use all edges
                     edges = None
                     try:
                         q_spec = feat.get("edges_query") or (feat.get("edges") if isinstance(feat.get("edges"), dict) else None)
                         if q_spec:
                             edges = self._resolve_query(root, q_spec, entity_type="edge")
-                    except Exception:
+                    except Exception as e:
+                        mapping[feat_id] = f"error:edge_query_failed:{str(e)}"
                         edges = None
+                    
                     edges = edges or self._all_body_edges(root)
-                    print(f"[DEBUG] Found {edges.count if edges else 0} edges to fillet")
+                    edge_count = edges.count if edges else 0
+                    print(f"[DEBUG] Found {edge_count} edges to fillet")
+                    mapping[feat_id] = f"fillet:found_{edge_count}_edges"
+                    
+                    # Check if we have edges
+                    if not edges or edges.count == 0:
+                        print(f"[ERROR] No edges found for fillet")
+                        mapping[feat_id] = f"error:no_edges_found:bodies={root.bRepBodies.count}"
+                        continue
+                    
                     # Transitions: support 'setback' at feature level when possible
                     if feat.get("transitions"):
+                        mapping[feat_id] = "fillet:checking_transitions"
                         try:
                             trans = feat.get("transitions")
                             # Alias: transitions.setbacks or transitions.setback -> feature-level setbacks
@@ -965,6 +1005,7 @@ class FusionBackend:
                             pass
                     # Feature-level setbacks across provided edges (requires edges_query/q spec)
                     if isinstance(feat.get("setbacks"), list) and (isinstance(feat.get("edges"), dict) or isinstance(feat.get("edges_query"), dict)):
+                        mapping[feat_id] = "fillet:checking_setbacks"
                         try:
                             grp = {"edges_query": (feat.get("edges_query") or feat.get("edges")), "setbacks": feat.get("setbacks")}
                             var_feat = self._apply_variable_fillet(root, fil_feats, grp)
@@ -974,15 +1015,18 @@ class FusionBackend:
                         except Exception:
                             pass
                     if edges.count > 0:
+                        mapping[feat_id] = f"fillet:processing_{edges.count}_edges"
                         print(f"[DEBUG] Creating fillet with {edges.count} edges")
                         fil_feats = root.features.filletFeatures
                         edge_col = adsk.core.ObjectCollection.create()
-                        for e in edges:
+                        for i in range(edges.count):
+                            e = edges.item(i)
                             edge_col.add(e)
                         print(f"[DEBUG] Edge collection created with {edge_col.count} edges")
                         # If per-edge groups provided, create separate constant fillets for each group
                         try:
                             per_groups = feat.get("edges") or []
+                            print(f"[DEBUG] per_groups: {per_groups}, is list: {isinstance(per_groups, list)}, len: {len(per_groups) if isinstance(per_groups, list) else 'N/A'}")
                             if isinstance(per_groups, list) and len(per_groups) > 0:
                                 # Attempt variable radius or vertex setbacks if provided
                                 used_variable = False
@@ -1053,8 +1097,13 @@ class FusionBackend:
                                 continue
                         except Exception:
                             pass
+                        mapping[feat_id] = f"fillet:creating_main_fillet_{rad_cm}cm"
+                        print(f"[DEBUG] Creating main fillet with radius {rad_cm}cm")
                         is_tc_global = bool(feat.get("tangent_chain") or feat.get("tangent") or False)
-                        const_def = fil_feats.createConstantRadiusFilletDefinition(edge_col, adsk.core.ValueInput.createByReal(rad_cm), is_tc_global)
+                        # Use createInput instead of createConstantRadiusFilletDefinition
+                        const_def = fil_feats.createInput()
+                        const_def.addConstantRadiusEdgeSet(edge_col, adsk.core.ValueInput.createByReal(rad_cm), is_tc_global)
+                        print(f"[DEBUG] Fillet definition created")
                         # Apply feature-level transition options on the constant def as well
                         try:
                             trans = feat.get("transitions") or {}
@@ -1085,12 +1134,18 @@ class FusionBackend:
                                                 pass
                         except Exception:
                             pass
-                        fil = fil_feats.add(const_def)
-                        mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
+                        print(f"[DEBUG] Adding fillet to features...")
                         try:
-                            self._record_lineage(feat_id, fil, root)
-                        except Exception:
-                            pass
+                            fil = fil_feats.add(const_def)
+                            print(f"[DEBUG] Fillet added successfully: {fil.entityToken}")
+                            mapping[feat_id] = f"fusion:fillet:{fil.entityToken}"
+                            try:
+                                self._record_lineage(feat_id, fil, root)
+                            except Exception:
+                                pass
+                        except Exception as e:
+                            print(f"[ERROR] Failed to add fillet: {str(e)}")
+                            mapping[feat_id] = f"error:fillet_failed:{str(e)}"
                 elif kind == "chamfer":
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
@@ -3625,18 +3680,27 @@ class FusionBackend:
             return root.yZConstructionPlane
         return root.xYConstructionPlane
 
-    def _parse_point(self, value: Optional[str]) -> Optional[List[float]]:
+    def _parse_point(self, value: Optional[Any]) -> Optional[List[float]]:
         if not value:
             return None
-        # Expect formats like "x, y" or "15 mm, 15 mm"
-        parts = [p.strip() for p in value.split(",")]
-        if len(parts) < 2:
-            return None
-        x = self._parse_length_cm(parts[0])
-        y = self._parse_length_cm(parts[1])
-        if x is None or y is None:
-            return None
-        return [x, y]
+        # Handle list/tuple input (CSL format)
+        if isinstance(value, (list, tuple)):
+            if len(value) < 2:
+                return None
+            # Values are in mm, return as-is (will be converted to cm later if needed)
+            return list(value)
+        # Handle string input (legacy format)
+        if isinstance(value, str):
+            # Expect formats like "x, y" or "15 mm, 15 mm"
+            parts = [p.strip() for p in value.split(",")]
+            if len(parts) < 2:
+                return None
+            x = self._parse_length_cm(parts[0])
+            y = self._parse_length_cm(parts[1])
+            if x is None or y is None:
+                return None
+            return [x, y]
+        return None
 
     def _parse_point3d(self, value: Optional[str]) -> Optional[List[float]]:
         if not value:
