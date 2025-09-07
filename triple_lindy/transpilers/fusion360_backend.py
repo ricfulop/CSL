@@ -195,13 +195,29 @@ class FusionBackend:
                 for ent in sk.get("entities", []) or []:
                     kind = (ent.get("kind") or "").lower()
                     if kind == "rect":
+                        # Handle both formats: p1/p2 or center/w/h
                         p1 = self._parse_point(ent.get("p1"))
                         p2 = self._parse_point(ent.get("p2"))
+                        
+                        # If p1/p2 not provided, try center/w/h format
+                        if not (p1 and p2):
+                            center = self._parse_point(ent.get("center"))
+                            w_mm = self._parse_length_mm(ent.get("w"))
+                            h_mm = self._parse_length_mm(ent.get("h"))
+                            if center and w_mm and h_mm:
+                                # Convert center/w/h to p1/p2
+                                w_cm = w_mm / 10.0
+                                h_cm = h_mm / 10.0
+                                p1 = (center[0] - w_cm/2, center[1] - h_cm/2, 0)
+                                p2 = (center[0] + w_cm/2, center[1] + h_cm/2, 0)
+                        
                         if p1 and p2:
+                            print(f"[DEBUG] Creating rectangle from p1={p1}, p2={p2}")
                             rect_obj = sketch.sketchCurves.sketchLines.addTwoPointRectangle(
                                 adsk.core.Point3D.create(p1[0], p1[1], 0),
                                 adsk.core.Point3D.create(p2[0], p2[1], 0),
                             )
+                            print(f"[DEBUG] Rectangle created, type: {type(rect_obj)}")
                             try:
                                 if bool(ent.get("construction") or ent.get("is_construction") or ent.get("construction_geometry")):
                                     # addTwoPointRectangle returns a collection of lines in many API versions
