@@ -151,7 +151,7 @@ class FusionBackend:
         print(f"[FusionBackend.realize] VERSION: v10-debug-{load_time}")
         print(f"[FusionBackend.realize] Starting with IR: {list(csl_ir.keys())}")
         print(f"[FusionBackend.realize] Fusion available: {self._fusion_available}")
-        mapping: Dict[str, str] = {"_version": f"v12-{load_time}"}
+        mapping: Dict[str, str] = {"_version": f"v16-debug-{load_time}"}
         if not self._fusion_available:
             # Return a minimal stable mapping for CI/doc examples.
             for feat in csl_ir.get("features", []):
@@ -854,6 +854,7 @@ class FusionBackend:
                 
                 # Add to mapping immediately to track what we're trying to process
                 mapping[feat_id] = f"processing_{kind}"
+                mapping[f"debug_feat_{feat_id}_kind"] = kind
                 if kind == "extrude":
                     # Resolve profile from feature specification
                     profile = None
@@ -1146,9 +1147,13 @@ class FusionBackend:
                         except Exception as e:
                             print(f"[ERROR] Failed to add fillet: {str(e)}")
                             mapping[feat_id] = f"error:fillet_failed:{str(e)}"
+                    # End of if edges.count > 0 for fillet
+                # CHAMFER - This elif must be at the same level as the fillet elif, not inside it!
                 elif kind == "chamfer":
+                    mapping[f"{feat_id}_step1"] = f"chamfer:entered_block"
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
+                    mapping[f"{feat_id}_step2"] = f"chamfer:distance_{d_mm}mm"
                     ang_deg_global = None
                     if feat.get("angle") is not None:
                         try:
@@ -1163,6 +1168,14 @@ class FusionBackend:
                     except Exception:
                         edges = None
                     edges = edges or self._all_body_edges(root)
+                    
+                    # Check if we have edges
+                    if not edges or edges.count == 0:
+                        mapping[feat_id] = f"error:no_edges_for_chamfer"
+                        continue
+                    
+                    mapping[feat_id] = f"chamfer:found_{edges.count}_edges"
+                    
                     # Transitions: support feature-level distance/angle variants across groups
                     if feat.get("transitions") and isinstance(feat.get("transitions"), dict):
                         try:
@@ -1234,9 +1247,11 @@ class FusionBackend:
                         except Exception:
                             pass
                     if edges.count > 0:
+                        mapping[feat_id] = f"chamfer:creating_collection"
                         chf = root.features.chamferFeatures
                         edge_col = adsk.core.ObjectCollection.create()
-                        for e in edges:
+                        for i in range(edges.count):
+                            e = edges.item(i)
                             edge_col.add(e)
                         # If groups provided, create separate chamfers per group
                         try:
@@ -1318,8 +1333,11 @@ class FusionBackend:
                             defn = None
                         if defn is None:
                             defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
-                        ch = chf.add(defn)
-                        mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                        try:
+                            ch = chf.add(defn)
+                            mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                        except Exception as e:
+                            mapping[feat_id] = f"error:chamfer_failed:{str(e)}"
                         try:
                             self._record_lineage(feat_id, ch, root)
                         except Exception:
@@ -1624,11 +1642,19 @@ class FusionBackend:
                         else:
                             sk = root.sketches.add(face)
                             pts = adsk.core.ObjectCollection.create()
-                            for pt in (feat.get("points") or []):
-                                p = self._parse_point(pt if isinstance(pt, str) else None)
-                                if p:
-                                    sp = sk.sketchPoints.add(adsk.core.Point3D.create(p[0], p[1], 0))
+                            
+                            # Handle single position or multiple points
+                            positions = feat.get("points", [])
+                            if not positions and feat.get("position"):
+                                positions = [feat.get("position")]
+                            
+                            for pt in positions:
+                                p = self._parse_point(pt)  # Now handles both lists and strings
+                                if p and len(p) >= 2:
+                                    # Convert mm to cm
+                                    sp = sk.sketchPoints.add(adsk.core.Point3D.create(p[0]/10.0, p[1]/10.0, 0))
                                     pts.add(sp)
+                            
                             if pts.count == 0:
                                 sp = sk.sketchPoints.add(adsk.core.Point3D.create(0, 0, 0))
                                 pts.add(sp)
@@ -1720,16 +1746,49 @@ class FusionBackend:
                         except Exception:
                             pass
                 elif kind == "revolve":
-                    profile = self._first_profile(root)
+                    # Resolve profile similar to extrude
+                    profile = None
+                    profile_spec = feat.get("profile")
+                    
+                    if profile_spec and isinstance(profile_spec, str):
+                        if profile_spec in entity_to_sketch:
+                            target_sketch = entity_to_sketch[profile_spec]
+                            if target_sketch.profiles.count > 0:
+                                profile = target_sketch.profiles.item(0)
+                        elif profile_spec in sketch_map:
+                            target_sketch = sketch_map[profile_spec]
+                            if target_sketch.profiles.count > 0:
+                                profile = target_sketch.profiles.item(0)
+                    
                     if profile is None:
+                        profile = self._first_profile(root)
+                    
+                    if profile is None:
+                        mapping[feat_id] = f"error:no_profile_for_revolve"
                         continue
-                    axis = root.zConstructionAxis
-                    rev_feats = root.features.revolveFeatures
-                    angle = adsk.core.ValueInput.createByReal(2 * 3.141592653589793)  # 360 rad units in cm space
-                    rev_input = rev_feats.createInput(profile, axis, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
-                    rev_input.setAngleExtent(False, angle)
-                    rev = rev_feats.add(rev_input)
-                    mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                    
+                    # Get axis
+                    axis_spec = feat.get("axis", "z").lower()
+                    if axis_spec == "x":
+                        axis = root.xConstructionAxis
+                    elif axis_spec == "y":
+                        axis = root.yConstructionAxis
+                    else:
+                        axis = root.zConstructionAxis
+                    
+                    # Get angle
+                    angle_deg = feat.get("angle", 360)
+                    angle_rad = (angle_deg * 3.141592653589793) / 180.0
+                    
+                    try:
+                        rev_feats = root.features.revolveFeatures
+                        angle_input = adsk.core.ValueInput.createByReal(angle_rad)
+                        rev_input = rev_feats.createInput(profile, axis, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+                        rev_input.setAngleExtent(False, angle_input)
+                        rev = rev_feats.add(rev_input)
+                        mapping[feat_id] = f"fusion:revolve:{rev.entityToken}"
+                    except Exception as e:
+                        mapping[feat_id] = f"error:revolve_failed:{str(e)}"
                     try:
                         self._record_lineage(feat_id, rev, root)
                     except Exception:

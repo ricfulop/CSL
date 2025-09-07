@@ -139,14 +139,21 @@ def handle_parameters(data, status_file):
         
         # Check if parameter exists
         param = params.itemByName(name)
+        
+        # Convert value to string with units if needed
+        value_str = str(value)
+        units = data.get("units", "")
+        if units and not any(u in value_str for u in ["mm", "cm", "in", "deg"]):
+            value_str = f"{value_str} {units}"
+        
         if param:
-            param.expression = value
+            param.expression = value_str
             if comment:
                 param.comment = comment
         else:
             # Create new parameter
             params.add(name, 
-                      adsk.core.ValueInput.createByString(value),
+                      adsk.core.ValueInput.createByString(value_str),
                       "", 
                       comment)
         
