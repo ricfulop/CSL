@@ -146,6 +146,8 @@ class FusionBackend:
 
         Stub: when Fusion is not available, return a plausible mapping.
         """
+        print(f"[FusionBackend.realize] Starting with IR: {list(csl_ir.keys())}")
+        print(f"[FusionBackend.realize] Fusion available: {self._fusion_available}")
         mapping: Dict[str, str] = {}
         if not self._fusion_available:
             # Return a minimal stable mapping for CI/doc examples.
@@ -168,7 +170,11 @@ class FusionBackend:
             # Create sketches (limited support: rect, circle)
             sketch_map: Dict[str, Any] = {}
             entity_to_sketch: Dict[str, Any] = {}  # Map entity IDs to their parent sketch
-            for sk in csl_ir.get("sketches", []) or []:
+            
+            sketches_list = csl_ir.get("sketches", []) or []
+            print(f"[FusionBackend.realize] Processing {len(sketches_list)} sketches")
+            
+            for sk in sketches_list:
                 if not isinstance(sk, dict):
                     continue
                 sk_id = sk.get("id", "sketch")
@@ -805,10 +811,14 @@ class FusionBackend:
 
             # Execute features (limited: extrude, fillet)
             print(f"[DEBUG] Processing {len(csl_ir.get('features', []))} features")
-            for feat in csl_ir.get("features", []) or []:
+            features_list = csl_ir.get("features", []) or []
+            print(f"[FusionBackend.realize] Processing {len(features_list)} features")
+            
+            for feat in features_list:
                 if not isinstance(feat, dict):
                     continue
                 kind = (feat.get("kind") or "").lower()
+                print(f"[FusionBackend.realize] Processing feature kind: {kind}, id: {feat.get('id')}")
                 feat_id = feat.get("id") or kind
                 print(f"[DEBUG] Processing feature: {kind} (id: {feat_id})")
                 if kind == "extrude":

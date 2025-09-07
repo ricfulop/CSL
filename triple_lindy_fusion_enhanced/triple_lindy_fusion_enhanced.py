@@ -1114,9 +1114,19 @@ def handle_csl_ir(data, status_file):
     """Process CSL intermediate representation"""
     try:
         from triple_lindy.transpilers.fusion360_backend import FusionBackend
+        
+        # Debug: Log the IR being processed
+        ir = data.get("ir", {})
+        debug_info = {
+            "has_sketches": "sketches" in ir,
+            "num_sketches": len(ir.get("sketches", [])) if "sketches" in ir else 0,
+            "has_features": "features" in ir,
+            "num_features": len(ir.get("features", [])) if "features" in ir else 0
+        }
+        
         backend = FusionBackend()
         backend.open_session()
-        result = backend.realize(data["ir"])
+        result = backend.realize(ir)
         
         # Zoom to fit
         if _app.activeViewport:
@@ -1133,6 +1143,7 @@ def handle_csl_ir(data, status_file):
                 "status": "partial_success",
                 "errors": errors,
                 "mapping": result,
+                "debug": debug_info,
                 "timestamp": time.time()
             }
         else:
@@ -1140,6 +1151,7 @@ def handle_csl_ir(data, status_file):
                 "status": "success",
                 "mapping": result if result else {},
                 "features_created": len(result) if result else 0,
+                "debug": debug_info,
                 "timestamp": time.time()
             }
     except Exception as e:
