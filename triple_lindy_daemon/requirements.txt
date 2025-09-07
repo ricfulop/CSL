@@ -1,0 +1,3 @@
+# Triple Lindy Daemon Requirements
+websockets>=10.0
+websocket-client>=1.0

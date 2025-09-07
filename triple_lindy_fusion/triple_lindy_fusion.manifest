@@ -1,0 +1,13 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "triple_lindy_fusion",
+  "author": "Triple Lindy Team",
+  "description": {
+    "": "Triple Lindy Live Execution Loop - Real-time CAD control via WebSocket"
+  },
+  "version": "1.0.1",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac|linux",
+  "editEnabled": true
+}

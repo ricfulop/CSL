@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "script": "test_csl_direct.py",
+  "author": "CSL Team",
+  "description": {
+    "": "Test CSL backend directly without WebSocket"
+  },
+  "version": "1.0.0",
+  "supportedOS": "windows|mac|linux"
+}

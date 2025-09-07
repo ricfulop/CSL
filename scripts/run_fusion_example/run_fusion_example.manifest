@@ -1,0 +1,14 @@
+{
+  "id": "run_fusion_example",
+  "name": "CSL: Run Fusion Example",
+  "description": "Run a minimal CSL Fusion example (wrapper).",
+  "version": "1.0.0",
+  "author": "CSL",
+  "supportedOS": "mac|win",
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "runOnStartup": false,
+  "script": "run_fusion_example.py"
+}
+
+

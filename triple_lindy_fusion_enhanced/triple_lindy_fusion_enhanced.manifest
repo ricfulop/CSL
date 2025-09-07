@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "triple_lindy_fusion_enhanced",
+  "author": "Triple Lindy Team",
+  "description": "Enhanced CAD automation add-in with complete feature set",
+  "version": "2.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac|linux",
+  "editEnabled": true
+}

@@ -1,0 +1,12 @@
+{
+  "id": "csl_bridge",
+  "name": "CSL Bridge",
+  "description": "HTTP bridge for remote Fusion control",
+  "version": "1.0.0",
+  "author": "CSL",
+  "supportedOS": "mac|win",
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "runOnStartup": false,
+  "entry": "csl_bridge.py"
+}

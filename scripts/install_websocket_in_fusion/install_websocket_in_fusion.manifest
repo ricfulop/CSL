@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "script": "install_websocket_in_fusion.py",
+  "author": "CSL Team",
+  "description": {
+    "": "Install websocket-client library in Fusion's Python environment"
+  },
+  "version": "1.0.0",
+  "supportedOS": "windows|mac|linux"
+}
