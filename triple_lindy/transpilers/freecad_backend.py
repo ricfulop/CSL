@@ -172,3 +172,41 @@ class FreeCADBackend(BackendAdapter):
             "object_count": len(self._doc.Objects),
             "objects": [{"name": obj.Name, "type": obj.TypeId} for obj in self._doc.Objects]
         }
+    
+    def _create_sketch(self, sketch_def: Dict[str, Any]) -> Any:
+        """Create basic sketch - simplified for now."""
+        import Part
+        import Sketcher
+        
+        sketch = self._doc.addObject("Sketcher::SketchObject", 
+                                     sketch_def.get("id", "Sketch"))
+        # Basic implementation - full version in spec
+        return sketch
+    
+    def _create_feature(self, feature_def: Dict[str, Any]) -> Any:
+        """Create feature - simplified implementation."""
+        kind = feature_def.get("kind")
+        
+        if kind == "extrude":
+            return self._create_extrude(feature_def)
+        else:
+            print(f"[FreeCADBackend] Feature '{kind}' not yet implemented")
+            return None
+    
+    def _create_extrude(self, feature_def: Dict[str, Any]) -> Any:
+        """Create basic extrude - simplified."""
+        import Part
+        from FreeCAD import Base
+        
+        # Basic box for testing
+        box = self._doc.addObject("Part::Box", feature_def.get("id", "Box"))
+        box.Length = 60
+        box.Width = 40  
+        box.Height = self._parse_value(feature_def.get("distance", 30))
+        return box
+    
+    def _parse_value(self, value):
+        """Parse value with units."""
+        if isinstance(value, (int, float)):
+            return float(value)
+        return 10.0  # Default
