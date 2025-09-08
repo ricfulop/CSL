@@ -1117,17 +1117,148 @@ def handle_query(data, status_file):
     
     return info
 
+def handle_direct_chamfer_test(data, status_file):
+    """Test creating a chamfer directly to find the correct API usage"""
+    try:
+        design = _app.activeProduct
+        if not design:
+            return {"status": "error", "error": "No active design"}
+        
+        root = design.rootComponent
+        
+        # Create a simple box
+        sketch = root.sketches.add(root.xYConstructionPlane)
+        rect = sketch.sketchCurves.sketchLines.addTwoPointRectangle(
+            adsk.core.Point3D.create(-3, -3, 0),
+            adsk.core.Point3D.create(3, 3, 0)
+        )
+        
+        # Extrude it
+        prof = sketch.profiles.item(0)
+        extrudes = root.features.extrudeFeatures
+        ext_input = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+        ext_input.setDistanceExtent(False, adsk.core.ValueInput.createByReal(4.0))
+        ext = extrudes.add(ext_input)
+        
+        # Get the body and its edges
+        body = root.bRepBodies.item(root.bRepBodies.count - 1)
+        edges = adsk.core.ObjectCollection.create()
+        
+        # Add just the top edges for testing
+        for edge in body.edges:
+            # Try to filter for top edges (highest Z)
+            if edge.startVertex.geometry.z > 3.5 and edge.endVertex.geometry.z > 3.5:
+                edges.add(edge)
+        
+        if edges.count == 0:
+            # If no top edges found, just use first 4 edges
+            for i in range(min(4, body.edges.count)):
+                edges.add(body.edges.item(i))
+        
+        # Try different chamfer approaches
+        chamfer_feats = root.features.chamferFeatures
+        results = []
+        
+        # Approach 1: Inspect the chamfer input object
+        try:
+            input1 = chamfer_feats.createInput(edges, False)
+            
+            # Inspect what's available on the input object
+            methods = []
+            props = []
+            for attr in dir(input1):
+                if not attr.startswith('_'):
+                    try:
+                        val = getattr(input1, attr)
+                        if callable(val):
+                            methods.append(attr)
+                        else:
+                            props.append(f"{attr}={val}")
+                    except:
+                        pass
+            
+            results.append(f"Input inspection - Methods: {', '.join(methods[:5])}... | Props: {', '.join(props[:5])}...")
+            
+            # Now try to add it
+            ch1 = chamfer_feats.add(input1)
+            results.append("Minimal: SUCCESS with defaults")
+        except Exception as e1:
+            results.append(f"Minimal FAILED - {str(e1)}")
+        
+        # Approach 2: Use modern createInput2 API
+        try:
+            edges2 = adsk.core.ObjectCollection.create()
+            for i in range(min(4, body.edges.count)):
+                edges2.add(body.edges.item(i + 4 if body.edges.count > 8 else i))
+            
+            # Use the modern API with createInput2
+            input2 = chamfer_feats.createInput2()
+            # Add edge set with equal distance
+            distance = adsk.core.ValueInput.createByReal(0.5)  # 5mm chamfer
+            input2.chamferEdgeSets.addEqualDistanceChamferEdgeSet(edges2, distance, True)
+            ch2 = chamfer_feats.add(input2)
+            results.append("createInput2 + addEqualDistanceChamferEdgeSet: SUCCESS - 5mm chamfer")
+        except Exception as e2:
+            results.append(f"createInput2 API: FAILED - {str(e2)}")
+        
+        # Approach 3: Try using setDistanceAndChamferType method if it exists
+        try:
+            edges3 = adsk.core.ObjectCollection.create()
+            for edge in body.edges:
+                if edge.startVertex.geometry.z < 0.5 and edge.endVertex.geometry.z < 0.5:
+                    edges3.add(edge)
+                    if edges3.count >= 4:
+                        break
+            
+            if edges3.count > 0:
+                input3 = chamfer_feats.createInput(edges3, False)
+                # Check if there's a method to set both at once
+                if hasattr(input3, 'setDistanceAndChamferType'):
+                    input3.setDistanceAndChamferType(
+                        adsk.core.ValueInput.createByReal(0.1),
+                        adsk.fusion.ChamferTypes.EqualDistanceChamferType
+                    )
+                    ch3 = chamfer_feats.add(input3)
+                    results.append("setDistanceAndChamferType: SUCCESS")
+                else:
+                    # Try the old API style
+                    if hasattr(chamfer_feats, 'addEqualDistanceChamfer'):
+                        ch3 = chamfer_feats.addEqualDistanceChamfer(
+                            edges3,
+                            adsk.core.ValueInput.createByReal(0.1),
+                            False
+                        )
+                        results.append("Old API addEqualDistanceChamfer: SUCCESS")
+                    else:
+                        results.append("No setDistanceAndChamferType method found")
+            else:
+                results.append("Approach 3: No bottom edges found")
+        except Exception as e3:
+            results.append(f"Method approach FAILED - {str(e3)}")
+        
+        return {
+            "status": "success", 
+            "message": "Chamfer tests complete",
+            "results": results,
+            "edges_found": edges.count
+        }
+        
+    except Exception as e:
+        return {"status": "error", "error": str(e), "traceback": traceback.format_exc()}
+
 def handle_csl_ir(data, status_file):
     """Process CSL intermediate representation"""
     try:
         # Debug: Log the IR being processed
         ir = data.get("ir", {})
+        root_data = ir.get("root", {})
         debug_info = {
-            "has_sketches": "sketches" in ir,
-            "num_sketches": len(ir.get("sketches", [])) if "sketches" in ir else 0,
-            "has_features": "features" in ir,
-            "num_features": len(ir.get("features", [])) if "features" in ir else 0,
-            "ir_keys": list(ir.keys()) if ir else []
+            "has_sketches": "sketches" in root_data,
+            "num_sketches": len(root_data.get("sketches", [])) if "sketches" in root_data else 0,
+            "has_features": "features" in root_data,
+            "num_features": len(root_data.get("features", [])) if "features" in root_data else 0,
+            "ir_keys": list(ir.keys()),
+            "root_keys": list(root_data.keys()) if root_data else []
         }
         
         # Add the AddIns directory to Python path so we can import triple_lindy
@@ -1138,10 +1269,60 @@ def handle_csl_ir(data, status_file):
             sys.path.insert(0, addins_path)
             debug_info["path_added"] = addins_path
         
-        # Try importing the backend
+        # Try importing the backend with proper Fusion context override
         try:
+            # Force reload of the backend module to get latest changes
+            import importlib
+            import sys
+            
+            # Remove cached module if it exists
+            if 'triple_lindy.transpilers.fusion360_backend' in sys.modules:
+                del sys.modules['triple_lindy.transpilers.fusion360_backend']
+            if 'triple_lindy.transpilers' in sys.modules:
+                del sys.modules['triple_lindy.transpilers']
+            if 'triple_lindy' in sys.modules:
+                del sys.modules['triple_lindy']
+            
+            # Import the real backend
             from triple_lindy.transpilers.fusion360_backend import FusionBackend
+            
+            # Create a subclass that properly overrides the Fusion check
+            class FusionBackendWithContext(FusionBackend):
+                """FusionBackend that knows it's running in Fusion context"""
+                
+                def __init__(self, session_config=None):
+                    # Set _fusion_available before calling parent __init__
+                    # This ensures we're in Fusion mode from the start
+                    self.session_config = session_config or {}
+                    self._fusion_available = True  # We KNOW we're in Fusion
+                    # Initialize lineage and diagnostics without calling _check_fusion
+                    self._lineage = {}
+                    self._diag_store = []
+                    self._persisted_lineage = {}
+                    # Skip the parent __init__ that would call _check_fusion
+                
+                def _check_fusion(self):
+                    """Always return True since we're running as a Fusion add-in"""
+                    return True
+                
+                def _ensure_design(self):
+                    """Use the global Fusion context"""
+                    global _app, _ui
+                    if not _app:
+                        _app = adsk.core.Application.get()
+                        _ui = _app.userInterface
+                    design = _app.activeProduct
+                    if not design or design.classType() != adsk.fusion.Design.classType():
+                        _app.documents.add(adsk.core.DocumentTypes.FusionDesignDocumentType)
+                        design = _app.activeProduct
+                    return _app, _ui, design
+            
+            # Create our patched backend instance
+            backend = FusionBackendWithContext()
+            
             debug_info["backend_import"] = "success"
+            debug_info["fusion_available"] = backend._fusion_available
+            
         except ImportError as e:
             debug_info["backend_import"] = f"failed: {str(e)}"
             # Fallback: try direct creation for debugging
@@ -1152,9 +1333,44 @@ def handle_csl_ir(data, status_file):
                 "timestamp": time.time()
             }
         
-        backend = FusionBackend()
         backend.open_session()
-        result = backend.realize(ir)
+        
+        # Now realize the CSL IR with our backend
+        # The backend expects sketches/features at top level, not nested in root
+        # So we need to restructure the IR for the backend
+        backend_ir = ir.copy()
+        
+        # Extract root component data and flatten it
+        if "root" in ir and isinstance(ir["root"], dict):
+            root_data = ir["root"]
+            # Move sketches and features to top level for backend
+            if "sketches" in root_data:
+                backend_ir["sketches"] = root_data["sketches"]
+            if "features" in root_data:
+                backend_ir["features"] = root_data["features"]
+            # Keep other root properties that might be needed
+            if "components" in root_data:
+                backend_ir["components"] = root_data["components"]
+        
+        try:
+            result = backend.realize(backend_ir)
+            # Add the mapping to our result if it exists
+            if isinstance(result, dict) and "mapping" in result:
+                return {
+                    "status": "success",
+                    "mapping": result["mapping"],
+                    "features_created": len(result.get("mapping", {})) - 1,  # Exclude version key
+                    "debug": debug_info,
+                    "timestamp": time.time()
+                }
+        except Exception as e:
+            import traceback
+            result = {
+                "status": "backend_error", 
+                "error": str(e), 
+                "traceback": traceback.format_exc(),
+                "debug": debug_info
+            }
         
         # Zoom to fit
         if _app.activeViewport:
@@ -1222,12 +1438,14 @@ def handle_direct_fillet_test(data, status_file):
         
         fil_feats = root.features.filletFeatures
         try:
-            const_def = fil_feats.createConstantRadiusFilletDefinition(
-                edges, 
+            # Use the new API
+            fil_input = fil_feats.createInput()
+            fil_input.addConstantRadiusEdgeSet(
+                edges,
                 adsk.core.ValueInput.createByReal(0.2),  # 2mm radius
                 False  # not tangent chain
             )
-            fil = fil_feats.add(const_def)
+            fil = fil_feats.add(fil_input)
             return {"status": "success", "fillet_created": True, "token": fil.entityToken}
         except Exception as e:
             return {"status": "error", "error": f"Fillet failed: {str(e)}"}
@@ -1293,6 +1511,8 @@ def process_command(data, status_file):
             result = handle_direct_cylinders(data, status_file)
         elif action == "direct_fillet_test":
             result = handle_direct_fillet_test(data, status_file)
+        elif action == "direct_chamfer_test":
+            result = handle_direct_chamfer_test(data, status_file)
         
         # New enhanced actions
         elif action == "param":

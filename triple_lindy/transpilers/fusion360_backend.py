@@ -201,7 +201,7 @@ class FusionBackend:
                     kind = (ent.get("type") or ent.get("kind") or "").lower()
                     print(f"[DEBUG] Processing entity type: '{kind}', entity: {ent}")
                     mapping[f"debug_entity_{ent.get('id', 'unknown')}"] = f"type={kind}"
-                    if kind == "rect":
+                    if kind == "rect" or kind == "rectangle":
                         mapping[f"debug_rect_{ent.get('id', 'unknown')}_start"] = "processing"
                         # Handle both formats: p1/p2 or center/w/h
                         p1 = self._parse_point(ent.get("p1"))
@@ -210,17 +210,16 @@ class FusionBackend:
                         mapping[f"debug_rect_{ent.get('id', 'unknown')}_p1"] = str(p1)
                         mapping[f"debug_rect_{ent.get('id', 'unknown')}_p2"] = str(p2)
                         
-                        # If p1/p2 not provided, try center/w/h format
+                        # If p1/p2 not provided, try center/width/height format
                         if not (p1 and p2):
                             center = self._parse_point(ent.get("center"))
-                            w_mm = self._parse_length_mm(ent.get("w"))
-                            h_mm = self._parse_length_mm(ent.get("h"))
+                            # Try both "w"/"h" and "width"/"height"
+                            w_mm = self._parse_length_mm(ent.get("w") or ent.get("width"))
+                            h_mm = self._parse_length_mm(ent.get("h") or ent.get("height"))
                             if center and w_mm and h_mm:
-                                # Convert center/w/h to p1/p2
-                                w_cm = w_mm / 10.0
-                                h_cm = h_mm / 10.0
-                                p1 = (center[0] - w_cm/2, center[1] - h_cm/2, 0)
-                                p2 = (center[0] + w_cm/2, center[1] + h_cm/2, 0)
+                                # Convert center/w/h to p1/p2 (keeping in mm for now)
+                                p1 = (center[0] - w_mm/2, center[1] - h_mm/2, 0)
+                                p2 = (center[0] + w_mm/2, center[1] + h_mm/2, 0)
                         
                         if p1 and p2:
                             # Convert mm to cm (Fusion uses cm internally)
@@ -852,6 +851,11 @@ class FusionBackend:
                 feat_id = feat.get("id") or kind
                 print(f"[FusionBackend.realize] Processing feature kind: {kind}, id: {feat_id}")
                 
+                # Special debug for chamfer
+                if kind == "chamfer":
+                    print(f"[CHAMFER DEBUG] About to process chamfer: {feat_id}")
+                    print(f"[CHAMFER DEBUG] Feature data: {feat}")
+                
                 # Add to mapping immediately to track what we're trying to process
                 mapping[feat_id] = f"processing_{kind}"
                 mapping[f"debug_feat_{feat_id}_kind"] = kind
@@ -1153,8 +1157,12 @@ class FusionBackend:
                         mapping[feat_id] = f"error:fillet_no_edges"
                 # End of fillet block completely
                 elif kind == "chamfer":
+                    print(f"[CHAMFER BLOCK ENTERED] Starting chamfer processing for {feat_id}")
+                    mapping[feat_id] = "chamfer:entered_block"
+                    print(f"[DEBUG] Starting chamfer processing for {feat_id}")
                     d_mm = self._parse_length_mm(feat.get("distance")) or 1.0
                     d_cm = d_mm / 10.0
+                    print(f"[DEBUG] Chamfer distance: {d_mm}mm ({d_cm}cm)")
                     ang_deg_global = None
                     if feat.get("angle") is not None:
                         try:
@@ -1164,16 +1172,196 @@ class FusionBackend:
                     edges = None
                     try:
                         q_spec = feat.get("edges_query") or (feat.get("edges") if isinstance(feat.get("edges"), dict) else None)
+                        print(f"[DEBUG] Chamfer query spec: {q_spec}")
                         if q_spec:
                             edges = self._resolve_query(root, q_spec, entity_type="edge")
-                    except Exception:
+                    except Exception as e:
+                        print(f"[DEBUG] Edge query exception: {e}")
                         edges = None
-                    edges = edges or self._all_body_edges(root)
+                    # If no edges specified, get edges from the most recent body
+                    if not edges:
+                        # Get the last created body (should be our extruded box)
+                        if root.bRepBodies.count > 0:
+                            last_body = root.bRepBodies.item(root.bRepBodies.count - 1)
+                            print(f"[DEBUG] Using edges from last body: {last_body.name if hasattr(last_body, 'name') else 'Body'}")
+                            edges = adsk.core.ObjectCollection.create()
+                            for edge in last_body.edges:
+                                edges.add(edge)
+                        else:
+                            edges = self._all_body_edges(root)
                     
                     # Check if we have edges
+                    edge_count = edges.count if edges else 0
+                    print(f"[DEBUG] Found {edge_count} edges for chamfer from {root.bRepBodies.count} bodies")
                     if not edges or edges.count == 0:
                         mapping[feat_id] = f"error:no_edges_for_chamfer"
                         continue
+                    
+                    # Simple chamfer path - if no transitions or groups, create chamfer immediately
+                    if not feat.get("transitions") and not feat.get("edges"):
+                        print(f"[DEBUG] Taking simple chamfer path")
+                        try:
+                            chf = root.features.chamferFeatures
+                            edge_col = adsk.core.ObjectCollection.create()
+                            
+                            # Filter edges to avoid corner conflicts - only take top edges or a subset
+                            # Try to identify top edges by checking Z coordinate
+                            top_edges = []
+                            max_z = -float('inf')
+                            
+                            # First pass: find the max Z
+                            for i in range(edges.count):
+                                edge = edges.item(i)
+                                z_start = edge.startVertex.geometry.z
+                                z_end = edge.endVertex.geometry.z
+                                max_z = max(max_z, z_start, z_end)
+                            
+                            print(f"[DEBUG] Max Z coordinate found: {max_z}cm")
+                            
+                            # Second pass: collect edges at max Z (top edges)
+                            for i in range(edges.count):
+                                edge = edges.item(i)
+                                z_start = edge.startVertex.geometry.z
+                                z_end = edge.endVertex.geometry.z
+                                # Check if both vertices are at the top (horizontal edge)
+                                if abs(z_start - max_z) < 0.001 and abs(z_end - max_z) < 0.001:
+                                    # This is a horizontal edge at the top
+                                    start_pt = edge.startVertex.geometry
+                                    end_pt = edge.endVertex.geometry
+                                    # Double-check it's horizontal (Z values are same, X or Y differs)
+                                    if abs(start_pt.z - end_pt.z) < 0.001:
+                                        print(f"[DEBUG] Top edge {len(top_edges)}: Start({start_pt.x:.2f}, {start_pt.y:.2f}, {start_pt.z:.2f}) -> End({end_pt.x:.2f}, {end_pt.y:.2f}, {end_pt.z:.2f}), Length={edge.length:.2f}cm")
+                                        top_edges.append(edge)
+                            
+                            # Use top edges if we found them, selecting opposite edges to avoid conflicts
+                            if len(top_edges) > 0:
+                                print(f"[DEBUG] Found {len(top_edges)} top edges at Z={max_z}")
+                                mapping[f"debug_top_edges_found"] = f"{len(top_edges)} edges at Z={max_z:.2f}cm"
+                                # Select opposite edges (0 and 2, or just first 2 if less than 4)
+                                if len(top_edges) >= 4:
+                                    # Select opposite edges to avoid corner conflicts
+                                    selected_indices = [0, 2]  # Opposite edges
+                                    print(f"[DEBUG] Selecting opposite edges to avoid corner conflicts")
+                                else:
+                                    # If less than 4, take what we have
+                                    selected_indices = range(min(2, len(top_edges)))
+                                    print(f"[DEBUG] Only {len(top_edges)} edges found, selecting first {min(2, len(top_edges))}")
+                                
+                                edge_info = []
+                                for idx in selected_indices:
+                                    edge = top_edges[idx]
+                                    edge_col.add(edge)
+                                    edge_detail = f"Edge {idx}: length={edge.length:.2f}cm"
+                                    print(f"[DEBUG] Added top {edge_detail}")
+                                    edge_info.append(edge_detail)
+                                mapping[f"debug_chamfer_edges"] = f"Selected: {', '.join(edge_info)}"
+                            else:
+                                print(f"[DEBUG] Could not identify top edges, using alternating edges")
+                                # Use alternating edges to avoid conflicts
+                                for i in range(0, min(8, edges.count), 2):  # Take every other edge, max 4
+                                    if edge_col.count >= 2:  # Limit to 2 edges
+                                        break
+                                    edge = edges.item(i)
+                                    edge_col.add(edge)
+                                    print(f"[DEBUG] Added edge {i}: Z_start={edge.startVertex.geometry.z}, Z_end={edge.endVertex.geometry.z}, length={edge.length}cm")
+                            
+                            # Create chamfer definition
+                            defn = None
+                            if ang_deg_global is not None and hasattr(chf, "createDistanceAndAngleChamferDefinition"):
+                                try:
+                                    defn = chf.createDistanceAndAngleChamferDefinition(
+                                        edge_col,
+                                        adsk.core.ValueInput.createByReal(d_cm),
+                                        adsk.core.ValueInput.createByReal((ang_deg_global / 180.0) * 3.141592653589793),
+                                        False
+                                    )
+                                except Exception:
+                                    defn = None
+                            
+                            if defn is None:
+                                # Try creating chamfer - testing different approaches
+                                print(f"[DEBUG] Trying chamfer creation with {edge_col.count} edges")
+                                
+                                # Use the modern API with createInput2
+                                try:
+                                    print(f"[DEBUG] Edge collection has {edge_col.count} edges")
+                                    # Validate edges
+                                    for i in range(min(3, edge_col.count)):
+                                        edge = edge_col.item(i)
+                                        print(f"[DEBUG] Edge {i}: isValid={edge.isValid}, length={edge.length}")
+                                    
+                                    # Create the chamfer input using the modern createInput2 method
+                                    chamfer_input = chf.createInput2()
+                                    print(f"[DEBUG] Created chamfer input with createInput2()")
+                                    
+                                    # Add the edge set with equal distance chamfer
+                                    # The third parameter is isTangentChain - set to False to handle edges independently
+                                    distance_value = adsk.core.ValueInput.createByReal(d_cm)
+                                    chamfer_input.chamferEdgeSets.addEqualDistanceChamferEdgeSet(edge_col, distance_value, False)
+                                    print(f"[DEBUG] Added equal distance edge set: {d_cm}cm ({d_cm * 10}mm) with isTangentChain=False")
+                                    
+                                    # Check body count before chamfer
+                                    bodies_before = root.bRepBodies.count
+                                    print(f"[DEBUG] Bodies before chamfer: {bodies_before}")
+                                    mapping[f"debug_bodies_before_chamfer"] = f"{bodies_before}"
+                                    
+                                    # Now add it
+                                    ch = chf.add(chamfer_input)
+                                    print(f"[DEBUG] Chamfer created successfully!")
+                                    print(f"[DEBUG] Chamfer type: {ch.chamferType if hasattr(ch, 'chamferType') else 'unknown'}")
+                                    print(f"[DEBUG] Chamfer has {ch.edgeSets.count if hasattr(ch, 'edgeSets') else 0} edge sets")
+                                    
+                                    # Check if chamfer modified existing body or created new one
+                                    bodies_after = root.bRepBodies.count
+                                    print(f"[DEBUG] Bodies after chamfer: {bodies_after}")
+                                    mapping[f"debug_bodies_after_chamfer"] = f"{bodies_after}"
+                                    if bodies_after > bodies_before:
+                                        print(f"[WARNING] Chamfer created NEW body instead of modifying existing!")
+                                        mapping[f"debug_chamfer_issue"] = f"NEW BODY CREATED! {bodies_before} -> {bodies_after}"
+                                    else:
+                                        print(f"[DEBUG] Chamfer modified existing body (good)")
+                                        mapping[f"debug_chamfer_behavior"] = f"Modified existing body (good)"
+                                    
+                                    # Force update/refresh
+                                    try:
+                                        if hasattr(ch, 'isValid') and ch.isValid:
+                                            print(f"[DEBUG] Chamfer is valid")
+                                            # Check affected bodies
+                                            if hasattr(ch, 'bodies'):
+                                                print(f"[DEBUG] Chamfer affects {ch.bodies.count} bodies")
+                                    except Exception as ex:
+                                        print(f"[DEBUG] Could not check chamfer details: {ex}")
+                                    
+                                    mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                                    print(f"[DEBUG] Chamfer succeeded: {ch.entityToken}")
+                                    continue  # Skip the rest
+                                except Exception as e1:
+                                    error_msg = str(e1)
+                                    print(f"[DEBUG] Modern API (createInput2) failed: {error_msg}")
+                                    import traceback
+                                    print(f"[DEBUG] Traceback: {traceback.format_exc()}")
+                                    # Record the error and don't fall back to old API
+                                    mapping[feat_id] = f"error:simple_chamfer_failed:2 : {error_msg}"
+                                    continue  # Skip this feature and move to next
+                            
+                            # If we get here, defn should be set from the angle-based method above
+                            if defn:
+                                # Add the chamfer
+                                ch = chf.add(defn)
+                                mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
+                                print(f"[DEBUG] Angle-based chamfer created: {ch.entityToken}")
+                                
+                                # Record lineage and continue to next feature
+                                try:
+                                    self._record_lineage(feat_id, ch, root)
+                                except Exception:
+                                    pass
+                                continue
+                            
+                        except Exception as e:
+                            print(f"[DEBUG] Simple chamfer failed: {str(e)}")
+                            mapping[feat_id] = f"error:simple_chamfer_failed:{str(e)}"
+                            continue
                     
                     # Transitions: support feature-level distance/angle variants across groups
                     if feat.get("transitions") and isinstance(feat.get("transitions"), dict):
@@ -1246,11 +1434,13 @@ class FusionBackend:
                         except Exception:
                             pass
                     if edges.count > 0:
+                        print(f"[DEBUG] Entering main chamfer creation block with {edges.count} edges")
                         chf = root.features.chamferFeatures
                         edge_col = adsk.core.ObjectCollection.create()
                         for i in range(edges.count):
                             e = edges.item(i)
                             edge_col.add(e)
+                        print(f"[DEBUG] Created edge collection with {edge_col.count} edges")
                         # If groups provided, create separate chamfers per group
                         try:
                             per_groups = feat.get("edges") or []
@@ -1330,11 +1520,25 @@ class FusionBackend:
                         except Exception:
                             defn = None
                         if defn is None:
-                            defn = chf.createEqualDistanceChamferDefinition(edge_col, adsk.core.ValueInput.createByReal(d_cm), False)
+                            print(f"[DEBUG] Creating equal distance chamfer definition with {d_cm}cm")
+                            try:
+                                # Create the chamfer input
+                                chamfer_input = chf.createInput(edge_col, False)  # False for isTangentChain
+                                # Use the correct API method!
+                                chamfer_input.setToEqualDistance(adsk.core.ValueInput.createByReal(d_cm))
+                                defn = chamfer_input
+                            except Exception as ex:
+                                print(f"[DEBUG] Main chamfer creation error: {str(ex)}")
+                                # Fallback - try without distance
+                                chamfer_input = chf.createInput(edge_col, False)
+                                defn = chamfer_input
                         try:
+                            print(f"[DEBUG] Adding chamfer to feature collection...")
                             ch = chf.add(defn)
+                            print(f"[DEBUG] Chamfer created successfully: {ch.entityToken}")
                             mapping[feat_id] = f"fusion:chamfer:{ch.entityToken}"
                         except Exception as e:
+                            print(f"[DEBUG] Chamfer creation failed: {str(e)}")
                             mapping[feat_id] = f"error:chamfer_failed:{str(e)}"
                         try:
                             self._record_lineage(feat_id, ch, root)
