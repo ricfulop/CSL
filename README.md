@@ -1,6 +1,6 @@
 ## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
 
-![LOC](https://img.shields.io/badge/LOC-9330-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-3391-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-5577-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-447-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
+![LOC](https://img.shields.io/badge/LOC-27058-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-13335-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-11726-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-3686-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
 ### Why
 Modern hardware programs span CAD, CAE, CAM, BOM, sourcing, factory automation, and project management. Designs change rapidly; syncing geometry, constraints, analyses, and manufacturing outputs across tools is fragile and manual. CSL exists to make complex, multi-domain engineering agent-friendly, reproducible, and automated.
 
@@ -157,12 +157,21 @@ python scripts/run_fusion_example.py
 MIT (see `LICENSE`).
 
 ### Project size (LOC)
-- Current snapshot (approximate):
-  - Total lines: 9330,220
-  - Python lines: 3391,309
-  - Markdown/docs lines: 5577,553
-  - JSON lines: 447
-  - Fusion backend file `triple_lindy/transpilers/fusion360_backend.py`: 2931,931
+- Current snapshot (as of 2025-01-13):
+  - Total lines: 27,058
+  - Python lines: 13,335
+  - Markdown/docs lines: 11,726
+  - JSON lines: 3,686
+  - CSL language files: 301
+  - Fusion backend file `triple_lindy/transpilers/fusion360_backend.py`: 5,388
+
+- File counts by type:
+  - Python files: 52
+  - Markdown files: 44
+  - JSON files: 16
+  - CSL files: 15
+  - TypeScript files: 9
+  - Manifest files: 9
 
 - Recompute locally (from repo root):
 ```bash
@@ -173,9 +182,13 @@ find . -type f -not -path "./.git/*" -not -path "./out/*" -not -path "*/__pycach
 find . -type f -name "*.py" -not -path "*/__pycache__/*" -print0 | xargs -0 wc -l | tail -n1
 find . -type f -name "*.md" -print0 | xargs -0 wc -l | tail -n1
 find . -type f -name "*.json" -print0 | xargs -0 wc -l | tail -n1
+find . -type f -name "*.csl" -print0 | xargs -0 wc -l | tail -n1
 
 # Key file
 wc -l triple_lindy/transpilers/fusion360_backend.py
+
+# File count by extension
+find . -type f -not -path "./.git/*" -not -path "./out/*" -not -path "*/__pycache__/*" | sed 's/.*\.//' | sort | uniq -c | sort -nr
 ```
 
 ### Learn more
