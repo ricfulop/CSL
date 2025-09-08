@@ -31,13 +31,31 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: Updated Fusion notes (lineage queries, diagnostics, APS) and roadmap status; pending items moved to tracking issues.
   - Keywords: gap analysis, Fusion 360, lineage, diagnostics, APS, capabilities
 
-### Fusion 360 Development
+### Backend Platform Documentation
+- [backends/README.md](backends/README.md)
+  - Summary: Overview of all backend platform integrations with status matrix and templates.
+  - Keywords: backends, platforms, CAD, integration, status
 - [fusion/README.md](fusion/README.md)
   - Summary: Fusion 360 development resources directory with critical API documentation and solutions.
   - Keywords: Fusion 360, API, development, resources
 - [fusion/FUSION_360_API_GUIDE.md](fusion/FUSION_360_API_GUIDE.md)
   - Summary: Comprehensive Fusion 360 API guide with critical fixes, modern API patterns, and debugging techniques.
   - Keywords: Fusion API, chamfer, fillet, createInput2, debugging, CSL backend
+- [backends/freecad/README.md](backends/freecad/README.md)
+  - Summary: FreeCAD Python workbench integration guide and API reference.
+  - Keywords: FreeCAD, Python, workbench, open-source
+- [backends/onshape/README.md](backends/onshape/README.md)
+  - Summary: Onshape REST API and FeatureScript integration documentation.
+  - Keywords: Onshape, REST API, FeatureScript, cloud CAD
+- [backends/solidworks/README.md](backends/solidworks/README.md)
+  - Summary: SolidWorks COM/.NET integration guide for Windows.
+  - Keywords: SolidWorks, COM, .NET, Windows, automation
+- [backends/blender/README.md](backends/blender/README.md)
+  - Summary: Blender bpy and Geometry Nodes integration for visualization.
+  - Keywords: Blender, bpy, Geometry Nodes, rendering, visualization
+- [backends/nx/README.md](backends/nx/README.md)
+  - Summary: Siemens NX NXOpen API integration guide.
+  - Keywords: NX, NXOpen, Siemens, enterprise CAD
 
 ### v0.4.0 Additions
 - Surface operations (patch/extend/trim/knit) – best-effort stubs in Fusion backend; see `FUSION_FEATURE_COVERAGE.md`.
