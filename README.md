@@ -1,4 +1,5 @@
 ## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
+![LOC](https://img.shields.io/badge/LOC-1838992-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-17737-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-1325283-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-57417-informational)
 
 ![LOC](https://img.shields.io/badge/LOC-30273-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-15792-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-9671-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-3686-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
 ### Why
@@ -160,12 +161,12 @@ MIT (see `LICENSE`).
 
 ### Project size (LOC)
 - Current snapshot (as of 2025-01-13):
-  - Total lines: 27,058
-  - Python lines: 13,335
-  - Markdown/docs lines: 11,726
-  - JSON lines: 3,686
+  - Total lines: 1838992,058
+  - Python lines: 17737,335
+  - Markdown/docs lines: 1325283,726
+  - JSON lines: 57417,686
   - CSL language files: 301
-  - Fusion backend file `triple_lindy/transpilers/fusion360_backend.py`: 5,388
+  - Fusion backend file `triple_lindy/transpilers/fusion360_backend.py`: 5388,388
 
 - File counts by type:
   - Python files: 52
