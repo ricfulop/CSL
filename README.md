@@ -1,7 +1,5 @@
 ## CSL: AI Agent-Driven Meta-Parametric Design for CAD/CAE/CAM and Beyond
-![LOC](https://img.shields.io/badge/LOC-1838992-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-17737-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-1325283-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-57417-informational)
-
-![LOC](https://img.shields.io/badge/LOC-30273-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-15792-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-9671-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-3686-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
+![LOC](https://img.shields.io/badge/LOC-1838992-blue) ![Python%20LOC](https://img.shields.io/badge/Python%20LOC-17737-blue) ![Docs%20LOC](https://img.shields.io/badge/Docs%20LOC-1325283-lightgrey) ![JSON%20LOC](https://img.shields.io/badge/JSON%20LOC-57417-informational) [![Validate CSL IR](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml/badge.svg)](https://github.com/ricfulop/CSL/actions/workflows/validate-csl.yml)
 ### Why
 Modern hardware programs span CAD, CAE, CAM, BOM, sourcing, factory automation, and project management. Designs change rapidly; syncing geometry, constraints, analyses, and manufacturing outputs across tools is fragile and manual. CSL exists to make complex, multi-domain engineering agent-friendly, reproducible, and automated.
 
