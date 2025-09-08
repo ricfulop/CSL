@@ -35,10 +35,10 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
 - [backends/README.md](backends/README.md)
   - Summary: Overview of all backend platform integrations with status matrix and templates.
   - Keywords: backends, platforms, CAD, integration, status
-- [fusion/README.md](fusion/README.md)
+- [backends/fusion/README.md](backends/fusion/README.md)
   - Summary: Fusion 360 development resources directory with critical API documentation and solutions.
   - Keywords: Fusion 360, API, development, resources
-- [fusion/FUSION_360_API_GUIDE.md](fusion/FUSION_360_API_GUIDE.md)
+- [backends/fusion/FUSION_360_API_GUIDE.md](backends/fusion/FUSION_360_API_GUIDE.md)
   - Summary: Comprehensive Fusion 360 API guide with critical fixes, modern API patterns, and debugging techniques.
   - Keywords: Fusion API, chamfer, fillet, createInput2, debugging, CSL backend
 - [backends/freecad/README.md](backends/freecad/README.md)

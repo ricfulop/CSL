@@ -18,7 +18,7 @@ backend-name/
 ## 🎯 Supported Platforms
 
 ### ✅ Production Ready
-- **[Fusion 360](../fusion/)** - Full CSL integration with modern API support
+- **[Fusion 360](./fusion/)** - Full CSL integration with modern API support
 
 ### 🚧 In Development
 - **[FreeCAD](./freecad/)** - Python workbench integration
@@ -112,7 +112,7 @@ When implementing a new backend:
 
 - [CSL Specification](../CSL_v1_3/csl_v1_3_spec.md)
 - [Backend Gap Analysis](../BACKEND_GAP_ANALYSIS.md)
-- [Fusion Implementation](../fusion/FUSION_360_API_GUIDE.md)
+- [Fusion Implementation](./fusion/FUSION_360_API_GUIDE.md)
 
 ---
 
