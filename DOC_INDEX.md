@@ -31,6 +31,14 @@ A concise map of key documents in this repository. See `docs_index.json` for a m
   - Summary: Updated Fusion notes (lineage queries, diagnostics, APS) and roadmap status; pending items moved to tracking issues.
   - Keywords: gap analysis, Fusion 360, lineage, diagnostics, APS, capabilities
 
+### Fusion 360 Development
+- [fusion/README.md](fusion/README.md)
+  - Summary: Fusion 360 development resources directory with critical API documentation and solutions.
+  - Keywords: Fusion 360, API, development, resources
+- [fusion/FUSION_360_API_GUIDE.md](fusion/FUSION_360_API_GUIDE.md)
+  - Summary: Comprehensive Fusion 360 API guide with critical fixes, modern API patterns, and debugging techniques.
+  - Keywords: Fusion API, chamfer, fillet, createInput2, debugging, CSL backend
+
 ### v0.4.0 Additions
 - Surface operations (patch/extend/trim/knit) – best-effort stubs in Fusion backend; see `FUSION_FEATURE_COVERAGE.md`.
 - STEP AP242 sidecar metadata – see `scripts/dump_capabilities.py` and export notes.
