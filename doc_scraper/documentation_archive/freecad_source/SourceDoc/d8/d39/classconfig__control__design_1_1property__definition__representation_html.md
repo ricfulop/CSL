@@ -1,0 +1,110 @@
+---
+url: https://freecad.github.io/SourceDoc/d8/d39/classconfig__control__design_1_1property__definition__representation.html
+scraped_at: 2025-09-08T15:23:27.631942
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [config_control_design](../../d4/d07/namespaceconfig__control__design.html)
+  * [property_definition_representation](../../d8/d39/classconfig__control__design_1_1property__definition__representation.html)
+
+[List of all members](../../dd/d64/classconfig__control__design_1_1property__definition__representation-members.html) | Public Member Functions | Public Attributes
+
+config_control_design.property_definition_representation Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [definition](../../d8/d39/classconfig__control__design_1_1property__definition__representation.html#aa88cd122db43ac4285db1b64720452fe) ()  
+def | [used_representation](../../d8/d39/classconfig__control__design_1_1property__definition__representation.html#a46236ecbddc27321c687ebba605fbf42) ()  
+  
+##  Public Attributes  
+  
+---  
+|
+[definition](../../d8/d39/classconfig__control__design_1_1property__definition__representation.html#abe78aefc9dfdca9e7b9f6350f0409d3e)  
+|
+[used_representation](../../d8/d39/classconfig__control__design_1_1property__definition__representation.html#ad1703f289a89a14470e9606e8c6014c7)  
+  
+## Detailed Description
+
+    
+    
+    Entity property_definition_representation definition.
+    
+        :param definition
+        :type definition:property_definition
+    
+        :param used_representation
+        :type used_representation:representation
+
+## Member Function Documentation
+
+## ◆ definition()
+
+def config_control_design.property_definition_representation.definition  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.item_identified_representation_usage._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.property_definition._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.property_definition_representation._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.alternate_product_relationship._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_property._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_context_association._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.assembly_component_usage_substitute._definition,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.defined_symbol._definition,
+automotive_design.property_definition._definition,
+automotive_design.item_identified_representation_usage._definition,
+automotive_design.alternate_product_relationship._definition,
+automotive_design.action_property._definition,
+automotive_design.product_definition_context_association._definition,
+automotive_design.property_definition_representation._definition,
+automotive_design.assembly_component_usage_substitute._definition,
+automotive_design.defined_character_glyph._definition,
+automotive_design.defined_symbol._definition,
+config_control_design.property_definition._definition,
+config_control_design.alternate_product_relationship._definition,
+config_control_design.property_definition_representation._definition,
+config_control_design.assembly_component_usage_substitute._definition, and
+ifc2x3.ifcdefinedsymbol._definition.
+
+## ◆ used_representation()
+
+def config_control_design.property_definition_representation.used_representation  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.item_identified_representation_usage._used_representation,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.property_definition_representation._used_representation,
+automotive_design.item_identified_representation_usage._used_representation,
+automotive_design.property_definition_representation._used_representation, and
+config_control_design.property_definition_representation._used_representation.
+
+## Member Data Documentation
+
+## ◆ definition
+
+config_control_design.property_definition_representation.definition  
+---  
+  
+## ◆ used_representation
+
+config_control_design.property_definition_representation.used_representation  
+---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/config_control_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

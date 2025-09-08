@@ -1,0 +1,220 @@
+---
+url: https://freecad.github.io/SourceDoc/db/d26/classBase_1_1MemoryException.html
+scraped_at: 2025-09-08T15:16:38.924141
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [Base](../../db/d07/namespaceBase.html)
+  * [MemoryException](../../db/d26/classBase_1_1MemoryException.html)
+
+[List of all members](../../d6/d15/classBase_1_1MemoryException-members.html) | Public Member Functions
+
+Base::MemoryException Class Reference
+
+The [MemoryException](../../db/d26/classBase_1_1MemoryException.html "The
+MemoryException is thrown if not enough memory can be allocated.") is thrown
+if not enough memory can be allocated.
+[More...](../../db/d26/classBase_1_1MemoryException.html#details)
+
+`#include <Exception.h>`
+
+##  Public Member Functions  
+  
+---  
+[PyObject](../../df/d1b/classPyObject.html) * | [getPyExceptionType](../../db/d26/classBase_1_1MemoryException.html#a9735c5e84047586557eae19c24c8934f) () const override  
+| returns the corresponding python exception type
+[More...](../../db/d26/classBase_1_1MemoryException.html#a9735c5e84047586557eae19c24c8934f)  
+  
+|
+[MemoryException](../../db/d26/classBase_1_1MemoryException.html#ad48114ebd21060768b0d3d300ec012f7)
+()  
+| Construction.
+[More...](../../db/d26/classBase_1_1MemoryException.html#ad48114ebd21060768b0d3d300ec012f7)  
+  
+|
+[MemoryException](../../db/d26/classBase_1_1MemoryException.html#ad839060fb97f8c1dddb287570236bbec)
+(const [MemoryException](../../db/d26/classBase_1_1MemoryException.html)
+&inst)  
+| Construction.
+[More...](../../db/d26/classBase_1_1MemoryException.html#ad839060fb97f8c1dddb287570236bbec)  
+  
+[MemoryException](../../db/d26/classBase_1_1MemoryException.html) & | [operator=](../../db/d26/classBase_1_1MemoryException.html#a3f2885796dbcbbb70e0d06ddb2425108) (const [MemoryException](../../db/d26/classBase_1_1MemoryException.html) &inst)  
+| Assignment operator.
+[More...](../../db/d26/classBase_1_1MemoryException.html#a3f2885796dbcbbb70e0d06ddb2425108)  
+  
+virtual | [~MemoryException](../../db/d26/classBase_1_1MemoryException.html#a2f8b2be9b43d78a37736de35c643a9e4) () throw ()  
+| Destruction.
+[More...](../../db/d26/classBase_1_1MemoryException.html#a2f8b2be9b43d78a37736de35c643a9e4)  
+  
+![-](../../closed.png) Public Member Functions inherited from
+[Base::Exception](../../d8/df7/classBase_1_1Exception.html)  
+std::string | [getFile](../../d8/df7/classBase_1_1Exception.html#adb6e652d6ee9cf2000a0ffeb9ce50597) () const  
+std::string | [getFunction](../../d8/df7/classBase_1_1Exception.html#a6c5aa03a617f967abd79221910344718) () const  
+[int](../../d1/da0/classint.html) | [getLine](../../d8/df7/classBase_1_1Exception.html#add9b14e9f5a48bdaf05487d6a13378be) () const  
+std::string | [getMessage](../../d8/df7/classBase_1_1Exception.html#acea06c50f6eeaaaae36f187d99ef9226) () const  
+virtual [PyObject](../../df/d1b/classPyObject.html) * | [getPyExceptionType](../../d8/df7/classBase_1_1Exception.html#a8e85d132bd8da6bcd445748d19c903d1) () const  
+| returns the corresponding python exception type
+[More...](../../d8/df7/classBase_1_1Exception.html#a8e85d132bd8da6bcd445748d19c903d1)  
+  
+virtual [PyObject](../../df/d1b/classPyObject.html) * | [getPyObject](../../d8/df7/classBase_1_1Exception.html#a7a5bddc284f02d87897e8dc0b69a24fb) ()  
+| returns a Python dictionary containing the exception data
+[More...](../../d8/df7/classBase_1_1Exception.html#a7a5bddc284f02d87897e8dc0b69a24fb)  
+  
+[bool](../../d9/db9/classbool.html) | [getReported](../../d8/df7/classBase_1_1Exception.html#ad82759cc946e2441cadef6776727be05) () const  
+[bool](../../d9/db9/classbool.html) | [getTranslatable](../../d8/df7/classBase_1_1Exception.html#ae930eea23c340668b6621701b70c0e54) () const  
+virtual [Base::Type](../../dc/dee/classBase_1_1Type.html) | [getTypeId](../../d8/df7/classBase_1_1Exception.html#ad6856a6fd1d296adfcb2972d4cdf33ee) (void) const  
+[Exception](../../d8/df7/classBase_1_1Exception.html) & | [operator=](../../d8/df7/classBase_1_1Exception.html#a73deac583ceab824678f8bdd7f0ea40c) (const [Exception](../../d8/df7/classBase_1_1Exception.html) &inst)  
+virtual void | [ReportException](../../d8/df7/classBase_1_1Exception.html#a5703117e47253fbf07d86b702f9fdae4) () const  
+| Reports exception. It includes a mechanism to only report an exception once.
+[More...](../../d8/df7/classBase_1_1Exception.html#a5703117e47253fbf07d86b702f9fdae4)  
+  
+void | [setDebugInformation](../../d8/df7/classBase_1_1Exception.html#ae7e93feb4245a77e067796b480cea0c6) (const std::string &file, const [int](../../d1/da0/classint.html) line, const std::string &function)  
+| setter methods for including debug information intended to use via macro for
+autofilling of debugging information
+[More...](../../d8/df7/classBase_1_1Exception.html#ae7e93feb4245a77e067796b480cea0c6)  
+  
+void | [setMessage](../../d8/df7/classBase_1_1Exception.html#ac112f8e1e18aa8bccc4902daae47c446) (const char *sMessage)  
+void | [setMessage](../../d8/df7/classBase_1_1Exception.html#a4ea8dd5f1dea35e138bea6ebcefba850) (const std::string &sMessage)  
+virtual void | [setPyException](../../d8/df7/classBase_1_1Exception.html#a58855227991a1be783d3a1e15f1ab7da) () const  
+| Sets the Python error indicator and an error message.
+[More...](../../d8/df7/classBase_1_1Exception.html#a58855227991a1be783d3a1e15f1ab7da)  
+  
+virtual void | [setPyObject](../../d8/df7/classBase_1_1Exception.html#afdfd5b57a05575d1ec05297e2f6e656e) ([PyObject](../../df/d1b/classPyObject.html) *pydict)  
+| returns sets the exception data from a Python dictionary
+[More...](../../d8/df7/classBase_1_1Exception.html#afdfd5b57a05575d1ec05297e2f6e656e)  
+  
+void | [setReported](../../d8/df7/classBase_1_1Exception.html#a66b0937f234eacc2716c594acbe3ec94) ([bool](../../d9/db9/classbool.html) reported)  
+void | [setTranslatable](../../d8/df7/classBase_1_1Exception.html#a776e57a0e4877acfd47b2e2a225a83a9) ([bool](../../d9/db9/classbool.html) translatable)  
+virtual const char * | [what](../../d8/df7/classBase_1_1Exception.html#aa330aa854000f17a93919417d977bcac) () const throw ()  
+virtual | [~Exception](../../d8/df7/classBase_1_1Exception.html#a9e6152e43a70c1318c392c4dc107281f) () throw ()  
+![-](../../closed.png) Public Member Functions inherited from
+[Base::BaseClass](../../df/d4d/classBase_1_1BaseClass.html)  
+|
+[BaseClass](../../df/d4d/classBase_1_1BaseClass.html#a84b1d36d0060e74a7b48255bca0d1928)
+()  
+| Construction.
+[More...](../../df/d4d/classBase_1_1BaseClass.html#a84b1d36d0060e74a7b48255bca0d1928)  
+  
+|
+[BaseClass](../../df/d4d/classBase_1_1BaseClass.html#ae41bc09a1498fbd4e952e7a7dd9de791)
+(const [BaseClass](../../df/d4d/classBase_1_1BaseClass.html) &)=default  
+virtual [PyObject](../../df/d1b/classPyObject.html) * | [getPyObject](../../df/d4d/classBase_1_1BaseClass.html#a5abe791f44a7691c96c166820f823514) ()  
+| This method returns the Python wrapper for a C++ object.
+[More...](../../df/d4d/classBase_1_1BaseClass.html#a5abe791f44a7691c96c166820f823514)  
+  
+virtual [Type](../../dc/dee/classBase_1_1Type.html) | [getTypeId](../../df/d4d/classBase_1_1BaseClass.html#addbd3a4f09fce7ce5c6bf021e4c1d566) () const  
+[bool](../../d9/db9/classbool.html) | [isDerivedFrom](../../df/d4d/classBase_1_1BaseClass.html#ac0aa6b7835ac8a11363cf54d84c5c127) (const [Type](../../dc/dee/classBase_1_1Type.html) [type](../../d9/d98/classtype.html)) const  
+[BaseClass](../../df/d4d/classBase_1_1BaseClass.html) & | [operator=](../../df/d4d/classBase_1_1BaseClass.html#ad334dfcaf7aa8b86993eaefac41207c2) (const [BaseClass](../../df/d4d/classBase_1_1BaseClass.html) &)=default  
+virtual void | [setPyObject](../../df/d4d/classBase_1_1BaseClass.html#a3146be9d62368b0c207a5571ed74828e) ([PyObject](../../df/d1b/classPyObject.html) *)  
+virtual | [~BaseClass](../../df/d4d/classBase_1_1BaseClass.html#a7bd44242e16f121ed78718ee8c234f49) ()  
+| Destruction.
+[More...](../../df/d4d/classBase_1_1BaseClass.html#a7bd44242e16f121ed78718ee8c234f49)  
+  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Static Public Member Functions inherited from
+[Base::Exception](../../d8/df7/classBase_1_1Exception.html)  
+static void * | [create](../../d8/df7/classBase_1_1Exception.html#a414ab988781cc35011247bf89a2ab998) (void)  
+static [Base::Type](../../dc/dee/classBase_1_1Type.html) | [getClassTypeId](../../d8/df7/classBase_1_1Exception.html#aba0b86e61e79e9ccfd2f572d5162531e) (void)  
+static void | [init](../../d8/df7/classBase_1_1Exception.html#aa5f325f865abb611f5fd93277905f978) (void)  
+![-](../../closed.png) Static Public Member Functions inherited from
+[Base::BaseClass](../../df/d4d/classBase_1_1BaseClass.html)  
+static void * | [create](../../df/d4d/classBase_1_1BaseClass.html#a4e83383416327822cfbc39e264c43d6a) ()  
+static [Type](../../dc/dee/classBase_1_1Type.html) | [getClassTypeId](../../df/d4d/classBase_1_1BaseClass.html#a1e2a449672f9d4f63dffde25182e39ca) ()  
+static void | [init](../../df/d4d/classBase_1_1BaseClass.html#a212586b53f566dcb0e17626699be60a7) ()  
+![-](../../closed.png) Protected Member Functions inherited from
+[Base::Exception](../../d8/df7/classBase_1_1Exception.html)  
+|
+[Exception](../../d8/df7/classBase_1_1Exception.html#a1b78336bb26edf8e784783cc150c5801)
+()  
+|
+[Exception](../../d8/df7/classBase_1_1Exception.html#a5ce04114a730cb532695f09d772286a2)
+(const char *sMessage)  
+|
+[Exception](../../d8/df7/classBase_1_1Exception.html#ac5574f4372bed4081146df21053affaf)
+(const [Exception](../../d8/df7/classBase_1_1Exception.html) &inst)  
+|
+[Exception](../../d8/df7/classBase_1_1Exception.html#a959cb3b6f6373185b22965b4352ec3d4)
+(const std::string &sMessage)  
+![-](../../closed.png) Static Protected Member Functions inherited from
+[Base::BaseClass](../../df/d4d/classBase_1_1BaseClass.html)  
+static void | [initSubclass](../../df/d4d/classBase_1_1BaseClass.html#a09c22c2a82083180f9ba04b04ca6e7e2) ([Base::Type](../../dc/dee/classBase_1_1Type.html) &toInit, const char *ClassName, const char *ParentName, [Type::instantiationMethod](../../dc/dee/classBase_1_1Type.html#a10d2cdeee4a86a3e82a3d71e37a87495) method=nullptr)  
+  
+## Detailed Description
+
+The [MemoryException](../../db/d26/classBase_1_1MemoryException.html "The
+MemoryException is thrown if not enough memory can be allocated.") is thrown
+if not enough memory can be allocated.
+
+Author
+
+    Werner Mayer 
+
+## Constructor & Destructor Documentation
+
+## ◆ MemoryException() [1/2]
+
+MemoryException::MemoryException  | ( | | ) |   
+---|---|---|---|---  
+  
+Construction.
+
+## ◆ MemoryException() [2/2]
+
+MemoryException::MemoryException  | ( | const [MemoryException](../../db/d26/classBase_1_1MemoryException.html) & | _inst_| ) |   
+---|---|---|---|---|---  
+  
+Construction.
+
+## ◆ ~MemoryException()
+
+| virtual Base::MemoryException::~MemoryException  | ( | | ) |   
+---|---|---|---|---  
+throw | (|   
+| )| |   
+virtual  
+  
+Destruction.
+
+## Member Function Documentation
+
+## ◆ getPyExceptionType()
+
+| [PyObject](../../df/d1b/classPyObject.html) * MemoryException::getPyExceptionType  | ( | void  | | ) |  const  
+---|---|---|---|---|---  
+overridevirtual  
+  
+returns the corresponding python exception type
+
+Reimplemented from
+[Base::Exception](../../d8/df7/classBase_1_1Exception.html#a8e85d132bd8da6bcd445748d19c903d1).
+
+## ◆ operator=()
+
+[MemoryException](../../db/d26/classBase_1_1MemoryException.html) & MemoryException::operator=  | ( | const [MemoryException](../../db/d26/classBase_1_1MemoryException.html) & | _inst_| ) |   
+---|---|---|---|---|---  
+  
+Assignment operator.
+
+References
+[Base::Exception::operator=()](../../d8/df7/classBase_1_1Exception.html#a73deac583ceab824678f8bdd7f0ea40c).
+
+* * *
+
+The documentation for this class was generated from the following files:
+
+  * FreeCAD/src/Base/Exception.h
+  * FreeCAD/src/Base/Exception.cpp
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

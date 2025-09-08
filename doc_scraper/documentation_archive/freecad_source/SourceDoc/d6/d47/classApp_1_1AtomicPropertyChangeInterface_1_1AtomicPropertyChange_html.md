@@ -1,0 +1,127 @@
+---
+url: https://freecad.github.io/SourceDoc/d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html
+scraped_at: 2025-09-08T14:53:45.219810
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [App](../../dd/dc2/namespaceApp.html)
+  * [AtomicPropertyChangeInterface](../../de/d5b/classApp_1_1AtomicPropertyChangeInterface.html)
+  * [AtomicPropertyChange](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html)
+
+[List of all members](../../d2/d64/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange-members.html) | Public Member Functions
+
+App::AtomicPropertyChangeInterface< P >::AtomicPropertyChange Class Reference
+
+`#include <Property.h>`
+
+##  Public Member Functions  
+  
+---  
+void | [aboutToChange](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#a06550212fd1676db805f5fb07550c2cc) ()  
+| Mark the property as changed.
+[More...](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#a06550212fd1676db805f5fb07550c2cc)  
+  
+|
+[AtomicPropertyChange](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aac09e475419ad535e5fc05c01134f440)
+(P &prop, [bool](../../d9/db9/classbool.html) markChange=true)  
+| Constructor.
+[More...](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aac09e475419ad535e5fc05c01134f440)  
+  
+void | [tryInvoke](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aea1f8110dc9360b614cf110f210bd1c5) ()  
+| Check and invoke property's hasSetValue()
+[More...](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aea1f8110dc9360b614cf110f210bd1c5)  
+  
+|
+[~AtomicPropertyChange](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aa6830e752cf5f9d4b6af593401a69b72)
+()  
+| Destructor.
+[More...](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aa6830e752cf5f9d4b6af593401a69b72)  
+  
+  
+## Constructor & Destructor Documentation
+
+## ◆ AtomicPropertyChange()
+
+template<class P >
+
+[App::AtomicPropertyChangeInterface](../../de/d5b/classApp_1_1AtomicPropertyChangeInterface.html)< P >::AtomicPropertyChange::AtomicPropertyChange  | ( | P & | _prop_ ,   
+---|---|---|---  
+|  | [bool](../../d9/db9/classbool.html) | _markChange_ = `true`  
+| ) | |   
+  
+Constructor.
+
+Parameters
+
+     prop| the property   
+---|---  
+markChange| If true, marks the property as changed if it hasn't been marked
+before, and calls its aboutToSetValue().  
+  
+References [App::AtomicPropertyChangeInterface< P
+>::AtomicPropertyChange::aboutToChange()](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#a06550212fd1676db805f5fb07550c2cc).
+
+## ◆ ~AtomicPropertyChange()
+
+template<class P >
+
+[App::AtomicPropertyChangeInterface](../../de/d5b/classApp_1_1AtomicPropertyChangeInterface.html)< P >::AtomicPropertyChange::~AtomicPropertyChange  | ( | | ) |   
+---|---|---|---|---  
+  
+Destructor.
+
+If the property is marked as changed, and this is the last instance of the
+class in current call stack, it will call property's hasSetValue()
+
+## Member Function Documentation
+
+## ◆ aboutToChange()
+
+template<class P >
+
+void [App::AtomicPropertyChangeInterface](../../de/d5b/classApp_1_1AtomicPropertyChangeInterface.html)< P >::AtomicPropertyChange::aboutToChange  | ( | | ) |   
+---|---|---|---|---  
+  
+Mark the property as changed.
+
+It will mark the property as changed only if it has been marked before, and
+only then will it call the property's aboutToSetValue().
+
+Referenced by [App::AtomicPropertyChangeInterface< P
+>::AtomicPropertyChange::AtomicPropertyChange()](../../d6/d47/classApp_1_1AtomicPropertyChangeInterface_1_1AtomicPropertyChange.html#aac09e475419ad535e5fc05c01134f440).
+
+## ◆ tryInvoke()
+
+template<class P >
+
+void [App::AtomicPropertyChangeInterface](../../de/d5b/classApp_1_1AtomicPropertyChangeInterface.html)< P >::AtomicPropertyChange::tryInvoke  | ( | | ) |   
+---|---|---|---|---  
+  
+Check and invoke property's hasSetValue()
+
+Check if this is the last instance and the property has been marked as
+changed. If so, invoke property's hasSetValue().
+
+Referenced by [App::PropertyListsT< T, ListT, ParentT
+>::set1Value()](../../d1/d0e/classApp_1_1PropertyListsT.html#ada9ee7ea1e2127ba7456b9a4a4697d80),
+[App::PropertyListsT< T, ListT, ParentT
+>::setPyValues()](../../d1/d0e/classApp_1_1PropertyListsT.html#ad8773f373375f670a161bca64cad259e),
+and [App::PropertyListsT< T, ListT, ParentT
+>::setValues()](../../d1/d0e/classApp_1_1PropertyListsT.html#a8744f95234dbfb9431759906c2a76cd4).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/App/Property.h
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

@@ -1,0 +1,101 @@
+---
+url: https://freecad.github.io/SourceDoc/dd/db3/classBase_1_1UnitsSchemaImperialCivil.html
+scraped_at: 2025-09-08T15:17:47.196755
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [Base](../../db/d07/namespaceBase.html)
+  * [UnitsSchemaImperialCivil](../../dd/db3/classBase_1_1UnitsSchemaImperialCivil.html)
+
+[List of all members](../../d4/d3c/classBase_1_1UnitsSchemaImperialCivil-members.html) | Public Member Functions
+
+Base::UnitsSchemaImperialCivil Class Reference
+
+The schema class for Civil Engineering in the imperial unit system All
+measurements in ft, ft^2, ft^3, ft/sec.
+[More...](../../dd/db3/classBase_1_1UnitsSchemaImperialCivil.html#details)
+
+`#include <UnitsSchemaImperial1.h>`
+
+##  Public Member Functions  
+  
+---  
+virtual QString | [schemaTranslate](../../dd/db3/classBase_1_1UnitsSchemaImperialCivil.html#a51365e26e85ced53aa9a2c8421f098bc) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double &factor, QString &unitString)  
+| This method translates the quantity in a string as the user may expect it.
+[More...](../../dd/db3/classBase_1_1UnitsSchemaImperialCivil.html#a51365e26e85ced53aa9a2c8421f098bc)  
+  
+![-](../../closed.png) Public Member Functions inherited from
+[Base::UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html)  
+virtual void | [resetSchemaUnits](../../d9/dc7/classBase_1_1UnitsSchema.html#a35f563d52fd70672d5a0573387fce90a) ()  
+| If you use
+[setSchemaUnits()](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6
+"Gets called if this schema gets activated.") you also have to impment this
+method to undo your changes!
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#a35f563d52fd70672d5a0573387fce90a)  
+  
+virtual QString | [schemaTranslate](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double &factor, QString &unitString)=0  
+| This method translates the quantity in a string as the user may expect it.
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7)  
+  
+virtual void | [setSchemaUnits](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6) ()  
+| Gets called if this schema gets activated.
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6)  
+  
+QString | [toLocale](../../d9/dc7/classBase_1_1UnitsSchema.html#aacde4020d5617f0e65769350940f0a44) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double factor, const QString &unitString) const  
+virtual | [~UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html#a9ce6e264f497d11e3fdc467a228cafed) ()  
+  
+## Detailed Description
+
+The schema class for Civil Engineering in the imperial unit system All
+measurements in ft, ft^2, ft^3, ft/sec.
+
+Pressure is in psi.
+
+## Member Function Documentation
+
+## ◆ schemaTranslate()
+
+| QString UnitsSchemaImperialCivil::schemaTranslate  | ( | const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) & | _quant_ ,   
+---|---|---|---  
+|  | double & | _factor_ ,   
+|  | QString & | _unitString_  
+| ) | |   
+virtual  
+  
+This method translates the quantity in a string as the user may expect it.
+
+Implements
+[Base::UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7).
+
+References
+[Base::Unit::Angle](../../d2/d37/classBase_1_1Unit.html#a650f972468df9938bacbcafdd4b443e1),
+[Base::Unit::Area](../../d2/d37/classBase_1_1Unit.html#ab3d42609406d023f6818a88433f685c4),
+[Base::Unit::getString()](../../d2/d37/classBase_1_1Unit.html#ae403a424663d4df4b4a4886093ed07d1),
+[Base::Quantity::getUnit()](../../d8/d18/classBase_1_1Quantity.html#acf401f989cc46b7c864565e89113ede4),
+[Base::Quantity::getValue()](../../d8/d18/classBase_1_1Quantity.html#a692b9e4043999d2c24737886639df7d0),
+[Base::Unit::Length](../../d2/d37/classBase_1_1Unit.html#ae7af32a08ea9a0e1501571a2902c84bd),
+[Base::Unit::Mass](../../d2/d37/classBase_1_1Unit.html#a0487599b7ddcb19c431b2e5522af173a),
+[Base::Unit::Pressure](../../d2/d37/classBase_1_1Unit.html#ab0df485d964692e00f0b0006afb2068f),
+[Base::Unit::Stiffness](../../d2/d37/classBase_1_1Unit.html#a76655c5122e0c7b016cdabd9d41785ee),
+[Base::UnitsSchema::toLocale()](../../d9/dc7/classBase_1_1UnitsSchema.html#aacde4020d5617f0e65769350940f0a44),
+[Base::Unit::Velocity](../../d2/d37/classBase_1_1Unit.html#ac8f332f96770356aa6c6712a108b3410),
+and
+[Base::Unit::Volume](../../d2/d37/classBase_1_1Unit.html#a0384d7597ade62ef6c880f84918a672f).
+
+* * *
+
+The documentation for this class was generated from the following files:
+
+  * FreeCAD/src/Base/UnitsSchemaImperial1.h
+  * FreeCAD/src/Base/UnitsSchemaImperial1.cpp
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

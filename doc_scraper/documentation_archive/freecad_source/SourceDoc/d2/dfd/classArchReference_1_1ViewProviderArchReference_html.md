@@ -1,0 +1,772 @@
+---
+url: https://freecad.github.io/SourceDoc/d2/dfd/classArchReference_1_1ViewProviderArchReference.html
+scraped_at: 2025-09-08T14:58:22.381405
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [ArchReference](../../d9/d3e/namespaceArchReference.html)
+  * [ViewProviderArchReference](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html)
+
+[List of all members](../../d2/d41/classArchReference_1_1ViewProviderArchReference-members.html) | Public Member Functions | Public Attributes
+
+ArchReference.ViewProviderArchReference Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [attach](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a936f4fcac61896a057344ae9e4220249) (self, vobj)  
+def | [checkChanges](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ab6a807091ea186d4252888a09f6b41ba) (self)  
+def | [doubleClicked](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a921a71a757c5853c3331216eefb23703) (self, vobj)  
+def | [getIcon](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#aacb069389e4505bbffdcd26fa61dad8e) (self)  
+def | [getInventorString](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a5c493ab22f867ed99ba791eeb523142b) (self, obj)  
+def | [loadInventor](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a556b06a4c4cbfded719dbebcc1a9a60a) (self, obj)  
+def | [onChanged](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#adc47944d5c97e98c2cc354697a305538) (self, vobj, prop)  
+def | [onDelete](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac113f02b7c55a8e3ea62c5109c619018) (self, obj, doc)  
+def | [onOpen](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a61e3b48c424bfa0bf63e0a53f8c9ef2d) (self)  
+def | [onReload](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac1595166c3d83f9fca7d584a5cd0de82) (self)  
+def | [recolorize](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#aebd19fac009b5e9432fdb52ff61f35fd) (self, vobj)  
+def | [setEdit](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ab3b586040db301e1fb7a1239c52c8c33) (self, vobj, mode=0)  
+def | [setProperties](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a7f9d1dadc048dd8e345d54d9b06629c9) (self, vobj)  
+def | [setupContextMenu](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a5aebe07985cf3ea76c1eb22b114967e6) (self, vobj, menu)  
+def | [unloadInventor](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac79e23f694ddd341b36b428b7a328641) (self, obj)  
+def | [unsetEdit](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a8485c019200848220b860978a87af9c4) (self, vobj, mode)  
+def | [updateData](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#af12c307936753e6e84d5650ac3a8de8d) (self, obj, prop)  
+  
+##  Public Attributes  
+  
+---  
+|
+[Object](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a7ff834265c54ac7fb2656b1743c6beca)  
+|
+[orig_flatlines](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a107b2878e5c7955e0d92b46bfc88ea2c)  
+|
+[orig_shaded](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a09bdd4a89a5a6064ac42d9ef0ca41a4b)  
+|
+[orig_wireframe](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a4b436d02428534942996bd3422cbf3fd)  
+|
+[timer](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac8b999a76c7f0b6ba8a372d689db717e)  
+  
+## Member Function Documentation
+
+## ◆ attach()
+
+def ArchReference.ViewProviderArchReference.attach  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_  
+| ) | |   
+  
+## ◆ checkChanges()
+
+def ArchReference.ViewProviderArchReference.checkChanges  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+References
+[Base::XMLReader::FileEntry.Object](../../d4/d0e/structBase_1_1XMLReader_1_1FileEntry.html#a810a31633177de69f84d2b9749940dc9),
+[Base::Writer::FileEntry.Object](../../d5/de8/structBase_1_1Writer_1_1FileEntry.html#a15a35046c9bd5dad11dd5d97c18d675f),
+Py::Object.Object(),
+[Gui::SelectionChanges.Object](../../d5/d50/classGui_1_1SelectionChanges.html#a9a19f506b1a84b6e75fb8740bcd3a575),
+[ArchBuildingPart.ViewProviderBuildingPart.Object](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a80074ab1c13b73be0cfb1b8d70fc140c),
+[ArchComponent.ViewProviderComponent.Object](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a597cb57c8f3b67265e32073313fc7140),
+ArchEquipment._ViewProviderEquipment.Object, ArchFloor._Floor.Object,
+ArchFloor._ViewProviderFloor.Object,
+ArchMaterial._ViewProviderArchMaterialContainer.Object,
+ArchMaterial._ViewProviderArchMaterial.Object,
+[ArchReference.ViewProviderArchReference.Object](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a7ff834265c54ac7fb2656b1743c6beca),
+ArchRoof._ViewProviderRoof.Object,
+ArchSchedule._ViewProviderArchSchedule.Object,
+ArchSectionPlane._ViewProviderSectionPlane.Object,
+ArchSite._ViewProviderSite.Object, ArchSpace._ViewProviderSpace.Object,
+[ArchStructure.StructureTaskPanel.Object](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a2a7f5afe1095df43467d870bd66015b2),
+ArchWall._ViewProviderWall.Object,
+[draftobjects.layer.Layer.Object](../../d0/ddc/classdraftobjects_1_1layer_1_1Layer.html#acb6706be7ad1a79dc3ab403ccbacb591),
+[draftviewproviders.view_base.ViewProviderDraft.Object](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af3e3740115122efcc10bff5b2dbffcf4),
+[draftviewproviders.view_dimension.ViewProviderDimensionBase.Object](../../d6/d45/classdraftviewproviders_1_1view__dimension_1_1ViewProviderDimensionBase.html#a2cc0e04e6a50a9e3be070d3fb4c32c7e),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.Object](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#af5589835e2e8dce93afafa9a246b7ccd),
+[draftviewproviders.view_dimension.ViewProviderAngularDimension.Object](../../d5/d88/classdraftviewproviders_1_1view__dimension_1_1ViewProviderAngularDimension.html#a3aaa8f2262ee754f43a500d5f1939053),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.Object](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a20ade5bec2ae3eb3ea7ae695937c2c58),
+[draftviewproviders.view_label.ViewProviderLabel.Object](../../d1/d88/classdraftviewproviders_1_1view__label_1_1ViewProviderLabel.html#ac983249a6e5f94ed59af459cebebe749),
+[draftviewproviders.view_layer.ViewProviderLayer.Object](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a8c9a3925420b39835429fd957332f320),
+[draftviewproviders.view_layer.ViewProviderLayerContainer.Object](../../d1/dec/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayerContainer.html#ab0dc98dc58ff9b0853c822599e24e0c9),
+[draftviewproviders.view_text.ViewProviderText.Object](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#a05f7b6bee1b34cf5eafd22fef0ba76a2),
+[draftviewproviders.view_wire.ViewProviderWire.Object](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a61ba75eda07d4458cb2ffa6b076ff96c),
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.Object](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#aa0d5af582a27cee2917faef98c706b59),
+[femviewprovider.view_base_femconstraint.VPBaseFemConstraint.Object](../../d8/d92/classfemviewprovider_1_1view__base__femconstraint_1_1VPBaseFemConstraint.html#a3f3218d9519118642a24bb2e8ad4a91b),
+[femviewprovider.view_base_femobject.VPBaseFemObject.Object](../../d0/d48/classfemviewprovider_1_1view__base__femobject_1_1VPBaseFemObject.html#af205146496732cbe6c506294db4d0fda),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.Object](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a3483ee45886ec851784fa9f60cda8626),
+[OpenSCADFeatures.ViewProviderTree.Object](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#a551bca6e05e09056eed10a7ccfdce9f3),
+[BOPTools.JoinFeatures.ViewProviderConnect.Object](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a90cca2c770c6b0798ec2b46bf73dfbf3),
+[BOPTools.JoinFeatures.ViewProviderEmbed.Object](../../dc/d41/classBOPTools_1_1JoinFeatures_1_1ViewProviderEmbed.html#a80a4f7be937dfa7d6b917c7eb69098ab),
+[BOPTools.JoinFeatures.ViewProviderCutout.Object](../../d4/d85/classBOPTools_1_1JoinFeatures_1_1ViewProviderCutout.html#aeec0c48b42056af82c259e57e6d5b79f),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.Object](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a0c77eb31d1b9d66157606764a007ca73),
+[BOPTools.SplitFeatures.ViewProviderSlice.Object](../../d5/d19/classBOPTools_1_1SplitFeatures_1_1ViewProviderSlice.html#a15ecfb5f1a6f53bcb0265653db346a47),
+[BOPTools.SplitFeatures.ViewProviderXOR.Object](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#ac18bbcf4db8fc26d78356a427108c7d5),
+CompoundTools.CompoundFilter._ViewProviderCompoundFilter.Object,
+JoinFeatures._ViewProviderPartJoinFeature.Object,
+[Mod.PartDesign.FeatureHole.ViewProviderHole.ViewProviderHole.Object](../../de/d6b/classMod_1_1PartDesign_1_1FeatureHole_1_1ViewProviderHole_1_1ViewProviderHole.html#a075a0d66e3cee7d0130660504a5840c7),
+Mod.PartDesign.InvoluteGearFeature._ViewProviderInvoluteGear.Object,
+[Mod.PartDesign.SprocketFeature.ViewProviderSprocket.Object](../../da/d59/classMod_1_1PartDesign_1_1SprocketFeature_1_1ViewProviderSprocket.html#ada8c7660ebbbf71305fadf6186ee8a05),
+[PathScripts.PathArray.ViewProviderArray.Object](../../dc/d4b/classPathScripts_1_1PathArray_1_1ViewProviderArray.html#acc715b58fbeb757403ca188707eb83b7),
+PathScripts.PathCollision._ViewProviderCollisionSim.Object,
+[PathScripts.PathCopy.ViewProviderPathCopy.Object](../../de/d45/classPathScripts_1_1PathCopy_1_1ViewProviderPathCopy.html#a9bbdf33af7f09d7ccdafdc5f8cc0b4cb),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.Object](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#ad6d7bd90a0a701c68bfeb55c314ed5fa),
+[PathScripts.PathHop.ViewProviderPathHop.Object](../../da/dfa/classPathScripts_1_1PathHop_1_1ViewProviderPathHop.html#a3ec9b9210e599809ddec0a1e711106fa),
+[PathScripts.PathOpGui.ViewProvider.Object](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#af6241ad8210a6060fb55d797e6d082ff),
+[Mod.Show.Containers.Container.Object](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#aea8c76ed8a0f879a33e1abe68df4a960),
+[Spreadsheet_legacy.Spreadsheet.Object](../../d2/d6d/classSpreadsheet__legacy_1_1Spreadsheet.html#a4e65495069891285020965e854149600),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.Object](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#ab3bd99499693b288462fbdbd5399fc53),
+[DocumentObject.ViewProvider.Object()](../../d8/dd7/classDocumentObject_1_1ViewProvider.html#a04e829dec435fa70e442b47989269388),
+[Mod.Test.Document.DocumentBasicCases.Object](../../dd/dbe/classMod_1_1Test_1_1Document_1_1DocumentBasicCases.html#aabbc092c15e784e33f697508ae5ecbac),
+Gui::Dialog::DemoMode.timer, Gui::DlgObjectSelection.timer,
+Gui::Dialog::DlgPropertyLink.timer,
+[Gui::GUISingleApplication::Private.timer](../../de/d95/classGUISingleApplication_1_1Private.html#a3307e7a4285e5ae43b044a0007155cf4),
+Gui::PropertyView.timer,
+[ArchReference.ViewProviderArchReference.timer](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac8b999a76c7f0b6ba8a372d689db717e),
+[PathScripts.PathSimulatorGui.PathSimulation.timer](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#a6979e917f54f31ace16691ec546dc607),
+[RobotGui::TaskTrajectory.timer](../../d1/da4/classRobotGui_1_1TaskTrajectory.html#a5e2e4e3faa691110208779c4aadc98c8),
+and
+[RobotGui::TrajectorySimulate.timer](../../d6/d2d/classRobotGui_1_1TrajectorySimulate.html#a282842546af5e5c5ca591b68aacd7ffa).
+
+## ◆ doubleClicked()
+
+def ArchReference.ViewProviderArchReference.doubleClicked  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_  
+| ) | |   
+  
+References
+[Gui::Document.setEdit()](../../de/d4e/classGui_1_1Document.html#a2064c6eb4172240d40a7f409febc81a9),
+[Gui::ViewProvider.setEdit()](../../d3/db3/classGui_1_1ViewProvider.html#a99bfa17a3eedcec978d56b252a653fea),
+[Gui::ViewProviderAnnotationLabel.setEdit()](../../da/d05/classGui_1_1ViewProviderAnnotationLabel.html#a9e6d7fb0b017900b7ac12e21c88ceabc),
+[Gui::ViewProviderPythonFeatureImp.setEdit()](../../de/dbe/classGui_1_1ViewProviderPythonFeatureImp.html#a13e8deb11e95b3cb730e9d105ffc8517),
+[DrawingGui::ViewProviderDrawingPage.setEdit()](../../d7/d4d/classDrawingGui_1_1ViewProviderDrawingPage.html#a332f677694e4eb770dccc6698df4a27e),
+[FemGui::ViewProviderFemAnalysis.setEdit()](../../d7/d81/classFemGui_1_1ViewProviderFemAnalysis.html#ad43efa79b2a2ae8acb280614155105a6),
+[FemGui::ViewProviderFemConstraint.setEdit()](../../d7/dc7/classFemGui_1_1ViewProviderFemConstraint.html#afccdf7d794c7c6eb07c06404574c0b45),
+[FemGui::ViewProviderFemConstraintBearing.setEdit()](../../d1/d76/classFemGui_1_1ViewProviderFemConstraintBearing.html#ada0e85289207db1bc3b9ca4b1f03e6fc),
+[FemGui::ViewProviderFemConstraintContact.setEdit()](../../d9/d3d/classFemGui_1_1ViewProviderFemConstraintContact.html#ab6aafc618f8c7b4737ef4d06dca0b739),
+[FemGui::ViewProviderFemConstraintDisplacement.setEdit()](../../d7/d3f/classFemGui_1_1ViewProviderFemConstraintDisplacement.html#aa763ff22c3aa35dc8c6f3265b307287e),
+[FemGui::ViewProviderFemConstraintFixed.setEdit()](../../d4/d9c/classFemGui_1_1ViewProviderFemConstraintFixed.html#a813e76666d3bc3aca1e3e47565c872e7),
+[FemGui::ViewProviderFemConstraintFluidBoundary.setEdit()](../../da/d06/classFemGui_1_1ViewProviderFemConstraintFluidBoundary.html#adce6e7f53edbdcfdae6d45365ba57f0f),
+[FemGui::ViewProviderFemConstraintForce.setEdit()](../../da/dc5/classFemGui_1_1ViewProviderFemConstraintForce.html#a39e8664ff886cf249a80a72df142ffa9),
+[FemGui::ViewProviderFemConstraintGear.setEdit()](../../d1/d2f/classFemGui_1_1ViewProviderFemConstraintGear.html#aeaddd287de5da327467599e4fd5db37b),
+[FemGui::ViewProviderFemConstraintHeatflux.setEdit()](../../d0/dea/classFemGui_1_1ViewProviderFemConstraintHeatflux.html#a097b2df936bd0057bc591268cff63859),
+[FemGui::ViewProviderFemConstraintInitialTemperature.setEdit()](../../d8/d07/classFemGui_1_1ViewProviderFemConstraintInitialTemperature.html#a009f5341493d283dbd42b82f7fd27b68),
+[FemGui::ViewProviderFemConstraintPlaneRotation.setEdit()](../../d7/d0a/classFemGui_1_1ViewProviderFemConstraintPlaneRotation.html#a206254f1c763260f072c36a215456a3d),
+[FemGui::ViewProviderFemConstraintPressure.setEdit()](../../d4/d18/classFemGui_1_1ViewProviderFemConstraintPressure.html#a263f869ac7b10ee53176680a362e308a),
+[FemGui::ViewProviderFemConstraintPulley.setEdit()](../../d8/dfc/classFemGui_1_1ViewProviderFemConstraintPulley.html#af3e6550cd186ed7c85d3a1e5a1ed5034),
+[FemGui::ViewProviderFemConstraintSpring.setEdit()](../../d5/d4f/classFemGui_1_1ViewProviderFemConstraintSpring.html#a7707003f9949bc205321d51c3fa2307b),
+[FemGui::ViewProviderFemConstraintTemperature.setEdit()](../../d1/df6/classFemGui_1_1ViewProviderFemConstraintTemperature.html#aeda5483ccbf96c4fe6eb2ca7a9613d67),
+[FemGui::ViewProviderFemConstraintTransform.setEdit()](../../db/d32/classFemGui_1_1ViewProviderFemConstraintTransform.html#aa18e9edaaaca3d70ecaa70c7324d9cb8),
+[FemGui::ViewProviderFemMeshShapeNetgen.setEdit()](../../df/db3/classFemGui_1_1ViewProviderFemMeshShapeNetgen.html#aadc0d17d1ae76eb0a0ea3e5aca6cd5bd),
+[FemGui::ViewProviderFemPostFunction.setEdit()](../../d5/d14/classFemGui_1_1ViewProviderFemPostFunction.html#a6b9d37dcfe0a7353636f93a552e26e31),
+[FemGui::ViewProviderFemPostObject.setEdit()](../../db/d73/classFemGui_1_1ViewProviderFemPostObject.html#a0061e5e27869609b71c4ea0c5af8b619),
+[FemGui::ViewProviderSetElements.setEdit()](../../dd/d62/classFemGui_1_1ViewProviderSetElements.html#a73a081f3347b902c5dab471685962630),
+[FemGui::ViewProviderSetFaces.setEdit()](../../d9/d46/classFemGui_1_1ViewProviderSetFaces.html#ad00b9493187b0c5a672120f53335c253),
+[FemGui::ViewProviderSetGeometry.setEdit()](../../dd/d48/classFemGui_1_1ViewProviderSetGeometry.html#a273f5ea4cda8beaca861257a9cabb556),
+[FemGui::ViewProviderSetNodes.setEdit()](../../d5/d44/classFemGui_1_1ViewProviderSetNodes.html#afa5974e28b2cc9cf53c07adad3170aae),
+[MeshGui::ViewProviderMesh.setEdit()](../../d7/dc1/classMeshGui_1_1ViewProviderMesh.html#a40deb657f9bdff42591951bab87920d0),
+[PartGui::ViewProvider2DObjectGrid.setEdit()](../../d9/d42/classPartGui_1_1ViewProvider2DObjectGrid.html#a9fa0acb41e43ce0dd79d58330cd10ffe),
+[PartGui::ViewProviderCurveNet.setEdit()](../../d9/d90/classPartGui_1_1ViewProviderCurveNet.html#aff7108f2d0ef7759484b9446b252b917),
+[PartGui::ViewProviderImport.setEdit()](../../d0/d76/classPartGui_1_1ViewProviderImport.html#a3f7d8b2fd75fb4f36bdbb7d4ce14b26c),
+[PartGui::ViewProviderMirror.setEdit()](../../d2/d29/classPartGui_1_1ViewProviderMirror.html#a1f2db7361989a26090e6071227f1562a),
+[PartGui::ViewProviderFillet.setEdit()](../../de/dd4/classPartGui_1_1ViewProviderFillet.html#ac9dbcc3535eb12550c5825593f533e25),
+[PartGui::ViewProviderChamfer.setEdit()](../../db/d6b/classPartGui_1_1ViewProviderChamfer.html#a955c6e923d41c98de7aed8ee8ea8b2ba),
+[PartGui::ViewProviderOffset.setEdit()](../../df/ded/classPartGui_1_1ViewProviderOffset.html#aba844b2a4f4129a7ed239641d7978851),
+[PartGui::ViewProviderThickness.setEdit()](../../d1/d8f/classPartGui_1_1ViewProviderThickness.html#a6cabec4fc1ea58cd5ba6a66f8b279fc6),
+[PartGui::ViewProviderPrimitive.setEdit()](../../dd/dfd/classPartGui_1_1ViewProviderPrimitive.html#a830586f4badf80a1ec8e9e2d02f280d5),
+[PartDesignGui::ViewProviderBase.setEdit()](../../d7/d54/classPartDesignGui_1_1ViewProviderBase.html#a4609b7dfe7e5fdc6ae721a101bccfd4e),
+[PartDesignGui::ViewProviderDressUp.setEdit()](../../dd/dfd/classPartDesignGui_1_1ViewProviderDressUp.html#a4119fd1599c9378ba7b4e9185637c51c),
+[PartDesignGui::ViewProviderHelix.setEdit()](../../da/d62/classPartDesignGui_1_1ViewProviderHelix.html#a2fe0852e9a26cb1e399ac84be8251d9c),
+[PartDesignGui::ViewProviderHole.setEdit()](../../df/dda/classPartDesignGui_1_1ViewProviderHole.html#aa1c50b1c4e8d2446e8f91b3d79c2d9b4),
+[PartDesignGui::ViewProviderLoft.setEdit()](../../d9/d6e/classPartDesignGui_1_1ViewProviderLoft.html#ae908f2000b0bed946505fd8d96a20236),
+[PartDesignGui::ViewProviderPipe.setEdit()](../../d8/dc8/classPartDesignGui_1_1ViewProviderPipe.html#acc714758bdf79639a8a30c99e1e8e21b),
+[PartDesignGui::ViewProviderPrimitive.setEdit()](../../d9/d7a/classPartDesignGui_1_1ViewProviderPrimitive.html#a830586f4badf80a1ec8e9e2d02f280d5),
+[PathGui::ViewProviderPathCompound.setEdit()](../../db/d9a/classPathGui_1_1ViewProviderPathCompound.html#a98bbbb533d93a02c594c80f10ce780db),
+[PointsGui::ViewProviderPoints.setEdit()](../../d2/d23/classPointsGui_1_1ViewProviderPoints.html#a0b86e870101c6db6e59da6632b15da1a),
+[RaytracingGui::ViewProviderLux.setEdit()](../../d4/d95/classRaytracingGui_1_1ViewProviderLux.html#a559d010dd9902addb4de84170aac9f51),
+[RaytracingGui::ViewProviderPovray.setEdit()](../../d4/d94/classRaytracingGui_1_1ViewProviderPovray.html#a76685922c30f4f6a92a74fafcc800fa2),
+[RobotGui::ViewProviderEdge2TracObject.setEdit()](../../da/d5e/classRobotGui_1_1ViewProviderEdge2TracObject.html#af62127f819ab7dd2f1cb94e041f04381),
+[RobotGui::ViewProviderTrajectoryCompound.setEdit()](../../d7/d47/classRobotGui_1_1ViewProviderTrajectoryCompound.html#aef2ee5ba2388c7dd85aef72656a6c297),
+[RobotGui::ViewProviderTrajectoryDressUp.setEdit()](../../da/dff/classRobotGui_1_1ViewProviderTrajectoryDressUp.html#aba54ff221e761e23bd2c887b39fd876e),
+[SurfaceGui::ViewProviderFilling.setEdit()](../../d0/dac/classSurfaceGui_1_1ViewProviderFilling.html#a5f6e7210301bf80e264d2209c92e67d4),
+[SurfaceGui::ViewProviderGeomFillSurface.setEdit()](../../d8/d03/classSurfaceGui_1_1ViewProviderGeomFillSurface.html#ae59f5b76efea8f8d54f7eb93fb42b7b6),
+[SurfaceGui::ViewProviderSections.setEdit()](../../da/dd0/classSurfaceGui_1_1ViewProviderSections.html#a2c85256da171bcbd0547974f29ead549),
+[TechDrawGui::ViewProviderBalloon.setEdit()](../../d2/dd9/classTechDrawGui_1_1ViewProviderBalloon.html#a2e025ddacfaa37230ff483b91d273338),
+[TechDrawGui::ViewProviderDimension.setEdit()](../../d8/d4e/classTechDrawGui_1_1ViewProviderDimension.html#ad0f391bd413a036384a01912569d5bc4),
+[TechDrawGui::ViewProviderLeader.setEdit()](../../da/d6b/classTechDrawGui_1_1ViewProviderLeader.html#a9e6409e4b7a5516b47b05ed3945fca40),
+[TechDrawGui::ViewProviderProjGroup.setEdit()](../../d6/dc7/classTechDrawGui_1_1ViewProviderProjGroup.html#ac5dcab3a423587bd0dc448c46a7b6d35),
+[TechDrawGui::ViewProviderProjGroupItem.setEdit()](../../d1/d88/classTechDrawGui_1_1ViewProviderProjGroupItem.html#a765bef926a390295b2440caf41c7001e),
+[TechDrawGui::ViewProviderRichAnno.setEdit()](../../d2/d72/classTechDrawGui_1_1ViewProviderRichAnno.html#abe7e29edccb3b64c78291d246c9d22b1),
+[TechDrawGui::ViewProviderViewPart.setEdit()](../../d4/d93/classTechDrawGui_1_1ViewProviderViewPart.html#a758558e7e660c02f277bc621cb7e2e61),
+[TechDrawGui::ViewProviderViewSection.setEdit()](../../d2/df0/classTechDrawGui_1_1ViewProviderViewSection.html#a38606dd2e773bcb04de0fa4be2c4c0b7),
+[TechDrawGui::ViewProviderWeld.setEdit()](../../dc/dbe/classTechDrawGui_1_1ViewProviderWeld.html#ad9430bcd1a82544e7d00ed2b2ebeffdc),
+[Gui::ViewProviderDragger.setEdit()](../../d3/d04/classGui_1_1ViewProviderDragger.html#ae112bfbf937f2ec8a8efd24fd432acc5),
+[Gui::ViewProviderLink.setEdit()](../../d6/d59/classGui_1_1ViewProviderLink.html#a72f3abcc67100d8740725e3344df323d),
+[Gui::ViewProviderPythonFeatureT< ViewProviderT
+>.setEdit()](../../dc/d41/classGui_1_1ViewProviderPythonFeatureT.html#ac76e613b31b405cd78dc8191390430a7),
+[PartGui::ViewProviderPartExt.setEdit()](../../d6/d68/classPartGui_1_1ViewProviderPartExt.html#a1181d53d0a1c61ea05d59905c4b4e0cd),
+[PartDesignGui::ViewProvider.setEdit()](../../d0/d29/classPartDesignGui_1_1ViewProvider.html#a6f3f1f8893820843dd51f280ca8a3dec),
+[PartDesignGui::ViewProviderBoolean.setEdit()](../../d7/d09/classPartDesignGui_1_1ViewProviderBoolean.html#a8332deec17f6d74c084a3b935c9aa6a0),
+[PartDesignGui::ViewProviderDatum.setEdit()](../../d4/dc1/classPartDesignGui_1_1ViewProviderDatum.html#ac56d3ca4da8d5573b3496ee332304919),
+[PartDesignGui::ViewProviderShapeBinder.setEdit()](../../d1/d70/classPartDesignGui_1_1ViewProviderShapeBinder.html#a8ab60c5d127611b0a984fedcc5d286a9),
+[PartDesignGui::ViewProviderSubShapeBinder.setEdit()](../../d1/da6/classPartDesignGui_1_1ViewProviderSubShapeBinder.html#ab69265d464691c650bb6bd89015af92e),
+[PartDesignGui::ViewProviderTransformed.setEdit()](../../da/d71/classPartDesignGui_1_1ViewProviderTransformed.html#a5d37e6ba0bf8efbd6ebea83c4c331bb2),
+[SketcherGui::ViewProviderSketch.setEdit()](../../dc/de2/classSketcherGui_1_1ViewProviderSketch.html#ad28c651e806a00fca15332d4c04b47c9),
+[SpreadsheetGui::ViewProviderSheet.setEdit()](../../d9/df2/classSpreadsheetGui_1_1ViewProviderSheet.html#a2bc7d2572d6e443dd7e60728404aa8bb),
+[TechDrawGui::ViewProviderGeomHatch.setEdit()](../../db/dbe/classTechDrawGui_1_1ViewProviderGeomHatch.html#a28afe467eff5280ce4f2f4c06c334403),
+[TechDrawGui::ViewProviderHatch.setEdit()](../../de/d1a/classTechDrawGui_1_1ViewProviderHatch.html#a9e2a641e6843356f975b70dc8327411d),
+[TechDrawGui::ViewProviderPage.setEdit()](../../d8/d21/classTechDrawGui_1_1ViewProviderPage.html#aa4d620f567a62273aff719609d2e0590),
+[MeshGui::ViewProviderMeshNode.setEdit()](../../dc/d89/classMeshGui_1_1ViewProviderMeshNode.html#a17780fa2e133a40608c422364b034e25),
+[Gui::ViewProviderOriginFeature.setEdit()](../../d9/d6a/classGui_1_1ViewProviderOriginFeature.html#a454f195000fee3cbed596d1b4c20fa49),
+[ArchIFCView.IfcContextView.setEdit()](../../d6/d1b/classArchIFCView_1_1IfcContextView.html#a2a1bf7071dce4cc8111c33e18b44e2b5),
+[BasicShapes.ViewProviderShapes.ViewProviderTube.setEdit()](../../dc/dad/classBasicShapes_1_1ViewProviderShapes_1_1ViewProviderTube.html#a7457e7db7f6d3b56f283f0f8da2fdca3),
+[ArchComponent.ViewProviderComponent.setEdit()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#aead5dc101b4fb331c6905a022017846d),
+ArchMaterial._ViewProviderArchMaterial.setEdit(),
+[ArchPanel.ViewProviderPanelSheet.setEdit()](../../d9/d71/classArchPanel_1_1ViewProviderPanelSheet.html#ae867e3595c276c8e66b8650c8d1a9344),
+ArchPrecast._ViewProviderPrecast.setEdit(),
+[ArchProfile.ViewProviderProfile.setEdit()](../../d9/d44/classArchProfile_1_1ViewProviderProfile.html#ad360a2e390790ea06a318de4fdc22ef3),
+ArchRebar._ViewProviderRebar.setEdit(),
+ArchSectionPlane._ViewProviderSectionPlane.setEdit(),
+ArchSite._ViewProviderSite.setEdit(), ArchSpace._ViewProviderSpace.setEdit(),
+ArchStructure._ViewProviderStructure.setEdit(),
+ArchWindow._ViewProviderWindow.setEdit(),
+[draftviewproviders.view_facebinder.ViewProviderFacebinder.setEdit()](../../d0/dc8/classdraftviewproviders_1_1view__facebinder_1_1ViewProviderFacebinder.html#a7c996c94c74aedd3c98563354f6264e4),
+[draftviewproviders.view_hatch.ViewProviderDraftHatch.setEdit()](../../dd/d75/classdraftviewproviders_1_1view__hatch_1_1ViewProviderDraftHatch.html#afcc040238c3aec08065582ff70b362fc),
+[draftviewproviders.view_shapestring.ViewProviderShapeString.setEdit()](../../df/d92/classdraftviewproviders_1_1view__shapestring_1_1ViewProviderShapeString.html#a2fda6b0878fe67d58129295d8841ddda),
+[draftviewproviders.view_text.ViewProviderText.setEdit()](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#a63ed7d1ab46f5edf47c6c5ac145f855c),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.setEdit()](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a3a78092889a4c95eccb6be557e1ae0dc),
+JoinFeatures._ViewProviderPartJoinFeature.setEdit(),
+Mod.PartDesign.InvoluteGearFeature._ViewProviderInvoluteGear.setEdit(),
+[Mod.PartDesign.SprocketFeature.ViewProviderSprocket.setEdit()](../../da/d59/classMod_1_1PartDesign_1_1SprocketFeature_1_1ViewProviderSprocket.html#aa6d4cdd2dac11b7da5f1e3332a28c1fc),
+PathScripts.PathFixture._ViewProviderFixture.setEdit(),
+PathScripts.PathPlane._ViewProviderPlane.setEdit(),
+ArchAxis._ViewProviderAxis.setEdit(),
+ArchAxisSystem._ViewProviderAxisSystem.setEdit(),
+[ArchGrid.ViewProviderArchGrid.setEdit()](../../d4/dbf/classArchGrid_1_1ViewProviderArchGrid.html#ab678ebc5a0472704be09f9341557d24b),
+ArchMaterial._ViewProviderArchMultiMaterial.setEdit(),
+[ArchReference.ViewProviderArchReference.setEdit()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ab3b586040db301e1fb7a1239c52c8c33),
+ArchRoof._ViewProviderRoof.setEdit(),
+ArchSchedule._ViewProviderArchSchedule.setEdit(),
+[draftviewproviders.view_base.ViewProviderDraft.setEdit()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#adebff004d86674246b09cb8adf7eb658),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.setEdit()](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a12b97cb07c5c6fa60db0766c7d26747c),
+[femsolver.elmer.equations.equation.ViewProxy.setEdit()](../../d7/d0b/classfemsolver_1_1elmer_1_1equations_1_1equation_1_1ViewProxy.html#a4a9253701e25ea047f2dcc2796a2791e),
+[femsolver.solverbase.ViewProxy.setEdit()](../../d5/d90/classfemsolver_1_1solverbase_1_1ViewProxy.html#a4429c7e7877778c7637b8b5a7796e77e),
+[femviewprovider.view_constraint_centrif.VPConstraintCentrif.setEdit()](../../d7/db7/classfemviewprovider_1_1view__constraint__centrif_1_1VPConstraintCentrif.html#a20087c7960f39832194fdc1868bf6c81),
+[femviewprovider.view_constraint_electrostaticpotential.VPConstraintElectroStaticPotential.setEdit()](../../df/d9f/classfemviewprovider_1_1view__constraint__electrostaticpotential_1_1VPConstraintElectroStaticPotential.html#aad0fe720edc89b21902dd6b5877782cc),
+[femviewprovider.view_constraint_flowvelocity.VPConstraintFlowVelocity.setEdit()](../../d0/dfd/classfemviewprovider_1_1view__constraint__flowvelocity_1_1VPConstraintFlowVelocity.html#afc835a8865f553d189da7eeab7939795),
+[femviewprovider.view_constraint_initialflowvelocity.VPConstraintInitialFlowVelocity.setEdit()](../../d2/df6/classfemviewprovider_1_1view__constraint__initialflowvelocity_1_1VPConstraintInitialFlowVelocity.html#ade9c7ed74a22baf7020e03f6b8050886),
+[femviewprovider.view_constraint_sectionprint.VPConstraintSectionPrint.setEdit()](../../d9/df8/classfemviewprovider_1_1view__constraint__sectionprint_1_1VPConstraintSectionPrint.html#a1ac91f5fefcccae1996db79675a90c39),
+[femviewprovider.view_constraint_tie.VPConstraintTie.setEdit()](../../da/dc2/classfemviewprovider_1_1view__constraint__tie_1_1VPConstraintTie.html#adde736c91057702d5981d6381226bd34),
+[femviewprovider.view_element_fluid1D.VPElementFluid1D.setEdit()](../../dc/d82/classfemviewprovider_1_1view__element__fluid1D_1_1VPElementFluid1D.html#a0711f4bfff228363d1d3c8428960ba9a),
+[femviewprovider.view_element_geometry1D.VPElementGeometry1D.setEdit()](../../d6/d15/classfemviewprovider_1_1view__element__geometry1D_1_1VPElementGeometry1D.html#aae5a773aea5bf0a8bdb647711a76f7dc),
+[femviewprovider.view_element_geometry2D.VPElementGeometry2D.setEdit()](../../df/d9f/classfemviewprovider_1_1view__element__geometry2D_1_1VPElementGeometry2D.html#a271170b859369f4a9788d69269e99b37),
+[femviewprovider.view_material_common.VPMaterialCommon.setEdit()](../../d8/df6/classfemviewprovider_1_1view__material__common_1_1VPMaterialCommon.html#accca7b13d2fc5041a8f15b3b65c0b251),
+[femviewprovider.view_material_reinforced.VPMaterialReinforced.setEdit()](../../dc/dfe/classfemviewprovider_1_1view__material__reinforced_1_1VPMaterialReinforced.html#a8399acabdb132c409f577c7199872d31),
+[femviewprovider.view_mesh_boundarylayer.VPMeshBoundaryLayer.setEdit()](../../d4/d3e/classfemviewprovider_1_1view__mesh__boundarylayer_1_1VPMeshBoundaryLayer.html#a04cb227fa3a229daf50d89abf72cc0d9),
+[femviewprovider.view_mesh_group.VPMeshGroup.setEdit()](../../d3/da6/classfemviewprovider_1_1view__mesh__group_1_1VPMeshGroup.html#aaddad7df7e2d25ba841407b1fadfd1f9),
+[femviewprovider.view_mesh_region.VPMeshRegion.setEdit()](../../de/d04/classfemviewprovider_1_1view__mesh__region_1_1VPMeshRegion.html#a0c89eee155f784460a4ea507f5856661),
+[femviewprovider.view_result_mechanical.VPResultMechanical.setEdit()](../../d7/d8f/classfemviewprovider_1_1view__result__mechanical_1_1VPResultMechanical.html#ab6743e8383333e6ac2be4cd000fd163e),
+[femviewprovider.view_solver_ccxtools.VPSolverCcxTools.setEdit()](../../d6/dbd/classfemviewprovider_1_1view__solver__ccxtools_1_1VPSolverCcxTools.html#ac261c8c943ed0b2fbb6a5c80b5618f6f),
+PathScripts.PathCollision._ViewProviderCollisionSim.setEdit(),
+[PathScripts.PathDressupAxisMap.ViewProviderDressup.setEdit()](../../d7/d13/classPathScripts_1_1PathDressupAxisMap_1_1ViewProviderDressup.html#a1ee170d7f1e361a6cc907b06dd0a488e),
+[PathScripts.PathDressupDogbone.ViewProviderDressup.setEdit()](../../df/ddb/classPathScripts_1_1PathDressupDogbone_1_1ViewProviderDressup.html#a0e3d84853f71a45bec3815eb681bf96d),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.setEdit()](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#a1f4de29a6182039f63a6726947b81096),
+[PathScripts.PathDressupLeadInOut.ViewProviderDressup.setEdit()](../../d7/d49/classPathScripts_1_1PathDressupLeadInOut_1_1ViewProviderDressup.html#a53407544b547936e778368473e00180b),
+[PathScripts.PathDressupPathBoundaryGui.DressupPathBoundaryViewProvider.setEdit()](../../dc/d69/classPathScripts_1_1PathDressupPathBoundaryGui_1_1DressupPathBoundaryViewProvider.html#a389415d8c78b63bd3bdaf4f19ef22394),
+[PathScripts.PathDressupTagGui.PathDressupTagViewProvider.setEdit()](../../dc/d08/classPathScripts_1_1PathDressupTagGui_1_1PathDressupTagViewProvider.html#a4277f9c839850cb2f901282f0744a30d),
+[PathScripts.PathDressupZCorrect.ViewProviderDressup.setEdit()](../../d1/df1/classPathScripts_1_1PathDressupZCorrect_1_1ViewProviderDressup.html#a64e64b6a43b15ca1e1f48f7b0b06d676),
+[PathScripts.PathPropertyBagGui.ViewProvider.setEdit()](../../d5/d77/classPathScripts_1_1PathPropertyBagGui_1_1ViewProvider.html#a81213ee3113bc104538b92aecaace365),
+[PathScripts.PathSetupSheetGui.ViewProvider.setEdit()](../../dc/dc3/classPathScripts_1_1PathSetupSheetGui_1_1ViewProvider.html#ad02129a6f0221a546f4000ee40a2d285),
+[PathScripts.PathToolBitGui.ViewProvider.setEdit()](../../d0/d90/classPathScripts_1_1PathToolBitGui_1_1ViewProvider.html#acea324d87111bfc0b8bed576c2113325),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.setEdit()](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#a519d7387029bfa6c1876e3eb98e9242a),
+[femviewprovider.view_base_femobject.VPBaseFemObject.setEdit()](../../d0/d48/classfemviewprovider_1_1view__base__femobject_1_1VPBaseFemObject.html#a8f78148451493225a5489334501d7102),
+[PathScripts.PathIconViewProvider.ViewProvider.setEdit()](../../d6/d55/classPathScripts_1_1PathIconViewProvider_1_1ViewProvider.html#a06b679993b4a60773b28433c830e5cf7),
+[PathScripts.PathJobGui.ViewProvider.setEdit()](../../d3/d3e/classPathScripts_1_1PathJobGui_1_1ViewProvider.html#a05289ef2f32b3f020037d070e153ab09),
+[PathScripts.PathOpGui.ViewProvider.setEdit()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#ace25f1c736f4ee55ea809f27c3e2a4f3),
+[PathScripts.PathToolControllerGui.ViewProvider.setEdit()](../../db/db5/classPathScripts_1_1PathToolControllerGui_1_1ViewProvider.html#a073d3bfd1223e6d35f9ff81d5cf9a12e),
+and
+[Mod.PartDesign.FeatureHole.ViewProviderHole.ViewProviderHole.setEdit()](../../de/d6b/classMod_1_1PartDesign_1_1FeatureHole_1_1ViewProviderHole_1_1ViewProviderHole.html#a001a7075862d0154388b155206c8f1cc).
+
+## ◆ getIcon()
+
+def ArchReference.ViewProviderArchReference.getIcon  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Referenced by
+[ArchAxisSystem.AxisSystemTaskPanel.update()](../../dd/d11/classArchAxisSystem_1_1AxisSystemTaskPanel.html#a376cbba2ccee6efd86c46d0f0a8e99e3),
+[ArchComponent.ComponentTaskPanel.update()](../../dd/d1d/classArchComponent_1_1ComponentTaskPanel.html#af95b36032a3837b4bf1b92fe7c6a47e0),
+and
+[ArchSectionPlane.SectionPlaneTaskPanel.update()](../../d5/d70/classArchSectionPlane_1_1SectionPlaneTaskPanel.html#aab4bcd7b08950b8e3b37d801381c5162).
+
+## ◆ getInventorString()
+
+def ArchReference.ViewProviderArchReference.getInventorString  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _obj_  
+| ) | |   
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.loadInventor()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a556b06a4c4cbfded719dbebcc1a9a60a).
+
+## ◆ loadInventor()
+
+def ArchReference.ViewProviderArchReference.loadInventor  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _obj_  
+| ) | |   
+  
+References
+[ArchReference.ViewProviderArchReference.getInventorString()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a5c493ab22f867ed99ba791eeb523142b).
+
+## ◆ onChanged()
+
+def ArchReference.ViewProviderArchReference.onChanged  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_ ,   
+|  |  | _prop_  
+| ) | |   
+  
+Referenced by
+[ArchStructure.CommandStructuralSystem.Activated()](../../d7/da2/classArchStructure_1_1CommandStructuralSystem.html#ad9fb6a22ed31e00ef9c24c49d987d59c),
+[draftviewproviders.view_base.ViewProviderDraft.attach()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af35acb7285aa095bf670e82338c9462d),
+[ArchSite.Compass.buildCoordinates()](../../d9/d61/classArchSite_1_1Compass.html#a4d1848dd6968a22f62d75ec9c71dddcd),
+[draftobjects.wire.Wire.execute()](../../d4/d14/classdraftobjects_1_1wire_1_1Wire.html#ad931a4e79d7d0516803bf1a8a33e7655),
+[ArchBuildingPart.ViewProviderBuildingPart.updateData()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a12d40383666b8987a3277ea26454995d),
+[ArchPanel.ViewProviderPanelCut.updateData()](../../d6/db4/classArchPanel_1_1ViewProviderPanelCut.html#a970ed7e44ebec3c959dcb48bf60b2d31),
+[ArchPanel.ViewProviderPanelSheet.updateData()](../../d9/d71/classArchPanel_1_1ViewProviderPanelSheet.html#a916cdf8131f60494dabf61e971d1a093),
+[draftviewproviders.view_label.ViewProviderLabel.updateData()](../../d1/d88/classdraftviewproviders_1_1view__label_1_1ViewProviderLabel.html#aab195af09dd4fbe60e1bb38d362385ba),
+[draftviewproviders.view_layer.ViewProviderLayer.updateData()](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a9c641727fd15eaa141c8a58837e14248),
+and
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.updateData()](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#ad58eb6ce87860ff0389b3498143d11c7).
+
+## ◆ onDelete()
+
+def ArchReference.ViewProviderArchReference.onDelete  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _obj_ ,   
+|  |  | _doc_  
+| ) | |   
+  
+References Gui::Dialog::DemoMode.timer, Gui::DlgObjectSelection.timer,
+Gui::Dialog::DlgPropertyLink.timer,
+[Gui::GUISingleApplication::Private.timer](../../de/d95/classGUISingleApplication_1_1Private.html#a3307e7a4285e5ae43b044a0007155cf4),
+Gui::PropertyView.timer,
+[ArchReference.ViewProviderArchReference.timer](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac8b999a76c7f0b6ba8a372d689db717e),
+[PathScripts.PathSimulatorGui.PathSimulation.timer](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#a6979e917f54f31ace16691ec546dc607),
+[RobotGui::TaskTrajectory.timer](../../d1/da4/classRobotGui_1_1TaskTrajectory.html#a5e2e4e3faa691110208779c4aadc98c8),
+and
+[RobotGui::TrajectorySimulate.timer](../../d6/d2d/classRobotGui_1_1TrajectorySimulate.html#a282842546af5e5c5ca591b68aacd7ffa).
+
+## ◆ onOpen()
+
+def ArchReference.ViewProviderArchReference.onOpen  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+References
+[Base::XMLReader::FileEntry.Object](../../d4/d0e/structBase_1_1XMLReader_1_1FileEntry.html#a810a31633177de69f84d2b9749940dc9),
+[Base::Writer::FileEntry.Object](../../d5/de8/structBase_1_1Writer_1_1FileEntry.html#a15a35046c9bd5dad11dd5d97c18d675f),
+Py::Object.Object(),
+[Gui::SelectionChanges.Object](../../d5/d50/classGui_1_1SelectionChanges.html#a9a19f506b1a84b6e75fb8740bcd3a575),
+[ArchBuildingPart.ViewProviderBuildingPart.Object](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a80074ab1c13b73be0cfb1b8d70fc140c),
+[ArchComponent.ViewProviderComponent.Object](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a597cb57c8f3b67265e32073313fc7140),
+ArchEquipment._ViewProviderEquipment.Object, ArchFloor._Floor.Object,
+ArchFloor._ViewProviderFloor.Object,
+ArchMaterial._ViewProviderArchMaterialContainer.Object,
+ArchMaterial._ViewProviderArchMaterial.Object,
+[ArchReference.ViewProviderArchReference.Object](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a7ff834265c54ac7fb2656b1743c6beca),
+ArchRoof._ViewProviderRoof.Object,
+ArchSchedule._ViewProviderArchSchedule.Object,
+ArchSectionPlane._ViewProviderSectionPlane.Object,
+ArchSite._ViewProviderSite.Object, ArchSpace._ViewProviderSpace.Object,
+[ArchStructure.StructureTaskPanel.Object](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a2a7f5afe1095df43467d870bd66015b2),
+ArchWall._ViewProviderWall.Object,
+[draftobjects.layer.Layer.Object](../../d0/ddc/classdraftobjects_1_1layer_1_1Layer.html#acb6706be7ad1a79dc3ab403ccbacb591),
+[draftviewproviders.view_base.ViewProviderDraft.Object](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af3e3740115122efcc10bff5b2dbffcf4),
+[draftviewproviders.view_dimension.ViewProviderDimensionBase.Object](../../d6/d45/classdraftviewproviders_1_1view__dimension_1_1ViewProviderDimensionBase.html#a2cc0e04e6a50a9e3be070d3fb4c32c7e),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.Object](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#af5589835e2e8dce93afafa9a246b7ccd),
+[draftviewproviders.view_dimension.ViewProviderAngularDimension.Object](../../d5/d88/classdraftviewproviders_1_1view__dimension_1_1ViewProviderAngularDimension.html#a3aaa8f2262ee754f43a500d5f1939053),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.Object](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a20ade5bec2ae3eb3ea7ae695937c2c58),
+[draftviewproviders.view_label.ViewProviderLabel.Object](../../d1/d88/classdraftviewproviders_1_1view__label_1_1ViewProviderLabel.html#ac983249a6e5f94ed59af459cebebe749),
+[draftviewproviders.view_layer.ViewProviderLayer.Object](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a8c9a3925420b39835429fd957332f320),
+[draftviewproviders.view_layer.ViewProviderLayerContainer.Object](../../d1/dec/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayerContainer.html#ab0dc98dc58ff9b0853c822599e24e0c9),
+[draftviewproviders.view_text.ViewProviderText.Object](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#a05f7b6bee1b34cf5eafd22fef0ba76a2),
+[draftviewproviders.view_wire.ViewProviderWire.Object](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a61ba75eda07d4458cb2ffa6b076ff96c),
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.Object](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#aa0d5af582a27cee2917faef98c706b59),
+[femviewprovider.view_base_femconstraint.VPBaseFemConstraint.Object](../../d8/d92/classfemviewprovider_1_1view__base__femconstraint_1_1VPBaseFemConstraint.html#a3f3218d9519118642a24bb2e8ad4a91b),
+[femviewprovider.view_base_femobject.VPBaseFemObject.Object](../../d0/d48/classfemviewprovider_1_1view__base__femobject_1_1VPBaseFemObject.html#af205146496732cbe6c506294db4d0fda),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.Object](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a3483ee45886ec851784fa9f60cda8626),
+[OpenSCADFeatures.ViewProviderTree.Object](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#a551bca6e05e09056eed10a7ccfdce9f3),
+[BOPTools.JoinFeatures.ViewProviderConnect.Object](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a90cca2c770c6b0798ec2b46bf73dfbf3),
+[BOPTools.JoinFeatures.ViewProviderEmbed.Object](../../dc/d41/classBOPTools_1_1JoinFeatures_1_1ViewProviderEmbed.html#a80a4f7be937dfa7d6b917c7eb69098ab),
+[BOPTools.JoinFeatures.ViewProviderCutout.Object](../../d4/d85/classBOPTools_1_1JoinFeatures_1_1ViewProviderCutout.html#aeec0c48b42056af82c259e57e6d5b79f),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.Object](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a0c77eb31d1b9d66157606764a007ca73),
+[BOPTools.SplitFeatures.ViewProviderSlice.Object](../../d5/d19/classBOPTools_1_1SplitFeatures_1_1ViewProviderSlice.html#a15ecfb5f1a6f53bcb0265653db346a47),
+[BOPTools.SplitFeatures.ViewProviderXOR.Object](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#ac18bbcf4db8fc26d78356a427108c7d5),
+CompoundTools.CompoundFilter._ViewProviderCompoundFilter.Object,
+JoinFeatures._ViewProviderPartJoinFeature.Object,
+[Mod.PartDesign.FeatureHole.ViewProviderHole.ViewProviderHole.Object](../../de/d6b/classMod_1_1PartDesign_1_1FeatureHole_1_1ViewProviderHole_1_1ViewProviderHole.html#a075a0d66e3cee7d0130660504a5840c7),
+Mod.PartDesign.InvoluteGearFeature._ViewProviderInvoluteGear.Object,
+[Mod.PartDesign.SprocketFeature.ViewProviderSprocket.Object](../../da/d59/classMod_1_1PartDesign_1_1SprocketFeature_1_1ViewProviderSprocket.html#ada8c7660ebbbf71305fadf6186ee8a05),
+[PathScripts.PathArray.ViewProviderArray.Object](../../dc/d4b/classPathScripts_1_1PathArray_1_1ViewProviderArray.html#acc715b58fbeb757403ca188707eb83b7),
+PathScripts.PathCollision._ViewProviderCollisionSim.Object,
+[PathScripts.PathCopy.ViewProviderPathCopy.Object](../../de/d45/classPathScripts_1_1PathCopy_1_1ViewProviderPathCopy.html#a9bbdf33af7f09d7ccdafdc5f8cc0b4cb),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.Object](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#ad6d7bd90a0a701c68bfeb55c314ed5fa),
+[PathScripts.PathHop.ViewProviderPathHop.Object](../../da/dfa/classPathScripts_1_1PathHop_1_1ViewProviderPathHop.html#a3ec9b9210e599809ddec0a1e711106fa),
+[PathScripts.PathOpGui.ViewProvider.Object](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#af6241ad8210a6060fb55d797e6d082ff),
+[Mod.Show.Containers.Container.Object](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#aea8c76ed8a0f879a33e1abe68df4a960),
+[Spreadsheet_legacy.Spreadsheet.Object](../../d2/d6d/classSpreadsheet__legacy_1_1Spreadsheet.html#a4e65495069891285020965e854149600),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.Object](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#ab3bd99499693b288462fbdbd5399fc53),
+[DocumentObject.ViewProvider.Object()](../../d8/dd7/classDocumentObject_1_1ViewProvider.html#a04e829dec435fa70e442b47989269388),
+and
+[Mod.Test.Document.DocumentBasicCases.Object](../../dd/dbe/classMod_1_1Test_1_1Document_1_1DocumentBasicCases.html#aabbc092c15e784e33f697508ae5ecbac).
+
+Referenced by
+[ArchReference.ViewProviderArchReference.setupContextMenu()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a5aebe07985cf3ea76c1eb22b114967e6).
+
+## ◆ onReload()
+
+def ArchReference.ViewProviderArchReference.onReload  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+References
+[Base::XMLReader::FileEntry.Object](../../d4/d0e/structBase_1_1XMLReader_1_1FileEntry.html#a810a31633177de69f84d2b9749940dc9),
+[Base::Writer::FileEntry.Object](../../d5/de8/structBase_1_1Writer_1_1FileEntry.html#a15a35046c9bd5dad11dd5d97c18d675f),
+Py::Object.Object(),
+[Gui::SelectionChanges.Object](../../d5/d50/classGui_1_1SelectionChanges.html#a9a19f506b1a84b6e75fb8740bcd3a575),
+[ArchBuildingPart.ViewProviderBuildingPart.Object](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a80074ab1c13b73be0cfb1b8d70fc140c),
+[ArchComponent.ViewProviderComponent.Object](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a597cb57c8f3b67265e32073313fc7140),
+ArchEquipment._ViewProviderEquipment.Object, ArchFloor._Floor.Object,
+ArchFloor._ViewProviderFloor.Object,
+ArchMaterial._ViewProviderArchMaterialContainer.Object,
+ArchMaterial._ViewProviderArchMaterial.Object,
+[ArchReference.ViewProviderArchReference.Object](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a7ff834265c54ac7fb2656b1743c6beca),
+ArchRoof._ViewProviderRoof.Object,
+ArchSchedule._ViewProviderArchSchedule.Object,
+ArchSectionPlane._ViewProviderSectionPlane.Object,
+ArchSite._ViewProviderSite.Object, ArchSpace._ViewProviderSpace.Object,
+[ArchStructure.StructureTaskPanel.Object](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a2a7f5afe1095df43467d870bd66015b2),
+ArchWall._ViewProviderWall.Object,
+[draftobjects.layer.Layer.Object](../../d0/ddc/classdraftobjects_1_1layer_1_1Layer.html#acb6706be7ad1a79dc3ab403ccbacb591),
+[draftviewproviders.view_base.ViewProviderDraft.Object](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af3e3740115122efcc10bff5b2dbffcf4),
+[draftviewproviders.view_dimension.ViewProviderDimensionBase.Object](../../d6/d45/classdraftviewproviders_1_1view__dimension_1_1ViewProviderDimensionBase.html#a2cc0e04e6a50a9e3be070d3fb4c32c7e),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.Object](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#af5589835e2e8dce93afafa9a246b7ccd),
+[draftviewproviders.view_dimension.ViewProviderAngularDimension.Object](../../d5/d88/classdraftviewproviders_1_1view__dimension_1_1ViewProviderAngularDimension.html#a3aaa8f2262ee754f43a500d5f1939053),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.Object](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a20ade5bec2ae3eb3ea7ae695937c2c58),
+[draftviewproviders.view_label.ViewProviderLabel.Object](../../d1/d88/classdraftviewproviders_1_1view__label_1_1ViewProviderLabel.html#ac983249a6e5f94ed59af459cebebe749),
+[draftviewproviders.view_layer.ViewProviderLayer.Object](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a8c9a3925420b39835429fd957332f320),
+[draftviewproviders.view_layer.ViewProviderLayerContainer.Object](../../d1/dec/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayerContainer.html#ab0dc98dc58ff9b0853c822599e24e0c9),
+[draftviewproviders.view_text.ViewProviderText.Object](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#a05f7b6bee1b34cf5eafd22fef0ba76a2),
+[draftviewproviders.view_wire.ViewProviderWire.Object](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a61ba75eda07d4458cb2ffa6b076ff96c),
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.Object](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#aa0d5af582a27cee2917faef98c706b59),
+[femviewprovider.view_base_femconstraint.VPBaseFemConstraint.Object](../../d8/d92/classfemviewprovider_1_1view__base__femconstraint_1_1VPBaseFemConstraint.html#a3f3218d9519118642a24bb2e8ad4a91b),
+[femviewprovider.view_base_femobject.VPBaseFemObject.Object](../../d0/d48/classfemviewprovider_1_1view__base__femobject_1_1VPBaseFemObject.html#af205146496732cbe6c506294db4d0fda),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.Object](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a3483ee45886ec851784fa9f60cda8626),
+[OpenSCADFeatures.ViewProviderTree.Object](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#a551bca6e05e09056eed10a7ccfdce9f3),
+[BOPTools.JoinFeatures.ViewProviderConnect.Object](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a90cca2c770c6b0798ec2b46bf73dfbf3),
+[BOPTools.JoinFeatures.ViewProviderEmbed.Object](../../dc/d41/classBOPTools_1_1JoinFeatures_1_1ViewProviderEmbed.html#a80a4f7be937dfa7d6b917c7eb69098ab),
+[BOPTools.JoinFeatures.ViewProviderCutout.Object](../../d4/d85/classBOPTools_1_1JoinFeatures_1_1ViewProviderCutout.html#aeec0c48b42056af82c259e57e6d5b79f),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.Object](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a0c77eb31d1b9d66157606764a007ca73),
+[BOPTools.SplitFeatures.ViewProviderSlice.Object](../../d5/d19/classBOPTools_1_1SplitFeatures_1_1ViewProviderSlice.html#a15ecfb5f1a6f53bcb0265653db346a47),
+[BOPTools.SplitFeatures.ViewProviderXOR.Object](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#ac18bbcf4db8fc26d78356a427108c7d5),
+CompoundTools.CompoundFilter._ViewProviderCompoundFilter.Object,
+JoinFeatures._ViewProviderPartJoinFeature.Object,
+[Mod.PartDesign.FeatureHole.ViewProviderHole.ViewProviderHole.Object](../../de/d6b/classMod_1_1PartDesign_1_1FeatureHole_1_1ViewProviderHole_1_1ViewProviderHole.html#a075a0d66e3cee7d0130660504a5840c7),
+Mod.PartDesign.InvoluteGearFeature._ViewProviderInvoluteGear.Object,
+[Mod.PartDesign.SprocketFeature.ViewProviderSprocket.Object](../../da/d59/classMod_1_1PartDesign_1_1SprocketFeature_1_1ViewProviderSprocket.html#ada8c7660ebbbf71305fadf6186ee8a05),
+[PathScripts.PathArray.ViewProviderArray.Object](../../dc/d4b/classPathScripts_1_1PathArray_1_1ViewProviderArray.html#acc715b58fbeb757403ca188707eb83b7),
+PathScripts.PathCollision._ViewProviderCollisionSim.Object,
+[PathScripts.PathCopy.ViewProviderPathCopy.Object](../../de/d45/classPathScripts_1_1PathCopy_1_1ViewProviderPathCopy.html#a9bbdf33af7f09d7ccdafdc5f8cc0b4cb),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.Object](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#ad6d7bd90a0a701c68bfeb55c314ed5fa),
+[PathScripts.PathHop.ViewProviderPathHop.Object](../../da/dfa/classPathScripts_1_1PathHop_1_1ViewProviderPathHop.html#a3ec9b9210e599809ddec0a1e711106fa),
+[PathScripts.PathOpGui.ViewProvider.Object](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#af6241ad8210a6060fb55d797e6d082ff),
+[Mod.Show.Containers.Container.Object](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#aea8c76ed8a0f879a33e1abe68df4a960),
+[Spreadsheet_legacy.Spreadsheet.Object](../../d2/d6d/classSpreadsheet__legacy_1_1Spreadsheet.html#a4e65495069891285020965e854149600),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.Object](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#ab3bd99499693b288462fbdbd5399fc53),
+[DocumentObject.ViewProvider.Object()](../../d8/dd7/classDocumentObject_1_1ViewProvider.html#a04e829dec435fa70e442b47989269388),
+and
+[Mod.Test.Document.DocumentBasicCases.Object](../../dd/dbe/classMod_1_1Test_1_1Document_1_1DocumentBasicCases.html#aabbc092c15e784e33f697508ae5ecbac).
+
+Referenced by
+[ArchReference.ViewProviderArchReference.setupContextMenu()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a5aebe07985cf3ea76c1eb22b114967e6).
+
+## ◆ recolorize()
+
+def ArchReference.ViewProviderArchReference.recolorize  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_  
+| ) | |   
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.updateData()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#af12c307936753e6e84d5650ac3a8de8d).
+
+## ◆ setEdit()
+
+def ArchReference.ViewProviderArchReference.setEdit  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_ ,   
+|  |  | _mode_ = `0`  
+| ) | |   
+  
+Referenced by
+[ArchGrid.ViewProviderArchGrid.doubleClicked()](../../d4/dbf/classArchGrid_1_1ViewProviderArchGrid.html#a35948c50ff2dccdada47d584d8bf32bd),
+[ArchReference.ViewProviderArchReference.doubleClicked()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a921a71a757c5853c3331216eefb23703),
+[draftviewproviders.view_dimension.ViewProviderDimensionBase.doubleClicked()](../../d6/d45/classdraftviewproviders_1_1view__dimension_1_1ViewProviderDimensionBase.html#a164ae40613358c396be3f6b9fae3937d),
+[draftviewproviders.view_hatch.ViewProviderDraftHatch.doubleClicked()](../../dd/d75/classdraftviewproviders_1_1view__hatch_1_1ViewProviderDraftHatch.html#a9274ff72268d6c1a4337118b5db8bcc4),
+[draftviewproviders.view_text.ViewProviderText.doubleClicked()](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#adc22c64d135df407787ca53f9029c3a0),
+[PathScripts.PathPropertyBagGui.ViewProvider.doubleClicked()](../../d5/d77/classPathScripts_1_1PathPropertyBagGui_1_1ViewProvider.html#a915f858e0483981f8124bdf4df7e02d4),
+[PathScripts.PathSetupSheetGui.ViewProvider.doubleClicked()](../../dc/dc3/classPathScripts_1_1PathSetupSheetGui_1_1ViewProvider.html#a9b1b82571f01e8e740eadabfec88b9f3),
+[PathScripts.PathToolBitGui.ViewProvider.doubleClicked()](../../d0/d90/classPathScripts_1_1PathToolBitGui_1_1ViewProvider.html#a7265835d9e6286fa1e48f47a0f2b82f0),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.doubleClicked()](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#aa89fcb2be2b67b2f1d210bd06ea9e55a),
+[ArchSchedule.CommandArchSchedule.IsActive()](../../d3/d2d/classArchSchedule_1_1CommandArchSchedule.html#aea4e379076ac7837ef44222df95fd97a),
+[PathScripts.PathIconViewProvider.ViewProvider.setupContextMenu()](../../d6/d55/classPathScripts_1_1PathIconViewProvider_1_1ViewProvider.html#a9a8ca3029fe2523b0d7736c1d4e611a7),
+[PathScripts.PathJobGui.ViewProvider.setupContextMenu()](../../d3/d3e/classPathScripts_1_1PathJobGui_1_1ViewProvider.html#ab8dd16390af82dadddf816c3a85cae0b),
+[PathScripts.PathOpGui.ViewProvider.setupContextMenu()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#a79f8f54d1d96c0a29b00b0775e5231ac),
+and
+[PathScripts.PathToolControllerGui.ViewProvider.setupContextMenu()](../../db/db5/classPathScripts_1_1PathToolControllerGui_1_1ViewProvider.html#a2f21a1b07712507aedc89ac30d8379c5).
+
+## ◆ setProperties()
+
+def ArchReference.ViewProviderArchReference.setProperties  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_  
+| ) | |   
+  
+References
+[draftutils.translate.QT_TRANSLATE_NOOP](../../de/d75/group__draftutils.html#ga9e6796e4394a4a163501246d7390f3c4).
+
+Referenced by
+[ArchPanel.CommandPanelSheet.Activated()](../../d1/d94/classArchPanel_1_1CommandPanelSheet.html#abed1cd5ce53c5b156683ae24b81f75e4),
+[ArchStructure.CommandStructuralSystem.Activated()](../../d7/da2/classArchStructure_1_1CommandStructuralSystem.html#ad9fb6a22ed31e00ef9c24c49d987d59c),
+[ArchSite.Compass.buildCoordinates()](../../d9/d61/classArchSite_1_1Compass.html#a4d1848dd6968a22f62d75ec9c71dddcd),
+[ArchSchedule.CommandArchSchedule.IsActive()](../../d3/d2d/classArchSchedule_1_1CommandArchSchedule.html#aea4e379076ac7837ef44222df95fd97a),
+[ArchBuildingPart.BuildingPart.onDocumentRestored()](../../d2/def/classArchBuildingPart_1_1BuildingPart.html#a8029b4336a228315b03abd4cbe009001),
+[ArchCurtainWall.CurtainWall.onDocumentRestored()](../../d3/ddd/classArchCurtainWall_1_1CurtainWall.html#a95c6772213f7a083a0dd81eef6163150),
+[ArchGrid.ArchGrid.onDocumentRestored()](../../d7/d52/classArchGrid_1_1ArchGrid.html#af3945be9606a8a88bdfdeb840068ca5d),
+[ArchPanel.PanelView.onDocumentRestored()](../../dd/da0/classArchPanel_1_1PanelView.html#a6e956704109979457399259409b3c12e),
+[ArchPanel.PanelCut.onDocumentRestored()](../../d6/dbd/classArchPanel_1_1PanelCut.html#a81bcbc2154418c01c75c606932184aee),
+[ArchPanel.PanelSheet.onDocumentRestored()](../../dc/d22/classArchPanel_1_1PanelSheet.html#afb1ed907e00ab4c552d73f932a3beb6e),
+[ArchTruss.Truss.onDocumentRestored()](../../d9/d6f/classArchTruss_1_1Truss.html#abf7290b67c66f8b38f2f24c3a913eb7d),
+[draftobjects.hatch.Hatch.onDocumentRestored()](../../db/d7f/classdraftobjects_1_1hatch_1_1Hatch.html#a5f4a52b199d98d8ef1bf681170a39214),
+[draftobjects.shape2dview.Shape2DView.onDocumentRestored()](../../dc/d42/classdraftobjects_1_1shape2dview_1_1Shape2DView.html#aeb419e3492426690e6df5043bdd8fbf3),
+[ArchBuildingPart.ViewProviderBuildingPart.onDocumentRestored()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a77d1c4103e062b3ee3d06a348b25310f),
+[ArchPanel.ViewProviderPanelCut.onDocumentRestored()](../../d6/db4/classArchPanel_1_1ViewProviderPanelCut.html#a97810dc3b020c64a4352d53c96ee8500),
+and
+[ArchPanel.ViewProviderPanelSheet.onDocumentRestored()](../../d9/d71/classArchPanel_1_1ViewProviderPanelSheet.html#a4b5aa2a21de0a9ebd24cb59e54e54994).
+
+## ◆ setupContextMenu()
+
+def ArchReference.ViewProviderArchReference.setupContextMenu  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_ ,   
+|  |  | _menu_  
+| ) | |   
+  
+References
+[ArchReference.ViewProviderArchReference.onOpen()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a61e3b48c424bfa0bf63e0a53f8c9ef2d),
+and
+[ArchReference.ViewProviderArchReference.onReload()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac1595166c3d83f9fca7d584a5cd0de82).
+
+## ◆ unloadInventor()
+
+def ArchReference.ViewProviderArchReference.unloadInventor  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _obj_  
+| ) | |   
+  
+References
+[ArchReference.ViewProviderArchReference.orig_flatlines](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a107b2878e5c7955e0d92b46bfc88ea2c),
+[ArchReference.ViewProviderArchReference.orig_shaded](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a09bdd4a89a5a6064ac42d9ef0ca41a4b),
+and
+[ArchReference.ViewProviderArchReference.orig_wireframe](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a4b436d02428534942996bd3422cbf3fd).
+
+## ◆ unsetEdit()
+
+def ArchReference.ViewProviderArchReference.unsetEdit  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _vobj_ ,   
+|  |  | _mode_  
+| ) | |   
+  
+Referenced by
+[PathScripts.PathJobGui.ViewProvider.uneditObject()](../../d3/d3e/classPathScripts_1_1PathJobGui_1_1ViewProvider.html#aa663c276d96715669b3d07c7d2e34790).
+
+## ◆ updateData()
+
+def ArchReference.ViewProviderArchReference.updateData  | ( |  | _self_ ,   
+---|---|---|---  
+|  |  | _obj_ ,   
+|  |  | _prop_  
+| ) | |   
+  
+References
+[ArchReference.ViewProviderArchReference.recolorize()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#aebd19fac009b5e9432fdb52ff61f35fd).
+
+Referenced by
+[ArchStructure.CommandStructuralSystem.Activated()](../../d7/da2/classArchStructure_1_1CommandStructuralSystem.html#ad9fb6a22ed31e00ef9c24c49d987d59c),
+[PathScripts.PathJobDlg.JobCreate.exec_()](../../df/d6d/classPathScripts_1_1PathJobDlg_1_1JobCreate.html#a3949bbe83170d8e065b74724bcde9e2a),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.onChanged()](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#a811de5a9bc446762fba4a970fa19139e),
+[draftviewproviders.view_dimension.ViewProviderAngularDimension.onChanged()](../../d5/d88/classdraftviewproviders_1_1view__dimension_1_1ViewProviderAngularDimension.html#a087daa2336d84802959135e0da541289),
+[draftviewproviders.view_wire.ViewProviderWire.onChanged()](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a45511b113b62eba083c491b40c7fe3e8),
+[PathScripts.PathOpGui.TaskPanelPage.pageUpdateData()](../../d1/d18/classPathScripts_1_1PathOpGui_1_1TaskPanelPage.html#ac7aeda3cf19b74fa6d6a620db8140a66),
+[PathScripts.PathPropertyBagGui.TaskPanel.setupUi()](../../d3/d93/classPathScripts_1_1PathPropertyBagGui_1_1TaskPanel.html#a0e7d9c2f42ae50ec45505059011deba5),
+and
+[PathScripts.PathSetupSheetGui.OpTaskPanel.setupUi()](../../df/dbe/classPathScripts_1_1PathSetupSheetGui_1_1OpTaskPanel.html#a03e427ec6574bd249d859f5bd2496576).
+
+## Member Data Documentation
+
+## ◆ Object
+
+ArchReference.ViewProviderArchReference.Object  
+---  
+  
+Referenced by
+[draftviewproviders.view_layer.ViewProviderLayer.activate()](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a100c49f5d1966d59f546943ce6685a08),
+[ArchPanel.CommandPanelSheet.Activated()](../../d1/d94/classArchPanel_1_1CommandPanelSheet.html#abed1cd5ce53c5b156683ae24b81f75e4),
+[ArchStructure.CommandStructuralSystem.Activated()](../../d7/da2/classArchStructure_1_1CommandStructuralSystem.html#ad9fb6a22ed31e00ef9c24c49d987d59c),
+[OpenSCADFeatures.ViewProviderTree.attach()](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#a489f372b544fde950f6c94fe469ca039),
+[ArchComponent.ViewProviderComponent.attach()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a35e80ee0b359823d7b9cecc23481b930),
+[draftviewproviders.view_base.ViewProviderDraft.attach()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af35acb7285aa095bf670e82338c9462d),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.attach()](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#a6e8d37d9155778fc70b27e7d4e607f0b),
+[draftviewproviders.view_dimension.ViewProviderAngularDimension.attach()](../../d5/d88/classdraftviewproviders_1_1view__dimension_1_1ViewProviderAngularDimension.html#a61b1ca60b7451140459dddaa2f2ff3db),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.attach()](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a9d020c35cc375c2d2e91ab96c4563c8e),
+[draftviewproviders.view_layer.ViewProviderLayer.attach()](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#ab2a5fd20d4ab9b7d49e3a3e4d4ac8e78),
+[draftviewproviders.view_layer.ViewProviderLayerContainer.attach()](../../d1/dec/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayerContainer.html#a5b25eb9ee95736d4049f5c11ea5977d0),
+[PathScripts.PathArray.ViewProviderArray.attach()](../../dc/d4b/classPathScripts_1_1PathArray_1_1ViewProviderArray.html#abb70607468b63e690ee6dff23a4c3ef4),
+[PathScripts.PathCopy.ViewProviderPathCopy.attach()](../../de/d45/classPathScripts_1_1PathCopy_1_1ViewProviderPathCopy.html#a7ba0a28dd4dac2a343da660cf7b8963c),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.attach()](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#a302aaf7765dfd69f37d77c2e84dc0e91),
+[PathScripts.PathHop.ViewProviderPathHop.attach()](../../da/dfa/classPathScripts_1_1PathHop_1_1ViewProviderPathHop.html#a28aaff1dcea04ba21c42974c68365ac3),
+[PathScripts.PathOpGui.ViewProvider.attach()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#a0840fdecdfbaaf3ffca3bcb866b39452),
+[ArchSite.Compass.buildCoordinates()](../../d9/d61/classArchSite_1_1Compass.html#a4d1848dd6968a22f62d75ec9c71dddcd),
+[ArchReference.ViewProviderArchReference.checkChanges()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ab6a807091ea186d4252888a09f6b41ba),
+[ArchComponent.ViewProviderComponent.claimChildren()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a05a3bbd9534c922df9943f971fd60bf2),
+[draftviewproviders.view_base.ViewProviderDraft.claimChildren()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#af0b551826340210d20874aa39175d3d5),
+[draftviewproviders.view_draft_annotation.ViewProviderDraftAnnotation.claimChildren()](../../d2/d24/classdraftviewproviders_1_1view__draft__annotation_1_1ViewProviderDraftAnnotation.html#a588193f8dd5a57aae96a9571459b8e37),
+[draftviewproviders.view_draftlink.ViewProviderDraftLink.claimChildren()](../../d1/d79/classdraftviewproviders_1_1view__draftlink_1_1ViewProviderDraftLink.html#a41b6cffae3663a58647a9227c4e1664a),
+[draftviewproviders.view_layer.ViewProviderLayer.claimChildren()](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a8123f33a456b8fefa43a42fd11b82aa0),
+[draftviewproviders.view_wire.ViewProviderWire.claimChildren()](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a13e60e240bfcc6a291b5cf450367ad73),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.claimChildren()](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a56cb33c198c8ed418656815f3d8c7abc),
+[femviewprovider.view_result_mechanical.VPResultMechanical.claimChildren()](../../d7/d8f/classfemviewprovider_1_1view__result__mechanical_1_1VPResultMechanical.html#ab355e3a1025ce59b6797302f29c6d0c1),
+[OpenSCADFeatures.ViewProviderTree.claimChildren()](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#aa51082a21dda8cd8ac4bfc75b8107936),
+[BOPTools.JoinFeatures.ViewProviderConnect.claimChildren()](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a2d75d1b98bfa1e05bbedc171ec608893),
+[BOPTools.JoinFeatures.ViewProviderEmbed.claimChildren()](../../dc/d41/classBOPTools_1_1JoinFeatures_1_1ViewProviderEmbed.html#a468ee613f1d258009912c0f46dda8fdc),
+[BOPTools.JoinFeatures.ViewProviderCutout.claimChildren()](../../d4/d85/classBOPTools_1_1JoinFeatures_1_1ViewProviderCutout.html#a4a0700249e2817cbe2f9c8b6e5b6f283),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.claimChildren()](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a0905dfd15884082d80692f0923c87a93),
+[BOPTools.SplitFeatures.ViewProviderSlice.claimChildren()](../../d5/d19/classBOPTools_1_1SplitFeatures_1_1ViewProviderSlice.html#a45243295181580dda3d489d0342026ed),
+[BOPTools.SplitFeatures.ViewProviderXOR.claimChildren()](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#a0895ad8a44b7eedf3d6a3fe62d74d13d),
+[PathScripts.PathArray.ViewProviderArray.claimChildren()](../../dc/d4b/classPathScripts_1_1PathArray_1_1ViewProviderArray.html#a72d7ebded8be896fc0fa0bbb51a9bad2),
+[PathScripts.PathDressupDragknife.ViewProviderDressup.claimChildren()](../../dc/d40/classPathScripts_1_1PathDressupDragknife_1_1ViewProviderDressup.html#a4f777850f1b59aca4952abde91a7ccc5),
+[Spreadsheet_legacy.ViewProviderSpreadsheet.claimChildren()](../../d6/d84/classSpreadsheet__legacy_1_1ViewProviderSpreadsheet.html#a75aee00167480ff54cda421089caf2b3),
+[PathScripts.PathOpGui.ViewProvider.clearTaskPanel()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#a0f0a681075169c842b6ef664d12e299f),
+[ArchBuildingPart.ViewProviderBuildingPart.cloneUp()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a6366b98cd7014623882d0445b0793949),
+[ArchStructure.StructureTaskPanel.connectNodes()](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a7fc1254310c33bcf68f2809b5c827d64),
+[ArchBuildingPart.ViewProviderBuildingPart.createGroup()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a0b72fbb5f93798cf75d6a232fb4b6a78),
+[draftviewproviders.view_text.ViewProviderText.createObject()](../../db/dd9/classdraftviewproviders_1_1view__text_1_1ViewProviderText.html#a099b67b0359be25643d8abb175a6abfd),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.doubleClicked()](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#ab143d9b2417322495c5f98fa265ecacc),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.dragObject()](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a41f4eeda1719d09e0db2a3b402cb5a56),
+[BOPTools.JoinFeatures.ViewProviderConnect.dragObject()](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a06e7f838195463e1b2d5e5eabc29d290),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.dragObject()](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a32dd55908ef2535cad23580b9d8596be),
+[BOPTools.SplitFeatures.ViewProviderXOR.dragObject()](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#a09cd02ab0ba914e57cd2ece69fe77326),
+[femviewprovider.view_mesh_gmsh.VPMeshGmsh.dropObject()](../../df/dbc/classfemviewprovider_1_1view__mesh__gmsh_1_1VPMeshGmsh.html#a29495e1ff56538caae1715408927c1b0),
+[BOPTools.JoinFeatures.ViewProviderConnect.dropObject()](../../da/d91/classBOPTools_1_1JoinFeatures_1_1ViewProviderConnect.html#a3b5606e9058d9a40e2748a919c52e0d7),
+[BOPTools.SplitFeatures.ViewProviderBooleanFragments.dropObject()](../../d0/d5a/classBOPTools_1_1SplitFeatures_1_1ViewProviderBooleanFragments.html#a233cc2803b0ee265b53c9925888e9de1),
+[BOPTools.SplitFeatures.ViewProviderXOR.dropObject()](../../d9/de4/classBOPTools_1_1SplitFeatures_1_1ViewProviderXOR.html#a2a72acfa817cfd748982012c93fbd146),
+[ArchStructure.StructureTaskPanel.extendNodes()](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a9ec5f0d27353c9cfed0826e541374f42),
+[draftviewproviders.view_wire.ViewProviderWire.flatten()](../../da/dd2/classdraftviewproviders_1_1view__wire_1_1ViewProviderWire.html#a15505f930754af9e7bbff1aafe36249b),
+[Mod.Show.Containers.Container.getCSChildren()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#a3687b82f3a4172c04d80a17ef53b05b7),
+[Mod.Show.Containers.Container.getDynamicChildren()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#aecd0ce4fde06f71204eb5c611dd68840),
+[ArchBuildingPart.ViewProviderBuildingPart.getIcon()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#ada13727d3aea660f86f34f5df06b0aea),
+[ArchComponent.ViewProviderComponent.getIcon()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#a82a5ba6de8551331198da2ba601e4bc2),
+[draftviewproviders.view_array.ViewProviderDraftArray.getIcon()](../../dd/def/classdraftviewproviders_1_1view__array_1_1ViewProviderDraftArray.html#a2b7965750ecea6c17f44550bd2660a32),
+[draftviewproviders.view_base.ViewProviderDraft.getIcon()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#a200d7d3a9327ed8bbecf19cfac5c928e),
+[draftviewproviders.view_dimension.ViewProviderDimensionBase.getIcon()](../../d6/d45/classdraftviewproviders_1_1view__dimension_1_1ViewProviderDimensionBase.html#acb3d1b672982c5750e2b4c7c4f0d063c),
+[draftviewproviders.view_draftlink.ViewProviderDraftLink.getIcon()](../../d1/d79/classdraftviewproviders_1_1view__draftlink_1_1ViewProviderDraftLink.html#a30a8b44b0c675a7a300309e96417498e),
+[femviewprovider.view_base_femobject.VPBaseFemObject.getIcon()](../../d0/d48/classfemviewprovider_1_1view__base__femobject_1_1VPBaseFemObject.html#af07b44b252f1be263ffd71892a8d9b20),
+[femviewprovider.view_material_common.VPMaterialCommon.getIcon()](../../d8/df6/classfemviewprovider_1_1view__material__common_1_1VPMaterialCommon.html#aa19df62fbdb89b9ee863dce098d229da),
+[OpenSCADFeatures.ViewProviderTree.getIcon()](../../df/dbf/classOpenSCADFeatures_1_1ViewProviderTree.html#ad8bf05f7bcbfef30282e646631acf36f),
+[PathScripts.PathOpGui.ViewProvider.getIcon()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#a6154aebd4655ece396c2ea0bacf6d415),
+[Mod.Show.Containers.Container.getStaticChildren()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#a083f7249986230ffb0069cb038095de7),
+[Mod.Show.Containers.Container.getVisGroupChildren()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#ad66cc3e90a04483f43e0455444e7c3e7),
+[Mod.Show.Containers.Container.hasObjectRecursive()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#a6eae499efb1d78a62ceae274d4a6c0f1),
+[draftviewproviders.view_dimension.ViewProviderLinearDimension.is_linked_to_circle()](../../dc/d15/classdraftviewproviders_1_1view__dimension_1_1ViewProviderLinearDimension.html#aaae3dfca7794451c171ebd03b69af75f),
+[Mod.Show.Containers.Container.isACS()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#aec1b5743b2103cf4ee93d7d8e23a7780),
+[ArchSchedule.CommandArchSchedule.IsActive()](../../d3/d2d/classArchSchedule_1_1CommandArchSchedule.html#aea4e379076ac7837ef44222df95fd97a),
+[Mod.Show.Containers.Container.isAVisGroup()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#a5e85a6f770a25900a637717dd3fd0885),
+[Mod.Show.Containers.Container.isChildVisible()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#ad46933cfaeeb44b002cb51bcf7c03e90),
+[draftviewproviders.view_layer.ViewProviderLayerContainer.merge_by_name()](../../d1/dec/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayerContainer.html#a05e04faac4d4e363cc32bbc80e21a790),
+[draftviewproviders.view_base.ViewProviderDraft.onChanged()](../../d6/d1b/classdraftviewproviders_1_1view__base_1_1ViewProviderDraft.html#a97a75182f0c1f89d1140bfd91b0f72e2),
+[BOPTools.JoinFeatures.ViewProviderEmbed.onDelete()](../../dc/d41/classBOPTools_1_1JoinFeatures_1_1ViewProviderEmbed.html#ae1df13f2bec676a45397e3a522246588),
+[BOPTools.JoinFeatures.ViewProviderCutout.onDelete()](../../d4/d85/classBOPTools_1_1JoinFeatures_1_1ViewProviderCutout.html#a2665fc3bd0ffe461f9e3a8add08fe5fb),
+[ArchReference.ViewProviderArchReference.onOpen()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#a61e3b48c424bfa0bf63e0a53f8c9ef2d),
+[ArchReference.ViewProviderArchReference.onReload()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac1595166c3d83f9fca7d584a5cd0de82),
+[ArchBuildingPart.ViewProviderBuildingPart.reorder()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a6c9e0e73fdbdc24fefd4b1a116028fae),
+[ArchStructure.StructureTaskPanel.resetNodes()](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#a80f7f79284c7da706d4383f122e02d2d),
+[draftviewproviders.view_layer.ViewProviderLayer.select_contents()](../../d5/dcb/classdraftviewproviders_1_1view__layer_1_1ViewProviderLayer.html#a68e11d79df17d156a11e517b2e4502a9),
+[Mod.Show.Containers.Container.self_check()](../../db/d52/classMod_1_1Show_1_1Containers_1_1Container.html#a8d9f9bcbb3075bae260f27d662758dd7),
+[ArchComponent.ViewProviderComponent.setDisplayMode()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#aa0542b1ecb134c494a26706a5f41d099),
+[ArchComponent.ViewProviderComponent.setEdit()](../../dd/d1b/classArchComponent_1_1ViewProviderComponent.html#aead5dc101b4fb331c6905a022017846d),
+[Mod.PartDesign.SprocketFeature.ViewProviderSprocket.setEdit()](../../da/d59/classMod_1_1PartDesign_1_1SprocketFeature_1_1ViewProviderSprocket.html#aa6d4cdd2dac11b7da5f1e3332a28c1fc),
+[ArchStructure.StructureTaskPanel.setSelectionFromTool()](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#ac80cd7068ded6e0fa2ceaa7c7fbfacf4),
+[ArchStructure.StructureTaskPanel.setToolFromSelection()](../../df/d40/classArchStructure_1_1StructureTaskPanel.html#aaf6f1a737e2e9b8b1c685ffe4b88c489),
+[PathScripts.PathOpGui.ViewProvider.setupTaskPanel()](../../db/df9/classPathScripts_1_1PathOpGui_1_1ViewProvider.html#a5ed23a9193fce9cd04149a0e0920ebd9),
+[ArchBuildingPart.ViewProviderBuildingPart.setWorkingPlane()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#ace07507d5e9696c6fc3603cbbcf0fa09),
+[femviewprovider.view_result_mechanical.VPResultMechanical.unsetEdit()](../../d7/d8f/classfemviewprovider_1_1view__result__mechanical_1_1VPResultMechanical.html#a16c06fb14a5a7d3e3a4063a218dc7a40),
+[ArchBuildingPart.ViewProviderBuildingPart.writeCamera()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#a3b1b1c7b54a861a46eab90dd1fdbc49c),
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.writeCamera()](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#abd46fb66b0e0bd5d23dc238cf427f3a5),
+[ArchBuildingPart.ViewProviderBuildingPart.writeInventor()](../../d8/dbf/classArchBuildingPart_1_1ViewProviderBuildingPart.html#ae11999336601ac7fd9927d433b9f6884),
+and
+[draftviewproviders.view_wpproxy.ViewProviderWorkingPlaneProxy.writeState()](../../da/dbf/classdraftviewproviders_1_1view__wpproxy_1_1ViewProviderWorkingPlaneProxy.html#aa67186706faef974f14da09b45a94ca0).
+
+## ◆ orig_flatlines
+
+ArchReference.ViewProviderArchReference.orig_flatlines  
+---  
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.unloadInventor()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac79e23f694ddd341b36b428b7a328641).
+
+## ◆ orig_shaded
+
+ArchReference.ViewProviderArchReference.orig_shaded  
+---  
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.unloadInventor()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac79e23f694ddd341b36b428b7a328641).
+
+## ◆ orig_wireframe
+
+ArchReference.ViewProviderArchReference.orig_wireframe  
+---  
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.unloadInventor()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac79e23f694ddd341b36b428b7a328641).
+
+## ◆ timer
+
+ArchReference.ViewProviderArchReference.timer  
+---  
+  
+Referenced by
+[ArchReference.ViewProviderArchReference.checkChanges()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ab6a807091ea186d4252888a09f6b41ba),
+[PathScripts.PathSimulatorGui.PathSimulation.EndSimulation()](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#a4b783a906af8a7751eec63a889cf7f40),
+[ArchReference.ViewProviderArchReference.onDelete()](../../d2/dfd/classArchReference_1_1ViewProviderArchReference.html#ac113f02b7c55a8e3ea62c5109c619018),
+[PathScripts.PathSimulatorGui.PathSimulation.onSpeedBarChange()](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#ac30ad424196a5f96477a59edfcf8b72d),
+[PathScripts.PathSimulatorGui.PathSimulation.SimFF()](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#a6a16abbd35cba77470396ba8306dcaf8),
+[PathScripts.PathSimulatorGui.PathSimulation.SimPause()](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#aaec01dd7b603fc0d9bc0257260a098c2),
+and
+[PathScripts.PathSimulatorGui.PathSimulation.SimPlay()](../../da/dfe/classPathScripts_1_1PathSimulatorGui_1_1PathSimulation.html#a12d9e5996e0fe38ffa0ca408757ee468).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Arch/ArchReference.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

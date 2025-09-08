@@ -1,0 +1,108 @@
+---
+url: https://freecad.github.io/SourceDoc/d0/dac/classconfig__control__design_1_1effectivity.html
+scraped_at: 2025-09-08T15:21:44.202021
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [config_control_design](../../d4/d07/namespaceconfig__control__design.html)
+  * [effectivity](../../d0/dac/classconfig__control__design_1_1effectivity.html)
+
+[List of all members](../../d5/dac/classconfig__control__design_1_1effectivity-members.html) | Public Member Functions | Public Attributes
+
+config_control_design.effectivity Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [id](../../d0/dac/classconfig__control__design_1_1effectivity.html#a0aea9126f3004147d4ba10bb657de736) ()  
+  
+##  Public Attributes  
+  
+---  
+|
+[id](../../d0/dac/classconfig__control__design_1_1effectivity.html#a0fb13b1bf16cef46bc87e16f870b2d01)  
+  
+## Detailed Description
+
+    
+    
+    Entity effectivity definition.
+    
+        :param id
+        :type id:identifier
+
+## Member Function Documentation
+
+## ◆ id()
+
+def config_control_design.effectivity.id  | ( | | ) |   
+---|---|---|---|---  
+  
+References SMESH_Mesh._id, App::Property._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.versioned_action_request._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.general_property._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_relationship._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.time_interval._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.effectivity._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_formation_relationship._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.person._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_formation._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.event_occurrence._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configuration_item._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.contract_relationship._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_feature._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.text_font_family._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.text_font._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product._id,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organization._id,
+automotive_design.versioned_action_request._id,
+automotive_design.product_definition_relationship._id,
+automotive_design.product_definition._id, automotive_design.time_interval._id,
+automotive_design.effectivity._id, automotive_design.general_property._id,
+automotive_design.product_concept._id,
+automotive_design.product_definition_formation_relationship._id,
+automotive_design.person._id,
+automotive_design.product_definition_formation._id,
+automotive_design.event_occurrence._id,
+automotive_design.configuration_item._id,
+automotive_design.product_concept_feature._id, automotive_design.document._id,
+automotive_design.versioned_action_request_relationship._id,
+automotive_design.product._id, automotive_design.organization._id,
+config_control_design.versioned_action_request._id,
+config_control_design.product_definition_relationship._id,
+config_control_design.effectivity._id, config_control_design.person._id,
+config_control_design.document._id,
+config_control_design.product_definition_formation._id,
+config_control_design.configuration_item._id,
+config_control_design.product._id, config_control_design.product_concept._id,
+config_control_design.product_definition._id,
+config_control_design.organization._id, ifc2x3.ifcorganization._id,
+ifc2x3.ifcperson._id, ifc2x3.ifccostschedule._id, and
+ifc2x3.ifcprojectorder._id.
+
+## Member Data Documentation
+
+## ◆ id
+
+config_control_design.effectivity.id  
+---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/config_control_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

@@ -1,0 +1,110 @@
+---
+url: https://freecad.github.io/SourceDoc/d9/d08/classautomotive__design_1_1structured__dimension__callout.html
+scraped_at: 2025-09-08T15:13:20.080134
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [structured_dimension_callout](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html)
+
+[List of all members](../../d5/d5d/classautomotive__design_1_1structured__dimension__callout-members.html) | Public Member Functions
+
+automotive_design.structured_dimension_callout Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#a4c795da4cbfcb3ee17a6b67ab02a8ab3) (self)  
+def | [wr2](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#aabb5aa3299bf499806a81648081ae45a) (self)  
+def | [wr3](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#af0897f90c32057d1fbf02dac9f31819a) (self)  
+def | [wr4](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#a26b65f543ceec41f834c3da4df4b2708) (self)  
+def | [wr5](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#ad3ee08c5b4862acf802ffc4b7fb43ccb) (self)  
+def | [wr6](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#abd5f220fab72361511375aafcf7dab68) (self)  
+def | [wr7](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#a275f59a7d16aec3491eec1885f81fea1) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.draughting_callout](../../d4/de1/classautomotive__design_1_1draughting__callout.html)  
+def | [contents](../../d4/de1/classautomotive__design_1_1draughting__callout.html#acf617c2d544e2d30f0955d729b44621e) ()  
+def | [wr1](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a28ae66d147cee76341c7723dc97c5199) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.geometric_representation_item](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html)  
+def | [dim](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#aef245618450610e88788dcaea46ad742) ()  
+def | [wr1](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#a9677d2be5fc5c7c8ccb6819380198bbc) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+def | [name](../../d3/d20/classautomotive__design_1_1representation__item.html#a33b5812d92aa0d107b4fd4274c17b9d9) ()  
+def | [wr1](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.draughting_callout](../../d4/de1/classautomotive__design_1_1draughting__callout.html)  
+|
+[contents](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a49273f8ccce6bae275a653e269e984fe)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+|
+[name](../../d3/d20/classautomotive__design_1_1representation__item.html#a3d48fe912053adaf5f187b606fa81c87)  
+  
+## Detailed Description
+
+    
+    
+    Entity structured_dimension_callout definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.structured_dimension_callout.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.draughting_callout](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a28ae66d147cee76341c7723dc97c5199).
+
+## ◆ wr2()
+
+def automotive_design.structured_dimension_callout.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr3()
+
+def automotive_design.structured_dimension_callout.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr4()
+
+def automotive_design.structured_dimension_callout.wr4  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr5()
+
+def automotive_design.structured_dimension_callout.wr5  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr6()
+
+def automotive_design.structured_dimension_callout.wr6  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr7()
+
+def automotive_design.structured_dimension_callout.wr7  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

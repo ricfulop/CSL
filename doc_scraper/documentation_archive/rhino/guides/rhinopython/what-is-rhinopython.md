@@ -1,0 +1,221 @@
+---
+url: https://developer.rhino3d.com/guides/rhinopython/what-is-rhinopython/
+scraped_at: 2025-09-08T15:37:03.942408
+title: Untitled
+---
+
+[RhinoDeveloper®](/)
+
+[design, model, present, analyze, realize...](/)
+
+[![Rhino Logo](https://developer.rhino3d.com/images/rhinodevlogo.png)](/)
+
+__
+
+[Guides](https://developer.rhino3d.com/guides)
+[Samples](https://developer.rhino3d.com/samples)
+[API](https://developer.rhino3d.com/api)
+[Videos](https://developer.rhino3d.com/videos)
+[Community](https://discourse.mcneel.com/c/rhino-developer) [my account
+](https://www.rhino3d.com/my-account/ "Manage your account, licenses, and
+teams")
+
+[What is Rhino.Python?](https://developer.rhino3d.com/guides/rhinopython/what-
+is-rhinopython/)
+
+  * What is Python?
+  * Why Python?
+    * What version of Python does Rhino use?
+  * Where can you use Python in Rhino?
+  * Related Topics
+
+[Guides](https://developer.rhino3d.com/en/guides/) / [Rhino.Python
+Guides](https://developer.rhino3d.com/en/guides/rhinopython/) /
+
+What is Rhino.Python?
+
+[New in 8](https://developer.rhino3d.com/8/new)
+
+by [Dan Rigdon-Bel](https://discourse.mcneel.com/u/dan/) (Last updated:
+Monday, March 24, 2025)
+
+Rhino.Python refers to the Python executables embedded in Rhino, and the
+associated Python code editors (aka. the ScriptEditor, in Rhino and
+Grasshopper). They let you write and run standard Python scripts in Rhino, to
+create interactive scripts, new custom commands, and many more. Currently
+Rhino supports IronPython 2.7, and CPython 3.9. The main Rhino APIs that are
+accessible through Rhino.Python are
+[RhinoCommon](https://developer.rhino3d.com/api/rhinocommon/) and
+[rhinoscriptsyntax](https://developer.rhino3d.com/api/RhinoScriptSyntax/).
+
+## What is Python?
+
+[Python](https://www.python.org/) is a _modern programming language_. Python
+is sometimes called a scripting language or a glue language. This means python
+is used often to run a series of commands as a script or used to create links
+between two other technologies as a glue. It is easier to learn and use than
+other non-scripting style, compiled languages like C#, VB, or C/C++. Yet it is
+quite powerful.
+
+Python is
+[interpreted](https://en.wikipedia.org/wiki/Programming_language_implementation),
+meaning it is executed one line at a time. This makes the program flow easy to
+understand. Also it is [semantically
+dynamic](https://en.wikipedia.org/wiki/Programming_language#Static_versus_dynamic_typing)
+which allows the syntax to be less restrictive and less formal when using
+declarations and variables types. These characteristics add to Python’s ease-
+of-use for basic programming tasks.
+
+You may need Python if you want to:
+
+  * Automate a repetitive task in Rhino much faster than you could do manually.
+  * Perform tasks in Rhino or Grasshopper that you don’t have access to in the standard set of Rhino commands or Grasshopper components.
+  * Generate geometry using algorithms.
+  * Many, many other things. It is a programming language after all.
+
+## Why Python?
+
+Why should you use Python? Well, Python is meant to be a simple language to
+read and write. Python also runs both the Windows and Mac versions of Rhino.
+Since Rhino Python scripting is available on both platforms, the same Python
+scripts can run on both breeds of Rhino! Python also will run within a
+Grasshopper component.
+
+But more importantly: Python is very popular outside of Rhino! Much of what
+you learn about Python can be applied in many other domains.
+
+Rhino already has a scripting language called RhinoScript why do we need
+another? RhinoScript is a very easy to use scripting language on Windows. We
+will continue to support Rhinoscript. But, RhinoScript is based on an little
+older technology making it less flexible then the more modern Python language.
+RhinoScript cannot be supported on the Mac platform. It also unfortunately is
+not supported by the commnuity to the same level as Python.
+
+### What version of Python does Rhino use?
+
+Rhino 8 uses Python version 3.9.11. This is based on
+[CPython](https://www.python.org/), the reference implementation of Python.
+
+Rhino 7 uses Python version 2.7.12. To be more specific Rhino 7 uses
+[IronPython](http://ironpython.net/). This is an older open-source version of
+Python. See the [Rhino 7 Python
+Guides](https://developer.rhino3d.com/guides/rhinopython/7/).
+
+## Where can you use Python in Rhino?
+
+Python can be used all over Rhino in many different ways. Python can be used
+to create
+
+  * Interactive scripts.
+  * New custom commands.
+  * Create new plug-ins.
+  * Read and Write customized file formats.
+  * Interact with cloud applications.
+  * Create realtime links to other applications
+  * Create customer Grasshopper components
+  * Store and display project specific information beyond what basic Rhino can store.
+
+#### RhinoScript Style Functions
+
+One of the key features of RhinoScript that make it easy to write powerful
+scripts is a large library of Rhino specific functions that can be called from
+scripts. Our python implementation includes a set of similar functions that
+can be imported and used in any python script for Rhino. This set of functions
+is known as the `rhinoscriptsyntax` package.
+
+Let’s compare scripts for letting a user pick two points and adding a line to
+Rhino…
+
+Here’s RhinoScript:
+
+    
+    
+    Dim arrStart, arrEnd
+    arrStart = Rhino.GetPoint("Start of line")
+    If IsArray(arrStart) Then
+      arrEnd = Rhino.GetPoint("End of line")
+      If IsArray(arrEnd) Then
+        Rhino.AddLine arrStart, arrEnd
+      End If
+    End If
+    
+
+compared with Python:
+
+    
+    
+    import rhinoscriptsyntax as rs
+    
+    start = rs.GetPoint("Start of line")
+    if start:
+      end = rs.GetPoint("End of line")
+      if end: rs.AddLine(start,end)
+    
+
+Yes, different…but similar enough that you should be able to figure out what
+is happening in python if you’ve written RhinoScript. Rhinoscriptsyntax also
+contains many helper functions to make it easier to program with in Python.
+
+For more information on how to use Rhinoscriptsyntax and Python, see the
+[Rhino.Python Guide](https://developer.rhino3d.com/guides/rhinopython/)
+
+#### Grasshopper
+
+Python can also be used in Grasshopper to create custom components within a
+larger grasshopper definition. The GhPython component contains a Python script
+editor and direct access to Python, Rhino and Grasshopper functions. Use
+GhPython to create and manipulate customer data within Grasshopper.
+
+For an introduction to GhPython in Grasshopper, see the [Your First Python
+Script in Grasshopper
+Guide](https://developer.rhino3d.com/guides/rhinopython/your-first-python-
+script-in-grasshopper)
+
+#### RhinoCommon
+
+[Rhinocommon](https://developer.rhino3d.com/guides/rhinopython/what-is-
+rhinocommon/) is a low-level powerful SDK for all Rhino platforms used mainly
+by more experienced developers. Python scripts can use Rhinocommon, to have
+full access to the .NET framework including access to Rhino’s RhinoCommon SDK.
+A guide of accessing RhinoCommon from Python scripts is at [Using RhinoCommon
+from Python](https://developer.rhino3d.com/guides/rhinopython/using-
+rhinocommon-from-python/).
+
+## Related Topics
+
+  * [Python Basic Syntax](https://developer.rhino3d.com/guides/rhinopython/python-statements/)
+  * [Rhinoscript Syntax in Python](https://developer.rhino3d.com/guides/rhinopython/python-rhinoscriptsyntax-introduction/)
+  * [Rhino.Python Home Page](https://developer.rhino3d.com/guides/rhinopython/)
+  * [Python (homepage)](https://www.python.org/)
+
+Edit this page
+
+[ Edit on
+GitHub](https://github.com/mcneel/developer.rhino3d.com/edit/master/content/en/guides/rhinopython/what-
+is-rhinopython/index.md) [
+History](https://github.com/mcneel/developer.rhino3d.com/commits/master/content/en/guides/rhinopython/what-
+is-rhinopython/index.md) [ Admin](https://developer.rhino3d.com/admin)
+
+[Find a Reseller](https://www.rhino3d.com/sales)
+
+[Shop online](https://www.rhino3d.com/store) or find a
+[Reseller](https://www.rhino3d.com/sales)
+
+[Find a Reseller](https://www.rhino3d.com/sales)
+
+[Privacy Policy](https://www.rhino3d.com/privacy) •
+[About](https://www.rhino3d.com/mcneel/about) • [Contact
+Us](https://www.rhino3d.com/mcneel/contact) • [
+Language](https://www.rhino3d.com/language "Change to a different region or
+language")
+
+[Copyright © 1993-2025 Robert McNeel & Associates. All Rights
+Reserved.](https://www.rhino3d.com/mcneel/about)
+
+[](https://www.facebook.com/McNeelRhinoceros/)
+[](https://twitter.com/bobmcneel) [](https://www.linkedin.com/groups/75313/)
+[](https://www.youtube.com/user/RhinoGuide/videos) [](https://vimeo.com/rhino)
+[![Blogger
+icon](https://developer.rhino3d.com/images/blogger.svg)](http://blog.rhino3d.com/)
+[![Food4Rhino](https://developer.rhino3d.com/images/f4r_icon_01.svg)](https://www.food4rhino.com)
+

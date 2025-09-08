@@ -2,3 +2,5 @@
 # macOS
 .DS_Store
 **/.DS_Store
+doc_scraper/documentation_archive/search_index/
+doc_scraper/documentation_archive/documentation_index.json

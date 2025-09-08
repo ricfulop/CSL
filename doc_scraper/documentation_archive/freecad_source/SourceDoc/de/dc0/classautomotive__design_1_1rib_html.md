@@ -1,0 +1,121 @@
+---
+url: https://freecad.github.io/SourceDoc/de/dc0/classautomotive__design_1_1rib.html
+scraped_at: 2025-09-08T15:12:01.716524
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [rib](../../de/dc0/classautomotive__design_1_1rib.html)
+
+[List of all members](../../d2/d16/classautomotive__design_1_1rib-members.html) | Public Member Functions
+
+automotive_design.rib Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../de/dc0/classautomotive__design_1_1rib.html#abfd665fe9bed836b6860580d2edbda95) (self)  
+def | [wr2](../../de/dc0/classautomotive__design_1_1rib.html#ad7e5fa0fd1c6503a8b38bdfcf0d5b767) (self)  
+def | [wr3](../../de/dc0/classautomotive__design_1_1rib.html#a0fe5815f4c5d98b6d905a85e6693a4d9) (self)  
+def | [wr4](../../de/dc0/classautomotive__design_1_1rib.html#a8985d7cb4ce0e63ff560dee49b1be56a) (self)  
+def | [wr5](../../de/dc0/classautomotive__design_1_1rib.html#a151995780749aae68b645a8077727277) (self)  
+def | [wr6](../../de/dc0/classautomotive__design_1_1rib.html#a98dcd530a7a8f3ed515b4c93730ddacf) (self)  
+def | [wr7](../../de/dc0/classautomotive__design_1_1rib.html#ab03a3ca26731fbad362bc02c5a6a1e79) (self)  
+def | [wr1](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a92407bcd4758e436063b80bf387b4ad3) (self)  
+def | [wr2](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a4156a8adc8e4c289b45353a1fa929498) (self)  
+def | [wr3](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a15de671bc3f6f86a4ca9389d8c123e7e) (self)  
+def | [wr4](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a49b6a3e5e7595418f491f1e2ca458bce) (self)  
+def | [wr5](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a35b2887a3b6f678a5a66030e98b96688) (self)  
+def | [wr6](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a8f5db23d29552f91c5905ed80b279cf2) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.characterized_object](../../db/d3b/classautomotive__design_1_1characterized__object.html)  
+def | [description](../../db/d3b/classautomotive__design_1_1characterized__object.html#a17dd543300fffba362a4b2e5730ae6b7) ()  
+def | [name](../../db/d3b/classautomotive__design_1_1characterized__object.html#a6d89b5ffa630d8ea73bc698b0afa41de) ()  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.characterized_object](../../db/d3b/classautomotive__design_1_1characterized__object.html)  
+|
+[description](../../db/d3b/classautomotive__design_1_1characterized__object.html#a4839bffcdba4a07cdadd0d2c64b0012b)  
+|
+[name](../../db/d3b/classautomotive__design_1_1characterized__object.html#afeb3fe7e8a6ac29d07dfeaf631417d8f)  
+  
+## Detailed Description
+
+    
+    
+    Entity rib definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.rib.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a92407bcd4758e436063b80bf387b4ad3).
+
+## ◆ wr2()
+
+def automotive_design.rib.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a4156a8adc8e4c289b45353a1fa929498).
+
+## ◆ wr3()
+
+def automotive_design.rib.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a15de671bc3f6f86a4ca9389d8c123e7e).
+
+## ◆ wr4()
+
+def automotive_design.rib.wr4  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a49b6a3e5e7595418f491f1e2ca458bce).
+
+## ◆ wr5()
+
+def automotive_design.rib.wr5  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a35b2887a3b6f678a5a66030e98b96688).
+
+## ◆ wr6()
+
+def automotive_design.rib.wr6  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.feature_definition](../../d3/dfb/classautomotive__design_1_1feature__definition.html#a8f5db23d29552f91c5905ed80b279cf2).
+
+## ◆ wr7()
+
+def automotive_design.rib.wr7  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

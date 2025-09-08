@@ -1,0 +1,101 @@
+---
+url: https://freecad.github.io/SourceDoc/d5/de7/classBase_1_1UnitsSchemaImperial1.html
+scraped_at: 2025-09-08T15:17:45.180282
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [Base](../../db/d07/namespaceBase.html)
+  * [UnitsSchemaImperial1](../../d5/de7/classBase_1_1UnitsSchemaImperial1.html)
+
+[List of all members](../../d2/d00/classBase_1_1UnitsSchemaImperial1-members.html) | Public Member Functions
+
+Base::UnitsSchemaImperial1 Class Reference
+
+The schema class for the imperial unit system Here are the definitions for the
+imperial unit system.
+[More...](../../d5/de7/classBase_1_1UnitsSchemaImperial1.html#details)
+
+`#include <UnitsSchemaImperial1.h>`
+
+##  Public Member Functions  
+  
+---  
+virtual QString | [schemaTranslate](../../d5/de7/classBase_1_1UnitsSchemaImperial1.html#ac00ea4fe3402ac6533d780cbadbf730e) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double &factor, QString &unitString)  
+| This method translates the quantity in a string as the user may expect it.
+[More...](../../d5/de7/classBase_1_1UnitsSchemaImperial1.html#ac00ea4fe3402ac6533d780cbadbf730e)  
+  
+![-](../../closed.png) Public Member Functions inherited from
+[Base::UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html)  
+virtual void | [resetSchemaUnits](../../d9/dc7/classBase_1_1UnitsSchema.html#a35f563d52fd70672d5a0573387fce90a) ()  
+| If you use
+[setSchemaUnits()](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6
+"Gets called if this schema gets activated.") you also have to impment this
+method to undo your changes!
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#a35f563d52fd70672d5a0573387fce90a)  
+  
+virtual QString | [schemaTranslate](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double &factor, QString &unitString)=0  
+| This method translates the quantity in a string as the user may expect it.
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7)  
+  
+virtual void | [setSchemaUnits](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6) ()  
+| Gets called if this schema gets activated.
+[More...](../../d9/dc7/classBase_1_1UnitsSchema.html#aabcec42ea804cfdde39daf5ee817c8d6)  
+  
+QString | [toLocale](../../d9/dc7/classBase_1_1UnitsSchema.html#aacde4020d5617f0e65769350940f0a44) (const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) &quant, double factor, const QString &unitString) const  
+virtual | [~UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html#a9ce6e264f497d11e3fdc467a228cafed) ()  
+  
+## Detailed Description
+
+The schema class for the imperial unit system Here are the definitions for the
+imperial unit system.
+
+It also defines how the value/units get printed.
+
+## Member Function Documentation
+
+## ◆ schemaTranslate()
+
+| QString UnitsSchemaImperial1::schemaTranslate  | ( | const [Base::Quantity](../../d8/d18/classBase_1_1Quantity.html) & | _quant_ ,   
+---|---|---|---  
+|  | double & | _factor_ ,   
+|  | QString & | _unitString_  
+| ) | |   
+virtual  
+  
+This method translates the quantity in a string as the user may expect it.
+
+Implements
+[Base::UnitsSchema](../../d9/dc7/classBase_1_1UnitsSchema.html#a8ff374bff7ebc4f654ed3978080052d7).
+
+References
+[Base::Unit::Angle](../../d2/d37/classBase_1_1Unit.html#a650f972468df9938bacbcafdd4b443e1),
+[Base::Unit::Area](../../d2/d37/classBase_1_1Unit.html#ab3d42609406d023f6818a88433f685c4),
+[Base::Unit::getString()](../../d2/d37/classBase_1_1Unit.html#ae403a424663d4df4b4a4886093ed07d1),
+[Base::Quantity::getUnit()](../../d8/d18/classBase_1_1Quantity.html#acf401f989cc46b7c864565e89113ede4),
+[Base::Quantity::getValue()](../../d8/d18/classBase_1_1Quantity.html#a692b9e4043999d2c24737886639df7d0),
+[Base::Unit::Length](../../d2/d37/classBase_1_1Unit.html#ae7af32a08ea9a0e1501571a2902c84bd),
+[Base::Unit::Mass](../../d2/d37/classBase_1_1Unit.html#a0487599b7ddcb19c431b2e5522af173a),
+[Base::Unit::Pressure](../../d2/d37/classBase_1_1Unit.html#ab0df485d964692e00f0b0006afb2068f),
+[Base::Unit::Stiffness](../../d2/d37/classBase_1_1Unit.html#a76655c5122e0c7b016cdabd9d41785ee),
+[Base::UnitsSchema::toLocale()](../../d9/dc7/classBase_1_1UnitsSchema.html#aacde4020d5617f0e65769350940f0a44),
+[Base::Unit::Velocity](../../d2/d37/classBase_1_1Unit.html#ac8f332f96770356aa6c6712a108b3410),
+and
+[Base::Unit::Volume](../../d2/d37/classBase_1_1Unit.html#a0384d7597ade62ef6c880f84918a672f).
+
+* * *
+
+The documentation for this class was generated from the following files:
+
+  * FreeCAD/src/Base/UnitsSchemaImperial1.h
+  * FreeCAD/src/Base/UnitsSchemaImperial1.cpp
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

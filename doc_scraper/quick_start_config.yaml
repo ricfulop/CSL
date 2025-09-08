@@ -1,0 +1,39 @@
+authentication: {}
+output_dir: documentation_archive
+rate_limit: 1.0
+sites:
+  blender:
+    enabled: true
+    max_depth: 3
+    max_pages: 500
+    start_url: https://docs.blender.org/api/current/
+    url_patterns:
+    - docs.blender.org/api
+  freecad:
+    enabled: true
+    max_depth: 3
+    max_pages: 500
+    start_url: https://wiki.freecad.org/Api
+    url_patterns:
+    - wiki.freecad.org
+  kicad:
+    enabled: true
+    max_depth: 3
+    max_pages: 300
+    start_url: https://docs.kicad.org/doxygen-python/
+    url_patterns:
+    - docs.kicad.org
+  onshape_featurescript:
+    enabled: true
+    max_depth: 3
+    max_pages: 500
+    start_url: https://cad.onshape.com/FsDoc/
+    url_patterns:
+    - cad.onshape.com/FsDoc
+  rhino:
+    enabled: true
+    max_depth: 3
+    max_pages: 1000
+    start_url: https://developer.rhino3d.com/api/RhinoCommon/
+    url_patterns:
+    - developer.rhino3d.com

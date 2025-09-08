@@ -1,0 +1,130 @@
+---
+url: https://freecad.github.io/SourceDoc/dc/d49/classautomotive__design_1_1universal__pair.html
+scraped_at: 2025-09-08T15:15:05.507676
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [universal_pair](../../dc/d49/classautomotive__design_1_1universal__pair.html)
+
+[List of all members](../../df/d05/classautomotive__design_1_1universal__pair-members.html) | Public Member Functions | Public Attributes
+
+automotive_design.universal_pair Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [input_skew_angle](../../dc/d49/classautomotive__design_1_1universal__pair.html#aa3ce5cdf241168362dfd8d2c73f78cb6) ()  
+def | [skew_angle](../../dc/d49/classautomotive__design_1_1universal__pair.html#a69fd31fc2beabd27a01d0d9644095d79) ()  
+def | [wr1](../../dc/d49/classautomotive__design_1_1universal__pair.html#a2c3a62561ec65a695390bc8967cd88c4) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.kinematic_pair](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html)  
+def | [joint](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a3cc1a3fa91c668bc412ae98a6bb71801) ()  
+def | [pair_placement_in_first_link_context](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a4c2d01c20c5af49ab32473d657a4c064) ()  
+def | [pair_placement_in_second_link_context](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a95c998e19e5ff9bcc07073444b9a551a) ()  
+def | [wr1](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a5bf15e517acfe323d781527c74eb5100) (self)  
+def | [wr2](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a3974063d988bfa776fba5cd5dac1c369) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.item_defined_transformation](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html)  
+def | [description](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#aea7020e577c8aaa199bb53f3c4f76a19) ()  
+def | [name](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#a677249d4b240467fd9f1f5cc5279b24d) ()  
+def | [transform_item_1](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#aeb7769f338ddfe3f332b6f71eeff0231) ()  
+def | [transform_item_2](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#a9cfdcfa5ee62b8db6be37ae3c542158d) ()  
+  
+##  Public Attributes  
+  
+---  
+|
+[input_skew_angle](../../dc/d49/classautomotive__design_1_1universal__pair.html#a23f7fb185d6ccb95e291f52fab499cf8)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.kinematic_pair](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html)  
+|
+[joint](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a129569b8355d19cee7527672b69b6258)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.item_defined_transformation](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html)  
+|
+[description](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#a9639e4a7f29564c744654086b0613457)  
+|
+[name](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#a71cd4ea422a14c796ae2be07eef15da8)  
+|
+[transform_item_1](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#a35a6126264cb2506a21004dbfc053ac0)  
+|
+[transform_item_2](../../d4/d91/classautomotive__design_1_1item__defined__transformation.html#ae1905883f0ed10110e83ec393fbda4a4)  
+  
+## Detailed Description
+
+    
+    
+    Entity universal_pair definition.
+    
+        :param input_skew_angle
+        :type input_skew_angle:plane_angle_measure
+    
+        :param skew_angle
+        :type skew_angle:plane_angle_measure
+
+## Member Function Documentation
+
+## ◆ input_skew_angle()
+
+def automotive_design.universal_pair.input_skew_angle  | ( | | ) |   
+---|---|---|---|---  
+  
+References automotive_design.universal_pair._input_skew_angle.
+
+Referenced by
+[automotive_design.universal_pair.skew_angle()](../../dc/d49/classautomotive__design_1_1universal__pair.html#a69fd31fc2beabd27a01d0d9644095d79).
+
+## ◆ skew_angle()
+
+def automotive_design.universal_pair.skew_angle  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+[automotive_design.universal_pair.input_skew_angle](../../dc/d49/classautomotive__design_1_1universal__pair.html#a23f7fb185d6ccb95e291f52fab499cf8).
+
+Referenced by
+[automotive_design.universal_pair.wr1()](../../dc/d49/classautomotive__design_1_1universal__pair.html#a2c3a62561ec65a695390bc8967cd88c4).
+
+## ◆ wr1()
+
+def automotive_design.universal_pair.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.kinematic_pair](../../d4/d4f/classautomotive__design_1_1kinematic__pair.html#a5bf15e517acfe323d781527c74eb5100).
+
+Reimplemented in
+[automotive_design.homokinetic_pair](../../d1/d83/classautomotive__design_1_1homokinetic__pair.html#a65c538babd5c117d36ca2271cb411b3b).
+
+References
+[automotive_design.plane_angle_for_pair_in_radian()](../../d4/ddf/namespaceautomotive__design.html#ae43d1d591ca1096682f01120db64f388),
+and
+[automotive_design.universal_pair.skew_angle()](../../dc/d49/classautomotive__design_1_1universal__pair.html#a69fd31fc2beabd27a01d0d9644095d79).
+
+## Member Data Documentation
+
+## ◆ input_skew_angle
+
+automotive_design.universal_pair.input_skew_angle  
+---  
+  
+Referenced by
+[automotive_design.universal_pair.skew_angle()](../../dc/d49/classautomotive__design_1_1universal__pair.html#a69fd31fc2beabd27a01d0d9644095d79).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

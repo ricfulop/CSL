@@ -1,0 +1,131 @@
+# Improved Documentation Scraper Configuration
+# Fixes issues with FreeCAD, KiCad, and Rhino scraping
+
+output_dir: documentation_archive
+rate_limit: 1.0
+authentication: {}
+
+sites:
+  # FreeCAD Wiki - Now using Selenium for JavaScript
+  freecad_wiki:
+    enabled: true
+    start_url: "https://wiki.freecad.org/Main_Page"  # Better starting point
+    max_depth: 4
+    max_pages: 1000
+    use_selenium: true  # Handle JavaScript protection
+    url_patterns:
+      - "wiki.freecad.org"
+    exclude_patterns:
+      - "action=edit"
+      - "Special:"
+      - "Talk:"
+      - "&oldid="
+      - "printable=yes"
+  
+  # FreeCAD Source Documentation (GitHub)
+  freecad_source:
+    enabled: true
+    start_url: "https://freecad.github.io/SourceDoc/index.html"
+    max_depth: 5
+    max_pages: 2000
+    url_patterns:
+      - "freecad.github.io/SourceDoc"
+  
+  # FreeCAD Python API from GitHub pages
+  freecad_api:
+    enabled: true
+    start_url: "https://wiki.freecad.org/Power_users_hub"
+    max_depth: 3
+    max_pages: 500
+    use_selenium: true
+    url_patterns:
+      - "wiki.freecad.org.*[Pp]ython"
+      - "wiki.freecad.org.*[Aa]pi"
+      - "wiki.freecad.org.*[Ss]cript"
+      - "wiki.freecad.org.*[Mm]acro"
+  
+  # Blender - Already working well
+  blender:
+    enabled: true
+    start_url: "https://docs.blender.org/api/current/"
+    max_depth: 4
+    max_pages: 1000
+    url_patterns:
+      - "docs.blender.org/api"
+  
+  # Onshape FeatureScript - Already working well
+  onshape_featurescript:
+    enabled: true
+    start_url: "https://cad.onshape.com/FsDoc/"
+    max_depth: 4
+    max_pages: 1000
+    url_patterns:
+      - "cad.onshape.com/FsDoc"
+  
+  # KiCad - Fixed URL
+  kicad:
+    enabled: true
+    start_url: "https://docs.kicad.org/doxygen-python/index.html"
+    max_depth: 4
+    max_pages: 1000
+    url_patterns:
+      - "docs.kicad.org/doxygen-python"
+  
+  # Alternative KiCad docs
+  kicad_main:
+    enabled: true
+    start_url: "https://docs.kicad.org/"
+    max_depth: 3
+    max_pages: 500
+    url_patterns:
+      - "docs.kicad.org"
+    exclude_patterns:
+      - "\\.pdf$"
+  
+  # Rhino - Fixed patterns
+  rhino:
+    enabled: true
+    start_url: "https://developer.rhino3d.com/"
+    max_depth: 4
+    max_pages: 2000
+    url_patterns:
+      - "developer.rhino3d.com"
+    exclude_patterns:
+      - "\\.zip$"
+      - "\\.exe$"
+  
+  # Grasshopper
+  grasshopper:
+    enabled: true
+    start_url: "https://developer.rhino3d.com/api/grasshopper/"
+    max_depth: 4
+    max_pages: 1000
+    url_patterns:
+      - "developer.rhino3d.com/api/grasshopper"
+  
+  # OpenSCAD - New addition
+  openscad:
+    enabled: true
+    start_url: "https://openscad.org/documentation.html"
+    max_depth: 3
+    max_pages: 500
+    url_patterns:
+      - "openscad.org"
+  
+  # OpenJSCAD - JavaScript CAD
+  openjscad:
+    enabled: true
+    start_url: "https://openjscad.xyz/docs/"
+    max_depth: 3
+    max_pages: 300
+    url_patterns:
+      - "openjscad.xyz/docs"
+  
+  # SolveSpace - Open source CAD
+  solvespace:
+    enabled: true
+    start_url: "https://solvespace.readthedocs.io/"
+    max_depth: 4
+    max_pages: 500
+    url_patterns:
+      - "solvespace.readthedocs.io"

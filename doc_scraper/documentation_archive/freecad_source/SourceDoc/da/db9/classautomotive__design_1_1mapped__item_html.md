@@ -1,0 +1,121 @@
+---
+url: https://freecad.github.io/SourceDoc/da/db9/classautomotive__design_1_1mapped__item.html
+scraped_at: 2025-09-08T15:07:48.686438
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [mapped_item](../../da/db9/classautomotive__design_1_1mapped__item.html)
+
+[List of all members](../../da/df5/classautomotive__design_1_1mapped__item-members.html) | Public Member Functions | Public Attributes
+
+automotive_design.mapped_item Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [mapping_source](../../da/db9/classautomotive__design_1_1mapped__item.html#a72b9fcc259a85827d18bc7f43c82d0ab) ()  
+def | [mapping_target](../../da/db9/classautomotive__design_1_1mapped__item.html#abb624b9c3b8b6c43a7e1b00e1a3d9852) ()  
+def | [wr1](../../da/db9/classautomotive__design_1_1mapped__item.html#ad0b28031cb9dcc65c0d7429617fc5fff) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+def | [name](../../d3/d20/classautomotive__design_1_1representation__item.html#a33b5812d92aa0d107b4fd4274c17b9d9) ()  
+def | [wr1](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed) (self)  
+  
+##  Public Attributes  
+  
+---  
+|
+[mapping_source](../../da/db9/classautomotive__design_1_1mapped__item.html#a3aa3304cfa79ebfa6ce36c09a4b5145c)  
+|
+[mapping_target](../../da/db9/classautomotive__design_1_1mapped__item.html#a0e7f7b0a3cda1e1c79b30fbec12aa362)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+|
+[name](../../d3/d20/classautomotive__design_1_1representation__item.html#a3d48fe912053adaf5f187b606fa81c87)  
+  
+## Detailed Description
+
+    
+    
+    Entity mapped_item definition.
+    
+        :param mapping_source
+        :type mapping_source:representation_map
+    
+        :param mapping_target
+        :type mapping_target:representation_item
+
+## Member Function Documentation
+
+## ◆ mapping_source()
+
+def automotive_design.mapped_item.mapping_source  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.mapped_item._mapping_source,
+automotive_design.mapped_item._mapping_source, and
+config_control_design.mapped_item._mapping_source.
+
+## ◆ mapping_target()
+
+def automotive_design.mapped_item.mapping_target  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.mapped_item._mapping_target,
+automotive_design.mapped_item._mapping_target, and
+config_control_design.mapped_item._mapping_target.
+
+## ◆ wr1()
+
+def automotive_design.mapped_item.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed).
+
+Reimplemented in
+[automotive_design.annotation_text_character](../../d2/d37/classautomotive__design_1_1annotation__text__character.html#a71a9d60a22015f0cbb6204369785d19d),
+[automotive_design.camera_image](../../d2/d21/classautomotive__design_1_1camera__image.html#ae9f20c43a204d7242970a746248012e1),
+[automotive_design.camera_image_3d_with_scale](../../d6/d7f/classautomotive__design_1_1camera__image__3d__with__scale.html#ab07fd3f22d7bb287e8f79c08a314304c),
+[automotive_design.annotation_text](../../d3/d2e/classautomotive__design_1_1annotation__text.html#afd795f09841bdde7f5a22e004590f733),
+[automotive_design.annotation_symbol](../../d0/d8b/classautomotive__design_1_1annotation__symbol.html#a154b80135fafd3dcb8174a2de2c4bb8c),
+[automotive_design.camera_image_2d_with_scale](../../d5/d67/classautomotive__design_1_1camera__image__2d__with__scale.html#a044c06f1e9413cb7b8b8d015835b5376),
+and
+[automotive_design.dimension_text_associativity](../../de/d44/classautomotive__design_1_1dimension__text__associativity.html#a3601d03ee80e7a1b21394454bd39646f).
+
+References
+[automotive_design.acyclic_mapped_representation()](../../d4/ddf/namespaceautomotive__design.html#a73ba43b2f417fa9ea3e61f9205149ea2),
+and
+[automotive_design.using_representations()](../../d4/ddf/namespaceautomotive__design.html#a291361fbbc9f004330a4fc1aa3997bea).
+
+## Member Data Documentation
+
+## ◆ mapping_source
+
+automotive_design.mapped_item.mapping_source  
+---  
+  
+## ◆ mapping_target
+
+automotive_design.mapped_item.mapping_target  
+---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

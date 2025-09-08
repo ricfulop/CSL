@@ -1,0 +1,479 @@
+---
+url: https://freecad.github.io/SourceDoc/d8/d67/classconfig__control__design_1_1pcurve.html
+scraped_at: 2025-09-08T15:22:49.512229
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [config_control_design](../../d4/d07/namespaceconfig__control__design.html)
+  * [pcurve](../../d8/d67/classconfig__control__design_1_1pcurve.html)
+
+[List of all members](../../d1/d6f/classconfig__control__design_1_1pcurve-members.html) | Public Member Functions | Public Attributes
+
+config_control_design.pcurve Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [basis_surface](../../d8/d67/classconfig__control__design_1_1pcurve.html#a8e380c57e204932171ce0d79e371cac7) ()  
+def | [reference_to_curve](../../d8/d67/classconfig__control__design_1_1pcurve.html#aa798cccb9936bf48e9f6e408cc648f9c) ()  
+def | [wr1](../../d8/d67/classconfig__control__design_1_1pcurve.html#a081b5cdb8f8e42e856b54ca97fe9ba05) (self)  
+def | [wr2](../../d8/d67/classconfig__control__design_1_1pcurve.html#a2748ae4c83d716e0e15781382f5fd9d7) (self)  
+def | [wr3](../../d8/d67/classconfig__control__design_1_1pcurve.html#ae080500b8a1e2a9de3cba622c1fcad10) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[config_control_design.geometric_representation_item](../../d3/d18/classconfig__control__design_1_1geometric__representation__item.html)  
+def | [dim](../../d3/d18/classconfig__control__design_1_1geometric__representation__item.html#aac385fb99d009b699d0d77f10ebdc5f1) ()  
+def | [wr1](../../d3/d18/classconfig__control__design_1_1geometric__representation__item.html#a779ebde9495ea4132b585e06aa418f13) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[config_control_design.representation_item](../../d9/d69/classconfig__control__design_1_1representation__item.html)  
+def | [name](../../d9/d69/classconfig__control__design_1_1representation__item.html#a5ea878073c85170f328deff23a9c5732) ()  
+def | [wr1](../../d9/d69/classconfig__control__design_1_1representation__item.html#a4cdc1db49341dedc8f271ec89801c713) (self)  
+  
+##  Public Attributes  
+  
+---  
+|
+[basis_surface](../../d8/d67/classconfig__control__design_1_1pcurve.html#a5fd85c1443902391b7d328216cece85b)  
+|
+[dim](../../d8/d67/classconfig__control__design_1_1pcurve.html#aae2635aa05f0a6f46e6ce61a8cfa8a61)  
+|
+[reference_to_curve](../../d8/d67/classconfig__control__design_1_1pcurve.html#a592f3ab139c5db3adce9cc523a412845)  
+![-](../../closed.png) Public Attributes inherited from
+[config_control_design.representation_item](../../d9/d69/classconfig__control__design_1_1representation__item.html)  
+|
+[name](../../d9/d69/classconfig__control__design_1_1representation__item.html#a0e8be677f8410825a46422f3c0e1c128)  
+  
+## Detailed Description
+
+    
+    
+    Entity pcurve definition.
+    
+        :param basis_surface
+        :type basis_surface:surface
+    
+        :param reference_to_curve
+        :type reference_to_curve:definitional_representation
+
+## Member Function Documentation
+
+## ◆ basis_surface()
+
+def config_control_design.pcurve.basis_surface  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.offset_surface._basis_surface,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.point_on_surface._basis_surface,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.pcurve._basis_surface,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.rectangular_trimmed_surface._basis_surface,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.degenerate_pcurve._basis_surface,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.curve_bounded_surface._basis_surface,
+automotive_design.offset_surface._basis_surface,
+automotive_design.point_on_surface._basis_surface,
+automotive_design.pcurve._basis_surface,
+automotive_design.rectangular_trimmed_surface._basis_surface,
+automotive_design.degenerate_pcurve._basis_surface,
+automotive_design.curve_bounded_surface._basis_surface,
+config_control_design.offset_surface._basis_surface,
+config_control_design.point_on_surface._basis_surface,
+config_control_design.pcurve._basis_surface,
+config_control_design.rectangular_trimmed_surface._basis_surface,
+config_control_design.degenerate_pcurve._basis_surface, and
+config_control_design.curve_bounded_surface._basis_surface.
+
+Referenced by
+[automotive_design.swept_area_solid.wr1()](../../d9/d56/classautomotive__design_1_1swept__area__solid.html#af06ba2d89fb93f3538bd0cfb3899ca7d),
+[automotive_design.surface_curve_swept_area_solid.wr1()](../../dc/db7/classautomotive__design_1_1surface__curve__swept__area__solid.html#a9c3872eaf0dbc9d98d40429cc3dbf773),
+[automotive_design.composite_curve_on_surface.wr1()](../../d9/d62/classautomotive__design_1_1composite__curve__on__surface.html#aa4c4c80418d0ac5f7c0d8c14865f4126),
+[config_control_design.composite_curve_on_surface.wr1()](../../da/d0c/classconfig__control__design_1_1composite__curve__on__surface.html#af1248e63f087994050d924b1f03ce2a7),
+[automotive_design.curve_bounded_surface.wr2()](../../de/dfd/classautomotive__design_1_1curve__bounded__surface.html#aee9bebad9973fccb90b85a3418fe6259),
+[config_control_design.curve_bounded_surface.wr2()](../../dc/d61/classconfig__control__design_1_1curve__bounded__surface.html#a6c40b7a7eaace49a3aabfe3fa47d2a35),
+[automotive_design.rectangular_trimmed_surface.wr3()](../../d3/d74/classautomotive__design_1_1rectangular__trimmed__surface.html#a4c4fa09bc28e0979821dcb919bc70801),
+[config_control_design.rectangular_trimmed_surface.wr3()](../../d3/df2/classconfig__control__design_1_1rectangular__trimmed__surface.html#af917d1182a7d07aa13d556e19e3be76a),
+[automotive_design.rectangular_trimmed_surface.wr4()](../../d3/d74/classautomotive__design_1_1rectangular__trimmed__surface.html#afc4757205d91cd02edfd30794d089939),
+and
+[config_control_design.rectangular_trimmed_surface.wr4()](../../d3/df2/classconfig__control__design_1_1rectangular__trimmed__surface.html#a58eb9b75ab01c968f17742257c5de3e2).
+
+## ◆ reference_to_curve()
+
+def config_control_design.pcurve.reference_to_curve  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.pcurve._reference_to_curve,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.degenerate_pcurve._reference_to_curve,
+automotive_design.pcurve._reference_to_curve,
+automotive_design.degenerate_pcurve._reference_to_curve,
+config_control_design.pcurve._reference_to_curve, and
+config_control_design.degenerate_pcurve._reference_to_curve.
+
+Referenced by
+[automotive_design.pcurve.wr1()](../../d4/d4b/classautomotive__design_1_1pcurve.html#a6c4a5ef371ff37f5f5e7135ec479d77c),
+[automotive_design.degenerate_pcurve.wr1()](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#a3e59549e46796a2d3373707c359f962b),
+[config_control_design.pcurve.wr1()](../../d8/d67/classconfig__control__design_1_1pcurve.html#a081b5cdb8f8e42e856b54ca97fe9ba05),
+[config_control_design.degenerate_pcurve.wr1()](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#aae1772a95d3ed412ea932efd74ac2697),
+[automotive_design.pcurve.wr2()](../../d4/d4b/classautomotive__design_1_1pcurve.html#a6c8a7a5f4d71cc2803cfbb42ae9b04c1),
+[automotive_design.degenerate_pcurve.wr2()](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#a8e7be64a5c78f0540518110da63a3fd9),
+[config_control_design.pcurve.wr2()](../../d8/d67/classconfig__control__design_1_1pcurve.html#a2748ae4c83d716e0e15781382f5fd9d7),
+and
+[config_control_design.degenerate_pcurve.wr2()](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#ac95757f1b795f22cd0ba44a1ffbb0474).
+
+## ◆ wr1()
+
+def config_control_design.pcurve.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[config_control_design.geometric_representation_item](../../d3/d18/classconfig__control__design_1_1geometric__representation__item.html#a779ebde9495ea4132b585e06aa418f13).
+
+Reimplemented in
+[config_control_design.bounded_pcurve](../../db/dc7/classconfig__control__design_1_1bounded__pcurve.html#a4a82e5a675f172f3dc9b69cfa1c63bcb).
+
+References Py::MapBase< T >.items(),
+[Gui::ElementColors::Private.items](../../d8/dc9/classElementColors_1_1Private.html#ac06b624b9c4165c0a6fc90aa8b319181),
+[Gui::DocumentObjectData.items](../../d6/d82/classGui_1_1DocumentObjectData.html#a8848f66de88d9073d4a2abfd0677848d),
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_document_usage_constraint_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_certification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.representation.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_organization_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_method_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_date_and_time_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_attribute_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.assigned_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_external_identification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_event_occurrence_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configured_effectivity_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_person_and_organization_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_date_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.draughting_title.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_presented_item.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.change_request.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.instance_usage_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document_identifier_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_request_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.breakdown_element_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.sourced_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_contract_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.requirement_assigned_object.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.satisfying_item.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_identification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.start_request.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_specification_reference.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_time_interval_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_organizational_project_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.change.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.source_for_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_approval_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_document_reference.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configured_effectivity_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_feature_category_usage.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.start_work.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_approval.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.attribute_language_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_contract.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.multi_language_attribute_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_certification.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.class_usage_effectivity_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_effectivity_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.rule_superseded_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_security_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_security_classification.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_date_and_time_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.satisfied_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_person_and_organization_assignment.items,
+[automotive_design.applied_certification_assignment.items](../../dd/d45/classautomotive__design_1_1applied__certification__assignment.html#afc07867189a9b5a985cfad25f07c5fa0),
+[automotive_design.representation.items](../../d8/de0/classautomotive__design_1_1representation.html#aa8058fe959724be16897e4409e870128),
+[automotive_design.applied_organization_assignment.items](../../dc/dbe/classautomotive__design_1_1applied__organization__assignment.html#a38b623dac08b52734a848acb4a368220),
+[automotive_design.applied_date_and_time_assignment.items](../../d7/d48/classautomotive__design_1_1applied__date__and__time__assignment.html#a3683b15731cd5df5f12e9107f244876e),
+[automotive_design.applied_external_identification_assignment.items](../../df/d97/classautomotive__design_1_1applied__external__identification__assignment.html#a3bfe720c46b0a03acbf09b737bcb1639),
+[automotive_design.applied_event_occurrence_assignment.items](../../dc/d23/classautomotive__design_1_1applied__event__occurrence__assignment.html#a673b0e0ff0c4b9de832cf6788c37805a),
+[automotive_design.configured_effectivity_assignment.items](../../d2/db6/classautomotive__design_1_1configured__effectivity__assignment.html#a0c01e15e0f456c393e26f53b5e76f08d),
+[automotive_design.language_assignment.items](../../db/d85/classautomotive__design_1_1language__assignment.html#ac4272f2a7c71fd8116e8f6c875f41669),
+[automotive_design.applied_date_assignment.items](../../df/d17/classautomotive__design_1_1applied__date__assignment.html#a470d84841318997be18a20e5e5baa187),
+[automotive_design.draughting_title.items](../../d0/db5/classautomotive__design_1_1draughting__title.html#af4c215d612efced643cb1dc3370fd214),
+[automotive_design.applied_presented_item.items](../../dc/d81/classautomotive__design_1_1applied__presented__item.html#a1ea4364ba92a6fc0e03a5f06c7efccd4),
+[automotive_design.applied_action_request_assignment.items](../../dd/dc6/classautomotive__design_1_1applied__action__request__assignment.html#a698868336b177caf3017e5a10722190c),
+[automotive_design.applied_group_assignment.items](../../d5/d50/classautomotive__design_1_1applied__group__assignment.html#a590195eba87185a05df0e60a7f3f3b22),
+[automotive_design.applied_contract_assignment.items](../../dd/dc6/classautomotive__design_1_1applied__contract__assignment.html#acd7694777ebed2989edf19dd3e69037e),
+[automotive_design.applied_classification_assignment.items](../../d6/dce/classautomotive__design_1_1applied__classification__assignment.html#afbc41c1116be738577157bf7860bc09a),
+[automotive_design.applied_identification_assignment.items](../../df/dcd/classautomotive__design_1_1applied__identification__assignment.html#ace8826c142018b84e9d8da903829eacc),
+[automotive_design.applied_time_interval_assignment.items](../../d8/d45/classautomotive__design_1_1applied__time__interval__assignment.html#a7cf9cf0865d54da5140684f248eabd25),
+[automotive_design.applied_ineffectivity_assignment.items](../../d8/d1d/classautomotive__design_1_1applied__ineffectivity__assignment.html#a8625f8fc3a2838ce931204c12626c2c8),
+[automotive_design.applied_organizational_project_assignment.items](../../dd/dfe/classautomotive__design_1_1applied__organizational__project__assignment.html#ac083c8f5ae5088516bbd8dd2407a09e2),
+[automotive_design.applied_approval_assignment.items](../../d1/d8c/classautomotive__design_1_1applied__approval__assignment.html#a4cdf62612b9f9acb14e4167c253bca3d),
+[automotive_design.applied_document_reference.items](../../d4/ddf/classautomotive__design_1_1applied__document__reference.html#a398f76353c1141393432cb1d14ab99a3),
+[automotive_design.applied_name_assignment.items](../../d5/d73/classautomotive__design_1_1applied__name__assignment.html#a0a1f9f5f74d1874a3ee959c48dfbfa63),
+[automotive_design.configured_effectivity_context_assignment.items](../../db/d57/classautomotive__design_1_1configured__effectivity__context__assignment.html#ad1a57c6c7092d35808ee9b1be9ac336e),
+[automotive_design.product_concept_feature_category_usage.items](../../d3/d64/classautomotive__design_1_1product__concept__feature__category__usage.html#a8468fd5c9569d19f8bc7705494cec85f),
+[automotive_design.attribute_language_assignment.items](../../d4/d38/classautomotive__design_1_1attribute__language__assignment.html#a5eaa9ec7178e95ec6ad72c472d7bfd09),
+[automotive_design.multi_language_attribute_assignment.items](../../d8/d96/classautomotive__design_1_1multi__language__attribute__assignment.html#ae4faa367d7248e9e67dcae5ede8b1641),
+[automotive_design.class_usage_effectivity_context_assignment.items](../../d2/de0/classautomotive__design_1_1class__usage__effectivity__context__assignment.html#a497f11ddf97b1e9ead750c0be2900f58),
+[automotive_design.applied_effectivity_assignment.items](../../d0/d27/classautomotive__design_1_1applied__effectivity__assignment.html#a49fce97029da4d8bdab097accdca0197),
+[automotive_design.applied_action_assignment.items](../../d8/d48/classautomotive__design_1_1applied__action__assignment.html#a1787a8d481bc5c5cdba3f40e57485d71),
+[automotive_design.applied_security_classification_assignment.items](../../d4/d45/classautomotive__design_1_1applied__security__classification__assignment.html#a5aded10b9e9391f2e9f9c750ff760baf),
+[automotive_design.applied_document_usage_constraint_assignment.items](../../d9/d45/classautomotive__design_1_1applied__document__usage__constraint__assignment.html#a5f2ed0c9627fc1ad08900038e670c596),
+[automotive_design.applied_person_and_organization_assignment.items](../../dc/d2b/classautomotive__design_1_1applied__person__and__organization__assignment.html#a285786dbcf6a5a989812eb36bf70f952),
+[config_control_design.representation.items](../../d4/d7a/classconfig__control__design_1_1representation.html#a5889d385cfc9fb2bc6209d9bd72f508e),
+[config_control_design.cc_design_person_and_organization_assignment.items](../../d5/dd0/classconfig__control__design_1_1cc__design__person__and__organization__assignment.html#ad747daa2c000be5e6f4b1c28ecfdb4f1),
+[config_control_design.change_request.items](../../d2/deb/classconfig__control__design_1_1change__request.html#aa3f028210ac33783717b05c371fab1e5),
+[config_control_design.start_request.items](../../dc/d58/classconfig__control__design_1_1start__request.html#ac859408c32eb73b56020a761c565c84d),
+[config_control_design.cc_design_specification_reference.items](../../db/df7/classconfig__control__design_1_1cc__design__specification__reference.html#aaa3dd2d787616ec2c5124d51826852ee),
+[config_control_design.change.items](../../d5/da1/classconfig__control__design_1_1change.html#aa50230acb44b94c58b687d04db813faf),
+[config_control_design.start_work.items](../../db/d53/classconfig__control__design_1_1start__work.html#a083c779f261d355e3312161926bd81b9),
+[config_control_design.cc_design_approval.items](../../da/da7/classconfig__control__design_1_1cc__design__approval.html#ab0bad25523aecd6340904aa33e610b12),
+[config_control_design.cc_design_contract.items](../../d3/da3/classconfig__control__design_1_1cc__design__contract.html#abeee4c10665d9ae80dcbd252f7a9bc61),
+[config_control_design.cc_design_certification.items](../../de/dc3/classconfig__control__design_1_1cc__design__certification.html#ab4d616b3ca9333630451948ee0b3c7f0),
+[config_control_design.cc_design_security_classification.items](../../d2/d55/classconfig__control__design_1_1cc__design__security__classification.html#a4cfbccfc11ae8116d7a4b517a6579b6a),
+[config_control_design.cc_design_date_and_time_assignment.items](../../d6/d25/classconfig__control__design_1_1cc__design__date__and__time__assignment.html#a1a0c05092fb60e5c3f6e3d448a80b323),
+[ifc2x3.ifcrepresentation.items](../../df/d50/classifc2x3_1_1ifcrepresentation.html#a8f3af20e58ebeeb74ea91a3b3365298d),
+[ifc4.ifcrepresentation.items](../../d9/d6a/classifc4_1_1ifcrepresentation.html#a3633c0115d4adefebf15d983b39b1aca),
+[nlohmann::basic_json< ObjectType, ArrayType, StringType, BooleanType,
+NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType,
+JSONSerializer, BinaryType
+>.items()](../../d9/dcc/classnlohmann_1_1basic__json.html#a02ed1d1f38310ccc2fbb02d2b75387a2),
+ColorPickerPopup.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.pcurve.reference_to_curve,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.degenerate_pcurve.reference_to_curve,
+[automotive_design.pcurve.reference_to_curve](../../d4/d4b/classautomotive__design_1_1pcurve.html#aada7e8ab591f75c940ef0b5517a2feac),
+[automotive_design.degenerate_pcurve.reference_to_curve](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#aa5a684879ec4d46008e9814748bb7d76),
+[config_control_design.pcurve.reference_to_curve](../../d8/d67/classconfig__control__design_1_1pcurve.html#a592f3ab139c5db3adce9cc523a412845),
+[config_control_design.degenerate_pcurve.reference_to_curve](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#a8654b2f7d5676ec5c147e0f9e46b03aa),
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.dimensional_characteristic_representation.representation,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_property_representation.representation,
+[automotive_design.resource_property_representation.representation](../../df/dd2/classautomotive__design_1_1resource__property__representation.html#aabf807f5a585e0dc65f6bde51a345193),
+[automotive_design.dimensional_characteristic_representation.representation](../../d7/d06/classautomotive__design_1_1dimensional__characteristic__representation.html#aef8c6d21bfbb31e6ab5b842c3ebbfe8a),
+[automotive_design.action_property_representation.representation](../../de/d37/classautomotive__design_1_1action__property__representation.html#a9838a5cf28e7f2839e5a3d33799dff8f),
+[ifc2x3.ifcproduct.representation](../../d1/d19/classifc2x3_1_1ifcproduct.html#aad7175e7da72975e17051cf55140d82f),
+[ifc4.ifcproduct.representation](../../d6/dab/classifc4_1_1ifcproduct.html#ac60a1507853e14d15199efeb5e03e31f),
+and
+[Mesh::MeshObject.representation()](../../d8/dcc/classMesh_1_1MeshObject.html#aa052a8f4b47816f1165132d577323aed).
+
+## ◆ wr2()
+
+def config_control_design.pcurve.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+References Py::MapBase< T >.items(),
+[Gui::ElementColors::Private.items](../../d8/dc9/classElementColors_1_1Private.html#ac06b624b9c4165c0a6fc90aa8b319181),
+[Gui::DocumentObjectData.items](../../d6/d82/classGui_1_1DocumentObjectData.html#a8848f66de88d9073d4a2abfd0677848d),
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_document_usage_constraint_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_certification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.representation.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_organization_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_method_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_date_and_time_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_attribute_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.assigned_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_external_identification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_event_occurrence_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configured_effectivity_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_person_and_organization_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_date_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.draughting_title.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_presented_item.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.change_request.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.instance_usage_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document_identifier_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_action_request_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.breakdown_element_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.sourced_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_contract_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.requirement_assigned_object.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.satisfying_item.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_group_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_identification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.start_request.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_specification_reference.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_time_interval_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_organizational_project_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.change.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.source_for_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_approval_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_document_reference.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configured_effectivity_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_feature_category_usage.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.start_work.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_approval.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.attribute_language_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_contract.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.multi_language_attribute_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_certification.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.class_usage_effectivity_context_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_effectivity_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.rule_superseded_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_security_classification_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_security_classification.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.cc_design_date_and_time_assignment.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.satisfied_requirement.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.applied_person_and_organization_assignment.items,
+[automotive_design.applied_certification_assignment.items](../../dd/d45/classautomotive__design_1_1applied__certification__assignment.html#afc07867189a9b5a985cfad25f07c5fa0),
+[automotive_design.representation.items](../../d8/de0/classautomotive__design_1_1representation.html#aa8058fe959724be16897e4409e870128),
+[automotive_design.applied_organization_assignment.items](../../dc/dbe/classautomotive__design_1_1applied__organization__assignment.html#a38b623dac08b52734a848acb4a368220),
+[automotive_design.applied_date_and_time_assignment.items](../../d7/d48/classautomotive__design_1_1applied__date__and__time__assignment.html#a3683b15731cd5df5f12e9107f244876e),
+[automotive_design.applied_external_identification_assignment.items](../../df/d97/classautomotive__design_1_1applied__external__identification__assignment.html#a3bfe720c46b0a03acbf09b737bcb1639),
+[automotive_design.applied_event_occurrence_assignment.items](../../dc/d23/classautomotive__design_1_1applied__event__occurrence__assignment.html#a673b0e0ff0c4b9de832cf6788c37805a),
+[automotive_design.configured_effectivity_assignment.items](../../d2/db6/classautomotive__design_1_1configured__effectivity__assignment.html#a0c01e15e0f456c393e26f53b5e76f08d),
+[automotive_design.language_assignment.items](../../db/d85/classautomotive__design_1_1language__assignment.html#ac4272f2a7c71fd8116e8f6c875f41669),
+[automotive_design.applied_date_assignment.items](../../df/d17/classautomotive__design_1_1applied__date__assignment.html#a470d84841318997be18a20e5e5baa187),
+[automotive_design.draughting_title.items](../../d0/db5/classautomotive__design_1_1draughting__title.html#af4c215d612efced643cb1dc3370fd214),
+[automotive_design.applied_presented_item.items](../../dc/d81/classautomotive__design_1_1applied__presented__item.html#a1ea4364ba92a6fc0e03a5f06c7efccd4),
+[automotive_design.applied_action_request_assignment.items](../../dd/dc6/classautomotive__design_1_1applied__action__request__assignment.html#a698868336b177caf3017e5a10722190c),
+[automotive_design.applied_group_assignment.items](../../d5/d50/classautomotive__design_1_1applied__group__assignment.html#a590195eba87185a05df0e60a7f3f3b22),
+[automotive_design.applied_contract_assignment.items](../../dd/dc6/classautomotive__design_1_1applied__contract__assignment.html#acd7694777ebed2989edf19dd3e69037e),
+[automotive_design.applied_classification_assignment.items](../../d6/dce/classautomotive__design_1_1applied__classification__assignment.html#afbc41c1116be738577157bf7860bc09a),
+[automotive_design.applied_identification_assignment.items](../../df/dcd/classautomotive__design_1_1applied__identification__assignment.html#ace8826c142018b84e9d8da903829eacc),
+[automotive_design.applied_time_interval_assignment.items](../../d8/d45/classautomotive__design_1_1applied__time__interval__assignment.html#a7cf9cf0865d54da5140684f248eabd25),
+[automotive_design.applied_ineffectivity_assignment.items](../../d8/d1d/classautomotive__design_1_1applied__ineffectivity__assignment.html#a8625f8fc3a2838ce931204c12626c2c8),
+[automotive_design.applied_organizational_project_assignment.items](../../dd/dfe/classautomotive__design_1_1applied__organizational__project__assignment.html#ac083c8f5ae5088516bbd8dd2407a09e2),
+[automotive_design.applied_approval_assignment.items](../../d1/d8c/classautomotive__design_1_1applied__approval__assignment.html#a4cdf62612b9f9acb14e4167c253bca3d),
+[automotive_design.applied_document_reference.items](../../d4/ddf/classautomotive__design_1_1applied__document__reference.html#a398f76353c1141393432cb1d14ab99a3),
+[automotive_design.applied_name_assignment.items](../../d5/d73/classautomotive__design_1_1applied__name__assignment.html#a0a1f9f5f74d1874a3ee959c48dfbfa63),
+[automotive_design.configured_effectivity_context_assignment.items](../../db/d57/classautomotive__design_1_1configured__effectivity__context__assignment.html#ad1a57c6c7092d35808ee9b1be9ac336e),
+[automotive_design.product_concept_feature_category_usage.items](../../d3/d64/classautomotive__design_1_1product__concept__feature__category__usage.html#a8468fd5c9569d19f8bc7705494cec85f),
+[automotive_design.attribute_language_assignment.items](../../d4/d38/classautomotive__design_1_1attribute__language__assignment.html#a5eaa9ec7178e95ec6ad72c472d7bfd09),
+[automotive_design.multi_language_attribute_assignment.items](../../d8/d96/classautomotive__design_1_1multi__language__attribute__assignment.html#ae4faa367d7248e9e67dcae5ede8b1641),
+[automotive_design.class_usage_effectivity_context_assignment.items](../../d2/de0/classautomotive__design_1_1class__usage__effectivity__context__assignment.html#a497f11ddf97b1e9ead750c0be2900f58),
+[automotive_design.applied_effectivity_assignment.items](../../d0/d27/classautomotive__design_1_1applied__effectivity__assignment.html#a49fce97029da4d8bdab097accdca0197),
+[automotive_design.applied_action_assignment.items](../../d8/d48/classautomotive__design_1_1applied__action__assignment.html#a1787a8d481bc5c5cdba3f40e57485d71),
+[automotive_design.applied_security_classification_assignment.items](../../d4/d45/classautomotive__design_1_1applied__security__classification__assignment.html#a5aded10b9e9391f2e9f9c750ff760baf),
+[automotive_design.applied_document_usage_constraint_assignment.items](../../d9/d45/classautomotive__design_1_1applied__document__usage__constraint__assignment.html#a5f2ed0c9627fc1ad08900038e670c596),
+[automotive_design.applied_person_and_organization_assignment.items](../../dc/d2b/classautomotive__design_1_1applied__person__and__organization__assignment.html#a285786dbcf6a5a989812eb36bf70f952),
+[config_control_design.representation.items](../../d4/d7a/classconfig__control__design_1_1representation.html#a5889d385cfc9fb2bc6209d9bd72f508e),
+[config_control_design.cc_design_person_and_organization_assignment.items](../../d5/dd0/classconfig__control__design_1_1cc__design__person__and__organization__assignment.html#ad747daa2c000be5e6f4b1c28ecfdb4f1),
+[config_control_design.change_request.items](../../d2/deb/classconfig__control__design_1_1change__request.html#aa3f028210ac33783717b05c371fab1e5),
+[config_control_design.start_request.items](../../dc/d58/classconfig__control__design_1_1start__request.html#ac859408c32eb73b56020a761c565c84d),
+[config_control_design.cc_design_specification_reference.items](../../db/df7/classconfig__control__design_1_1cc__design__specification__reference.html#aaa3dd2d787616ec2c5124d51826852ee),
+[config_control_design.change.items](../../d5/da1/classconfig__control__design_1_1change.html#aa50230acb44b94c58b687d04db813faf),
+[config_control_design.start_work.items](../../db/d53/classconfig__control__design_1_1start__work.html#a083c779f261d355e3312161926bd81b9),
+[config_control_design.cc_design_approval.items](../../da/da7/classconfig__control__design_1_1cc__design__approval.html#ab0bad25523aecd6340904aa33e610b12),
+[config_control_design.cc_design_contract.items](../../d3/da3/classconfig__control__design_1_1cc__design__contract.html#abeee4c10665d9ae80dcbd252f7a9bc61),
+[config_control_design.cc_design_certification.items](../../de/dc3/classconfig__control__design_1_1cc__design__certification.html#ab4d616b3ca9333630451948ee0b3c7f0),
+[config_control_design.cc_design_security_classification.items](../../d2/d55/classconfig__control__design_1_1cc__design__security__classification.html#a4cfbccfc11ae8116d7a4b517a6579b6a),
+[config_control_design.cc_design_date_and_time_assignment.items](../../d6/d25/classconfig__control__design_1_1cc__design__date__and__time__assignment.html#a1a0c05092fb60e5c3f6e3d448a80b323),
+[ifc2x3.ifcrepresentation.items](../../df/d50/classifc2x3_1_1ifcrepresentation.html#a8f3af20e58ebeeb74ea91a3b3365298d),
+[ifc4.ifcrepresentation.items](../../d9/d6a/classifc4_1_1ifcrepresentation.html#a3633c0115d4adefebf15d983b39b1aca),
+[nlohmann::basic_json< ObjectType, ArrayType, StringType, BooleanType,
+NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType,
+JSONSerializer, BinaryType
+>.items()](../../d9/dcc/classnlohmann_1_1basic__json.html#a02ed1d1f38310ccc2fbb02d2b75387a2),
+ColorPickerPopup.items,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.pcurve.reference_to_curve,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.degenerate_pcurve.reference_to_curve,
+[automotive_design.pcurve.reference_to_curve](../../d4/d4b/classautomotive__design_1_1pcurve.html#aada7e8ab591f75c940ef0b5517a2feac),
+[automotive_design.degenerate_pcurve.reference_to_curve](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#aa5a684879ec4d46008e9814748bb7d76),
+[config_control_design.pcurve.reference_to_curve](../../d8/d67/classconfig__control__design_1_1pcurve.html#a592f3ab139c5db3adce9cc523a412845),
+[config_control_design.degenerate_pcurve.reference_to_curve](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#a8654b2f7d5676ec5c147e0f9e46b03aa),
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.dimensional_characteristic_representation.representation,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_property_representation.representation,
+[automotive_design.resource_property_representation.representation](../../df/dd2/classautomotive__design_1_1resource__property__representation.html#aabf807f5a585e0dc65f6bde51a345193),
+[automotive_design.dimensional_characteristic_representation.representation](../../d7/d06/classautomotive__design_1_1dimensional__characteristic__representation.html#aef8c6d21bfbb31e6ab5b842c3ebbfe8a),
+[automotive_design.action_property_representation.representation](../../de/d37/classautomotive__design_1_1action__property__representation.html#a9838a5cf28e7f2839e5a3d33799dff8f),
+[ifc2x3.ifcproduct.representation](../../d1/d19/classifc2x3_1_1ifcproduct.html#aad7175e7da72975e17051cf55140d82f),
+[ifc4.ifcproduct.representation](../../d6/dab/classifc4_1_1ifcproduct.html#ac60a1507853e14d15199efeb5e03e31f),
+and
+[Mesh::MeshObject.representation()](../../d8/dcc/classMesh_1_1MeshObject.html#aa052a8f4b47816f1165132d577323aed).
+
+## ◆ wr3()
+
+def config_control_design.pcurve.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## Member Data Documentation
+
+## ◆ basis_surface
+
+config_control_design.pcurve.basis_surface  
+---  
+  
+Referenced by
+[automotive_design.swept_area_solid.wr1()](../../d9/d56/classautomotive__design_1_1swept__area__solid.html#af06ba2d89fb93f3538bd0cfb3899ca7d),
+[automotive_design.surface_curve_swept_area_solid.wr1()](../../dc/db7/classautomotive__design_1_1surface__curve__swept__area__solid.html#a9c3872eaf0dbc9d98d40429cc3dbf773),
+[automotive_design.composite_curve_on_surface.wr1()](../../d9/d62/classautomotive__design_1_1composite__curve__on__surface.html#aa4c4c80418d0ac5f7c0d8c14865f4126),
+[config_control_design.composite_curve_on_surface.wr1()](../../da/d0c/classconfig__control__design_1_1composite__curve__on__surface.html#af1248e63f087994050d924b1f03ce2a7),
+[automotive_design.curve_bounded_surface.wr2()](../../de/dfd/classautomotive__design_1_1curve__bounded__surface.html#aee9bebad9973fccb90b85a3418fe6259),
+[config_control_design.curve_bounded_surface.wr2()](../../dc/d61/classconfig__control__design_1_1curve__bounded__surface.html#a6c40b7a7eaace49a3aabfe3fa47d2a35),
+[automotive_design.rectangular_trimmed_surface.wr3()](../../d3/d74/classautomotive__design_1_1rectangular__trimmed__surface.html#a4c4fa09bc28e0979821dcb919bc70801),
+[config_control_design.rectangular_trimmed_surface.wr3()](../../d3/df2/classconfig__control__design_1_1rectangular__trimmed__surface.html#af917d1182a7d07aa13d556e19e3be76a),
+[automotive_design.rectangular_trimmed_surface.wr4()](../../d3/d74/classautomotive__design_1_1rectangular__trimmed__surface.html#afc4757205d91cd02edfd30794d089939),
+and
+[config_control_design.rectangular_trimmed_surface.wr4()](../../d3/df2/classconfig__control__design_1_1rectangular__trimmed__surface.html#a58eb9b75ab01c968f17742257c5de3e2).
+
+## ◆ dim
+
+config_control_design.pcurve.dim  
+---  
+  
+Referenced by
+[ifc4.ifccartesiantransformationoperator3d.axis3is3d()](../../d0/d2f/classifc4_1_1ifccartesiantransformationoperator3d.html#ad896e8cc3cd14db5cdcec81e4786eec1),
+[ifc4.ifcaxis2placement3d.axisis3d()](../../d1/db1/classifc4_1_1ifcaxis2placement3d.html#ab2f3c3d035505e73f4c12cbceeeae151),
+[ifc2x3.ifcsweptsurface.dim()](../../d6/df8/classifc2x3_1_1ifcsweptsurface.html#a5eb3187a1e204615771d1c71c0e05346),
+[ifc2x3.ifcplacement.dim()](../../dd/dfd/classifc2x3_1_1ifcplacement.html#ac4dbcef9f43207432d3fa6d838dbdfb7),
+[ifc2x3.ifccartesiantransformationoperator.dim()](../../d8/d5d/classifc2x3_1_1ifccartesiantransformationoperator.html#ad46e1f75ce8f2e0d1937c900059809bb),
+[ifc2x3.ifccurveboundedplane.dim()](../../d2/dff/classifc2x3_1_1ifccurveboundedplane.html#a4b77cf901367c1cd92ffe6ef787c2f69),
+[ifc2x3.ifccompositecurvesegment.dim()](../../dd/d6e/classifc2x3_1_1ifccompositecurvesegment.html#a6014167f48b54f55af87dec16702de32),
+[ifc2x3.ifcgeometricset.dim()](../../dc/dab/classifc2x3_1_1ifcgeometricset.html#af569a780b93b69b4dce81b08ddd66f89),
+[ifc2x3.ifcrectangulartrimmedsurface.dim()](../../d6/d82/classifc2x3_1_1ifcrectangulartrimmedsurface.html#a9864cd346a9caa1e4e8cf5a282192889),
+[ifc2x3.ifcbooleanresult.dim()](../../dd/d21/classifc2x3_1_1ifcbooleanresult.html#aa2c029e00fa7348f4841b70fb651f921),
+[ifc2x3.ifcelementarysurface.dim()](../../dc/d78/classifc2x3_1_1ifcelementarysurface.html#aa9fc1e4bb64357615bba0ad16fa6bc10),
+[ifc2x3.ifcpointoncurve.dim()](../../d4/dfb/classifc2x3_1_1ifcpointoncurve.html#a97ff0b230b758d8c719d3dbe23a653a8),
+[ifc2x3.ifcpointonsurface.dim()](../../d0/d83/classifc2x3_1_1ifcpointonsurface.html#a470f7e831cabe7ab72d99a5afbcb5906),
+[ifc2x3.ifcvector.dim()](../../d3/d7f/classifc2x3_1_1ifcvector.html#acba206090ebaf1068c18b522050ab356),
+[ifc4.ifccompositecurvesegment.dim()](../../da/d5c/classifc4_1_1ifccompositecurvesegment.html#af5316372982441eb627ec543094e86aa),
+[ifc4.ifcplacement.dim()](../../d4/da3/classifc4_1_1ifcplacement.html#a4ff119d99b8ac53bebec7145128d0452),
+[ifc4.ifccartesiantransformationoperator.dim()](../../d4/d39/classifc4_1_1ifccartesiantransformationoperator.html#a0a344ffdcb72a602de421822f59573dc),
+[ifc4.ifcgeometricset.dim()](../../d1/d95/classifc4_1_1ifcgeometricset.html#a795b14ef2879e9acc0c066d66e122b9b),
+[ifc4.ifcbooleanresult.dim()](../../d0/d2c/classifc4_1_1ifcbooleanresult.html#aa87cd3a0d4ac5e137c88d13ce336ba19),
+[ifc4.ifcpointoncurve.dim()](../../d3/d46/classifc4_1_1ifcpointoncurve.html#ab0edcecba3e98c552d95d8ec2cbfd963),
+[ifc4.ifcpointonsurface.dim()](../../d5/df4/classifc4_1_1ifcpointonsurface.html#a400416d6b069afa2e89e5d43ec6a37f1),
+[ifc4.ifcvector.dim()](../../d0/d94/classifc4_1_1ifcvector.html#a472491a5b13134e67210054e2ac45890),
+[ifc4.ifcaxis2placement3d.refdiris3d()](../../d1/db1/classifc4_1_1ifcaxis2placement3d.html#a2249e08fb14d97b33009f9638979ba10),
+[ifc4.ifcfillareastylehatching.refhatchline2d()](../../d3/d40/classifc4_1_1ifcfillareastylehatching.html#a775eb971d46de59a558c12d4cbf073d2),
+[automotive_design.axis2_placement_3d.wr2()](../../d8/d42/classautomotive__design_1_1axis2__placement__3d.html#a53e4146e50cdc12f6f425f5ae2a015e7),
+[config_control_design.axis2_placement_3d.wr2()](../../dd/d2a/classconfig__control__design_1_1axis2__placement__3d.html#a8510a502b056a9261c4b9cf7323f51b4),
+[ifc2x3.ifcaxis2placement3d.wr2()](../../d8/dbf/classifc2x3_1_1ifcaxis2placement3d.html#aab8fcc584ec7c8fa06ffd345c95b8663),
+[ifc2x3.ifcfillareastylehatching.wr23()](../../da/d61/classifc2x3_1_1ifcfillareastylehatching.html#a8a321538b336a12f4d031b3c01cb3784),
+[automotive_design.axis2_placement_3d.wr3()](../../d8/d42/classautomotive__design_1_1axis2__placement__3d.html#aef9f7d5b239a07bf44a95014ce73b61d),
+[config_control_design.axis2_placement_3d.wr3()](../../dd/d2a/classconfig__control__design_1_1axis2__placement__3d.html#aea36ab2e3de9512bb5d028dfeaea109b),
+[ifc2x3.ifcaxis2placement3d.wr3()](../../d8/dbf/classifc2x3_1_1ifcaxis2placement3d.html#a6df2d82e8ad19735331147ae1689c8be),
+and
+[ifc2x3.ifccartesiantransformationoperator3d.wr4()](../../de/d03/classifc2x3_1_1ifccartesiantransformationoperator3d.html#a68b1818b4a81ee6941337c29f3f4d8d7).
+
+## ◆ reference_to_curve
+
+config_control_design.pcurve.reference_to_curve  
+---  
+  
+Referenced by
+[automotive_design.pcurve.wr1()](../../d4/d4b/classautomotive__design_1_1pcurve.html#a6c4a5ef371ff37f5f5e7135ec479d77c),
+[automotive_design.degenerate_pcurve.wr1()](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#a3e59549e46796a2d3373707c359f962b),
+[config_control_design.pcurve.wr1()](../../d8/d67/classconfig__control__design_1_1pcurve.html#a081b5cdb8f8e42e856b54ca97fe9ba05),
+[config_control_design.degenerate_pcurve.wr1()](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#aae1772a95d3ed412ea932efd74ac2697),
+[automotive_design.pcurve.wr2()](../../d4/d4b/classautomotive__design_1_1pcurve.html#a6c8a7a5f4d71cc2803cfbb42ae9b04c1),
+[automotive_design.degenerate_pcurve.wr2()](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#a8e7be64a5c78f0540518110da63a3fd9),
+[config_control_design.pcurve.wr2()](../../d8/d67/classconfig__control__design_1_1pcurve.html#a2748ae4c83d716e0e15781382f5fd9d7),
+and
+[config_control_design.degenerate_pcurve.wr2()](../../d3/d07/classconfig__control__design_1_1degenerate__pcurve.html#ac95757f1b795f22cd0ba44a1ffbb0474).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/config_control_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

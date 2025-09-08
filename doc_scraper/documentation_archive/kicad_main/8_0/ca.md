@@ -1,0 +1,44 @@
+---
+url: https://docs.kicad.org/8.0/ca
+scraped_at: 2025-09-08T15:26:32.567589
+title: Untitled
+---
+
+Toggle navigation [ ![Documentation | KiCad](/img/kicad_logo_small.png) Docs ](/)
+
+  * 8.0 
+    * [ 5.1 ](/5.1)
+    * [ 6.0 ](/6.0)
+    * [ 7.0 ](/7.0)
+    * [ 8.0 ](/8.0)
+    * [ 9.0 ](/9.0)
+    * [ nightly ](/master)
+  * Català 
+    * [ English ](/8.0/en)
+    * [ Català ](/8.0/ca)
+    * [ Deutsch ](/8.0/de)
+    * [ Español ](/8.0/es)
+    * [ Français ](/8.0/fr)
+    * [ Indonesian ](/8.0/id)
+    * [ Italiano ](/8.0/it)
+    * [ 日本語 ](/8.0/ja)
+    * [ Polski ](/8.0/pl)
+    * [ Русский ](/8.0/ru)
+    * [ 简体中文 ](/8.0/zh)
+
+  * [ ![](/img/guide-icons/placeholder.png) Iniciació en KiCad Alternate formats [__PDF](/8.0/ca/getting_started_in_kicad/getting_started_in_kicad.pdf) ](/8.0/ca/getting_started_in_kicad/getting_started_in_kicad.html)
+  * [ ![](/img/guide-icons/kicad.png) KiCad Alternate formats [__PDF](/8.0/ca/kicad/kicad.pdf) ](/8.0/ca/kicad/kicad.html)
+
+* * *
+
+  * [ ____ ](https://forum.kicad.info/)
+  * [ ____ ](https://gitlab.com/kicad)
+
+Unless otherwise stated, all text and images on this website are licensed
+under either a choice of the [Creative Commons Attributions
+License](/about/licenses/#_creative_commons_attribution_3_0_unported), version
+3.0 or later; or the [General Public License
+version](/about/licenses/#_gnu_general_public_license_v3) 3 or later. This
+does not include the KiCad source code, libraries, documentation, and any
+third party tools or products mentioned on the website.
+

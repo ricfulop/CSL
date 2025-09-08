@@ -1,0 +1,184 @@
+---
+url: https://freecad.github.io/SourceDoc/de/d5e/classautomotive__design_1_1geometric__representation__item.html
+scraped_at: 2025-09-08T15:06:07.254606
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [geometric_representation_item](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html)
+
+[List of all members](../../df/dd4/classautomotive__design_1_1geometric__representation__item-members.html) | Public Member Functions
+
+automotive_design.geometric_representation_item Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [dim](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#aef245618450610e88788dcaea46ad742) ()  
+def | [wr1](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#a9677d2be5fc5c7c8ccb6819380198bbc) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+def | [name](../../d3/d20/classautomotive__design_1_1representation__item.html#a33b5812d92aa0d107b4fd4274c17b9d9) ()  
+def | [wr1](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+|
+[name](../../d3/d20/classautomotive__design_1_1representation__item.html#a3d48fe912053adaf5f187b606fa81c87)  
+  
+## Detailed Description
+
+    
+    
+    Entity geometric_representation_item definition.
+    
+        :param dim
+        :type dim:dimension_count
+
+## Member Function Documentation
+
+## ◆ dim()
+
+def automotive_design.geometric_representation_item.dim  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+[automotive_design.dimension_of()](../../d4/ddf/namespaceautomotive__design.html#a306afe97cb583355724fc1cc60b11e2e).
+
+Referenced by
+[ifc4.ifccartesiantransformationoperator3d.axis3is3d()](../../d0/d2f/classifc4_1_1ifccartesiantransformationoperator3d.html#ad896e8cc3cd14db5cdcec81e4786eec1),
+[ifc4.ifcaxis2placement3d.axisis3d()](../../d1/db1/classifc4_1_1ifcaxis2placement3d.html#ab2f3c3d035505e73f4c12cbceeeae151),
+[ifc2x3.ifcsweptsurface.dim()](../../d6/df8/classifc2x3_1_1ifcsweptsurface.html#a5eb3187a1e204615771d1c71c0e05346),
+[ifc2x3.ifcplacement.dim()](../../dd/dfd/classifc2x3_1_1ifcplacement.html#ac4dbcef9f43207432d3fa6d838dbdfb7),
+[ifc2x3.ifccartesiantransformationoperator.dim()](../../d8/d5d/classifc2x3_1_1ifccartesiantransformationoperator.html#ad46e1f75ce8f2e0d1937c900059809bb),
+[ifc2x3.ifccurveboundedplane.dim()](../../d2/dff/classifc2x3_1_1ifccurveboundedplane.html#a4b77cf901367c1cd92ffe6ef787c2f69),
+[ifc2x3.ifccompositecurvesegment.dim()](../../dd/d6e/classifc2x3_1_1ifccompositecurvesegment.html#a6014167f48b54f55af87dec16702de32),
+[ifc2x3.ifcgeometricset.dim()](../../dc/dab/classifc2x3_1_1ifcgeometricset.html#af569a780b93b69b4dce81b08ddd66f89),
+[ifc2x3.ifcrectangulartrimmedsurface.dim()](../../d6/d82/classifc2x3_1_1ifcrectangulartrimmedsurface.html#a9864cd346a9caa1e4e8cf5a282192889),
+[ifc2x3.ifcbooleanresult.dim()](../../dd/d21/classifc2x3_1_1ifcbooleanresult.html#aa2c029e00fa7348f4841b70fb651f921),
+[ifc2x3.ifcelementarysurface.dim()](../../dc/d78/classifc2x3_1_1ifcelementarysurface.html#aa9fc1e4bb64357615bba0ad16fa6bc10),
+[ifc2x3.ifcpointoncurve.dim()](../../d4/dfb/classifc2x3_1_1ifcpointoncurve.html#a97ff0b230b758d8c719d3dbe23a653a8),
+[ifc2x3.ifcpointonsurface.dim()](../../d0/d83/classifc2x3_1_1ifcpointonsurface.html#a470f7e831cabe7ab72d99a5afbcb5906),
+[ifc2x3.ifcvector.dim()](../../d3/d7f/classifc2x3_1_1ifcvector.html#acba206090ebaf1068c18b522050ab356),
+[ifc4.ifccompositecurvesegment.dim()](../../da/d5c/classifc4_1_1ifccompositecurvesegment.html#af5316372982441eb627ec543094e86aa),
+[ifc4.ifcplacement.dim()](../../d4/da3/classifc4_1_1ifcplacement.html#a4ff119d99b8ac53bebec7145128d0452),
+[ifc4.ifccartesiantransformationoperator.dim()](../../d4/d39/classifc4_1_1ifccartesiantransformationoperator.html#a0a344ffdcb72a602de421822f59573dc),
+[ifc4.ifcgeometricset.dim()](../../d1/d95/classifc4_1_1ifcgeometricset.html#a795b14ef2879e9acc0c066d66e122b9b),
+[ifc4.ifcbooleanresult.dim()](../../d0/d2c/classifc4_1_1ifcbooleanresult.html#aa87cd3a0d4ac5e137c88d13ce336ba19),
+[ifc4.ifcpointoncurve.dim()](../../d3/d46/classifc4_1_1ifcpointoncurve.html#ab0edcecba3e98c552d95d8ec2cbfd963),
+[ifc4.ifcpointonsurface.dim()](../../d5/df4/classifc4_1_1ifcpointonsurface.html#a400416d6b069afa2e89e5d43ec6a37f1),
+[ifc4.ifcvector.dim()](../../d0/d94/classifc4_1_1ifcvector.html#a472491a5b13134e67210054e2ac45890),
+[ifc4.ifcaxis2placement3d.refdiris3d()](../../d1/db1/classifc4_1_1ifcaxis2placement3d.html#a2249e08fb14d97b33009f9638979ba10),
+[ifc4.ifcfillareastylehatching.refhatchline2d()](../../d3/d40/classifc4_1_1ifcfillareastylehatching.html#a775eb971d46de59a558c12d4cbf073d2),
+[automotive_design.axis2_placement_3d.wr2()](../../d8/d42/classautomotive__design_1_1axis2__placement__3d.html#a53e4146e50cdc12f6f425f5ae2a015e7),
+[config_control_design.axis2_placement_3d.wr2()](../../dd/d2a/classconfig__control__design_1_1axis2__placement__3d.html#a8510a502b056a9261c4b9cf7323f51b4),
+[ifc2x3.ifcaxis2placement3d.wr2()](../../d8/dbf/classifc2x3_1_1ifcaxis2placement3d.html#aab8fcc584ec7c8fa06ffd345c95b8663),
+[ifc2x3.ifcfillareastylehatching.wr23()](../../da/d61/classifc2x3_1_1ifcfillareastylehatching.html#a8a321538b336a12f4d031b3c01cb3784),
+[automotive_design.axis2_placement_3d.wr3()](../../d8/d42/classautomotive__design_1_1axis2__placement__3d.html#aef9f7d5b239a07bf44a95014ce73b61d),
+[config_control_design.axis2_placement_3d.wr3()](../../dd/d2a/classconfig__control__design_1_1axis2__placement__3d.html#aea36ab2e3de9512bb5d028dfeaea109b),
+[ifc2x3.ifcaxis2placement3d.wr3()](../../d8/dbf/classifc2x3_1_1ifcaxis2placement3d.html#a6df2d82e8ad19735331147ae1689c8be),
+and
+[ifc2x3.ifccartesiantransformationoperator3d.wr4()](../../de/d03/classifc2x3_1_1ifccartesiantransformationoperator3d.html#a68b1818b4a81ee6941337c29f3f4d8d7).
+
+## ◆ wr1()
+
+def automotive_design.geometric_representation_item.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed).
+
+Reimplemented in
+[automotive_design.cartesian_transformation_operator](../../d7/d5c/classautomotive__design_1_1cartesian__transformation__operator.html#a987324a04550dde0d1c43151e17df2f9),
+[automotive_design.cartesian_transformation_operator_3d](../../da/dc9/classautomotive__design_1_1cartesian__transformation__operator__3d.html#a1532e28c1a806a5a3b86f4afe646a029),
+[automotive_design.camera_model](../../d3/de0/classautomotive__design_1_1camera__model.html#a256f09c8f83cd4a5c3c932576e4eac4b),
+[automotive_design.draughting_callout](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a28ae66d147cee76341c7723dc97c5199),
+[automotive_design.leader_directed_callout](../../d7/da1/classautomotive__design_1_1leader__directed__callout.html#a73681663d1b743fada7a58feb9717fb7),
+[automotive_design.leader_directed_dimension](../../db/d02/classautomotive__design_1_1leader__directed__dimension.html#a45b1d7f455b32b238444d696024610c3),
+[automotive_design.axis2_placement_2d](../../de/df8/classautomotive__design_1_1axis2__placement__2d.html#ae04cefbf1df7f4cbc52a879293dc7337),
+[automotive_design.composite_text](../../d4/d42/classautomotive__design_1_1composite__text.html#a644b013e9804e041aae4d71c018b8775),
+[automotive_design.b_spline_surface](../../d8/dc4/classautomotive__design_1_1b__spline__surface.html#a1ab1c681c70a774d87f229eb39a2c898),
+[automotive_design.axis1_placement](../../dd/d41/classautomotive__design_1_1axis1__placement.html#a3948049bafae274d25e2d2ed4ddeca06),
+[automotive_design.b_spline_curve](../../db/d4c/classautomotive__design_1_1b__spline__curve.html#a829091a18fd135e17b2b1ac639c5e510),
+[automotive_design.rational_b_spline_curve](../../d9/dde/classautomotive__design_1_1rational__b__spline__curve.html#a5e3d80b5dcfe98ab3c9d3354fbe52d62),
+[automotive_design.direction](../../d3/d36/classautomotive__design_1_1direction.html#aebaae84b5fd457035e9e17d18269295c),
+[automotive_design.light_source](../../db/db0/classautomotive__design_1_1light__source.html#a95d6334708a04c815dcbf732603845ad),
+[automotive_design.camera_model_d2](../../dc/d8a/classautomotive__design_1_1camera__model__d2.html#a11a66e06edba710a1c6f9d91bdb31cc7),
+[automotive_design.camera_model_d3](../../da/d39/classautomotive__design_1_1camera__model__d3.html#a692864aaa34e7a4d23b688544bca7ede),
+[automotive_design.swept_area_solid](../../d9/d56/classautomotive__design_1_1swept__area__solid.html#af06ba2d89fb93f3538bd0cfb3899ca7d),
+[automotive_design.surface_curve_swept_area_solid](../../dc/db7/classautomotive__design_1_1surface__curve__swept__area__solid.html#a9c3872eaf0dbc9d98d40429cc3dbf773),
+[automotive_design.offset_curve_3d](../../d2/dfb/classautomotive__design_1_1offset__curve__3d.html#a04fd48cc8498bfe9f153cb734520b334),
+[automotive_design.composite_curve](../../de/d2c/classautomotive__design_1_1composite__curve.html#a6c06ad45cd7346e7624b280655556968),
+[automotive_design.composite_curve_on_surface](../../d9/d62/classautomotive__design_1_1composite__curve__on__surface.html#aa4c4c80418d0ac5f7c0d8c14865f4126),
+[automotive_design.boundary_curve](../../d6/db8/classautomotive__design_1_1boundary__curve.html#a4c0ae421a9284e0352b0abe776092fec),
+[automotive_design.swept_disk_solid](../../d1/dcf/classautomotive__design_1_1swept__disk__solid.html#a3832c993dfe6479fb3d5b7ab64ec3157),
+[automotive_design.curve_replica](../../db/dc0/classautomotive__design_1_1curve__replica.html#a393b8e1be46d778352b0f45a114bdccf),
+[automotive_design.swept_face_solid](../../d1/d64/classautomotive__design_1_1swept__face__solid.html#a6ba90dcc401b0d407dd0ba8128a71e4f),
+[automotive_design.extruded_face_solid](../../dd/d43/classautomotive__design_1_1extruded__face__solid.html#a2fcf5f4e98797a0fddb17a49ae0b5591),
+[automotive_design.surface_curve](../../dd/dd4/classautomotive__design_1_1surface__curve.html#ae4ee554add41003d19e419cc8f1a0a7c),
+[automotive_design.parabola](../../da/d9b/classautomotive__design_1_1parabola.html#ab82435f660c311ed4cf20e96489fef23),
+[automotive_design.rectangular_composite_surface](../../d0/d43/classautomotive__design_1_1rectangular__composite__surface.html#a6f3a677bca8d668daaa3c9f0fb1ccf38),
+[automotive_design.shell_based_surface_model](../../d8/d94/classautomotive__design_1_1shell__based__surface__model.html#a249cc804180eec931ae3136e769f6de0),
+[automotive_design.vector](../../d4/de5/classautomotive__design_1_1vector.html#a2cb1e85a75d76e3ffed04d177f73b547),
+[automotive_design.pcurve](../../d4/d4b/classautomotive__design_1_1pcurve.html#a6c4a5ef371ff37f5f5e7135ec479d77c),
+[automotive_design.bounded_pcurve](../../d4/d5c/classautomotive__design_1_1bounded__pcurve.html#a4ec20aa584fd1a8af4c99a5c350743e2),
+[automotive_design.intersection_curve](../../de/d7a/classautomotive__design_1_1intersection__curve.html#a9f776070c2c732f2333688bb480bc02f),
+[automotive_design.trimmed_curve](../../de/d2b/classautomotive__design_1_1trimmed__curve.html#ae29181ff818c1daacb9da2795108b9f3),
+[automotive_design.projection_directed_callout](../../da/d35/classautomotive__design_1_1projection__directed__callout.html#a6cfed8ea779db6c090ee07664929b513),
+[automotive_design.bounded_surface_curve](../../de/d6d/classautomotive__design_1_1bounded__surface__curve.html#a17d0323c0be110c9d944a1812231c013),
+[automotive_design.surface_condition_callout](../../d8/d77/classautomotive__design_1_1surface__condition__callout.html#a9679c0662f397cafcbee6fb6a2f33470),
+[automotive_design.kinematic_frame_based_transformation](../../d6/d82/classautomotive__design_1_1kinematic__frame__based__transformation.html#ad309704b399835e57679efc7849d2b8c),
+[automotive_design.right_angular_wedge](../../d4/df4/classautomotive__design_1_1right__angular__wedge.html#a08ba5a830562d7f45bb10fe924c7b534),
+[automotive_design.degenerate_toroidal_surface](../../dc/d6e/classautomotive__design_1_1degenerate__toroidal__surface.html#ada91d37d93ce419c3d1e1cd1c372cef7),
+[automotive_design.dimension_curve_directed_callout](../../da/d13/classautomotive__design_1_1dimension__curve__directed__callout.html#a32cdef729f135be60a886e2113f923eb),
+[automotive_design.face_surface](../../df/d6b/classautomotive__design_1_1face__surface.html#ad6c02b269122e6cfaea7b325a76fe6da),
+[automotive_design.radius_dimension](../../d9/dbc/classautomotive__design_1_1radius__dimension.html#a4b9fd38152ae7326e7f4fd136fdf55a6),
+[automotive_design.point_replica](../../db/dc8/classautomotive__design_1_1point__replica.html#a90b2f2dc847b51283f885b3109978058),
+[automotive_design.rectangular_trimmed_surface](../../d3/d74/classautomotive__design_1_1rectangular__trimmed__surface.html#ab6342084bde80740f75f1b7f8b41f2ac),
+[automotive_design.annotation_plane](../../df/dcb/classautomotive__design_1_1annotation__plane.html#ad19475f567f313205f1412f9e01e5c5f),
+[automotive_design.line](../../da/dc2/classautomotive__design_1_1line.html#ae9eae4cc398c9aba7eb4161448125d78),
+[automotive_design.geometric_curve_set](../../de/dc9/classautomotive__design_1_1geometric__curve__set.html#a9891e45482318e15f84d6764f1d4cb25),
+[automotive_design.annotation_fill_area](../../d9/d25/classautomotive__design_1_1annotation__fill__area.html#a8454d8323811427f22f8e725fa855ccd),
+[automotive_design.degenerate_pcurve](../../de/d21/classautomotive__design_1_1degenerate__pcurve.html#a3e59549e46796a2d3373707c359f962b),
+[automotive_design.extruded_area_solid](../../db/d70/classautomotive__design_1_1extruded__area__solid.html#a1d3bf9a15a698b5deb63e5889b37f152),
+[automotive_design.curve_bounded_surface](../../de/dfd/classautomotive__design_1_1curve__bounded__surface.html#a5b2c2edd7fead378a35133cd39a99513),
+[automotive_design.draughting_text_literal_with_delineation](../../d0/dfa/classautomotive__design_1_1draughting__text__literal__with__delineation.html#ae5d7bb467657c20c5b6f88d195dba750),
+[automotive_design.b_spline_curve_with_knots](../../d3/d16/classautomotive__design_1_1b__spline__curve__with__knots.html#a6eb502dab95aeaba15aa7808ecb10e06),
+[automotive_design.ruled_surface_swept_area_solid](../../da/dd8/classautomotive__design_1_1ruled__surface__swept__area__solid.html#a7146ef05ee5c0d08da8d6d3916b66510),
+[automotive_design.seam_curve](../../da/d9c/classautomotive__design_1_1seam__curve.html#afc4d886ee6af527f72d9c9454a4b9e87),
+[automotive_design.axis2_placement_3d](../../d8/d42/classautomotive__design_1_1axis2__placement__3d.html#a6d33e31758e7c7a4981db827c91bee11),
+[automotive_design.rational_b_spline_surface](../../db/de5/classautomotive__design_1_1rational__b__spline__surface.html#a525eb257f8323ae17121c16170f69616),
+[automotive_design.torus](../../d1/dba/classautomotive__design_1_1torus.html#ae9a9ef7a7e5e4b865d2a9c3d1ed450bd),
+[automotive_design.dimension_callout](../../d8/dcb/classautomotive__design_1_1dimension__callout.html#a0c2969ae3658ab91be7617af2e9516e2),
+[automotive_design.b_spline_surface_with_knots](../../d1/da5/classautomotive__design_1_1b__spline__surface__with__knots.html#a15d86ece1d5b9bfa36c043d34aa02bc3),
+[automotive_design.draughting_elements](../../d3/d20/classautomotive__design_1_1draughting__elements.html#a893f6b5a787b0223ebff5fcdcbfca6cd),
+[automotive_design.cartesian_transformation_operator_2d](../../d5/d34/classautomotive__design_1_1cartesian__transformation__operator__2d.html#a716eb95a458ee0037af59ab5819259d1),
+[automotive_design.advanced_face](../../d1/d62/classautomotive__design_1_1advanced__face.html#a909cfe9dc6dce7295fc8b058d98be155),
+[automotive_design.right_circular_cone](../../df/d6d/classautomotive__design_1_1right__circular__cone.html#a231e69feda1a220e5d54e58e6778f657),
+[automotive_design.structured_dimension_callout](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#a4c795da4cbfcb3ee17a6b67ab02a8ab3),
+[automotive_design.surface_replica](../../dc/d81/classautomotive__design_1_1surface__replica.html#a812129187669585b95025f0018804056),
+[automotive_design.solid_replica](../../dc/daa/classautomotive__design_1_1solid__replica.html#aace4eec76563de1199b19d8a70128c9a),
+[automotive_design.offset_curve_2d](../../d8/d5e/classautomotive__design_1_1offset__curve__2d.html#af2a0cc6beac5caa8b7fac0d2e8f7d4cf),
+[automotive_design.conical_surface](../../dc/df7/classautomotive__design_1_1conical__surface.html#a19c197ff42456946d7c183cd71926c0d),
+and
+[automotive_design.dimension_text_associativity](../../de/d44/classautomotive__design_1_1dimension__text__associativity.html#a3601d03ee80e7a1b21394454bd39646f).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

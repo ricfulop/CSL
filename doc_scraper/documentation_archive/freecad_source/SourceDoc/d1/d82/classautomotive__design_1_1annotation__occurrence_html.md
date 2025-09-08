@@ -1,0 +1,96 @@
+---
+url: https://freecad.github.io/SourceDoc/d1/d82/classautomotive__design_1_1annotation__occurrence.html
+scraped_at: 2025-09-08T14:59:35.656426
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [annotation_occurrence](../../d1/d82/classautomotive__design_1_1annotation__occurrence.html)
+
+[List of all members](../../d8/d3c/classautomotive__design_1_1annotation__occurrence-members.html) | Public Member Functions
+
+automotive_design.annotation_occurrence Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../d1/d82/classautomotive__design_1_1annotation__occurrence.html#a1d53f8edfd0b54fd137032bdf5e7a508) (self)  
+def | [wr2](../../d1/d82/classautomotive__design_1_1annotation__occurrence.html#af1afcd5eb3e329fd929a8a20c1bce00d) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.styled_item](../../dd/d39/classautomotive__design_1_1styled__item.html)  
+def | [item](../../dd/d39/classautomotive__design_1_1styled__item.html#a1ca47f0662afee60e3d092187972d692) ()  
+def | [styles](../../dd/d39/classautomotive__design_1_1styled__item.html#adddc1c1e338ae95a29f5e9525d5d24f7) ()  
+def | [wr1](../../dd/d39/classautomotive__design_1_1styled__item.html#a150262e278f8248839d7cddb3ade3d26) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+def | [name](../../d3/d20/classautomotive__design_1_1representation__item.html#a33b5812d92aa0d107b4fd4274c17b9d9) ()  
+def | [wr1](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.styled_item](../../dd/d39/classautomotive__design_1_1styled__item.html)  
+|
+[item](../../dd/d39/classautomotive__design_1_1styled__item.html#aad87aa33fdbad670cc9dfcfdbe866d79)  
+|
+[styles](../../dd/d39/classautomotive__design_1_1styled__item.html#a715f59d8d13c21ae1a5c704b0dbdbebb)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+|
+[name](../../d3/d20/classautomotive__design_1_1representation__item.html#a3d48fe912053adaf5f187b606fa81c87)  
+  
+## Detailed Description
+
+    
+    
+    Entity annotation_occurrence definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.annotation_occurrence.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.styled_item](../../dd/d39/classautomotive__design_1_1styled__item.html#a150262e278f8248839d7cddb3ade3d26).
+
+Reimplemented in
+[automotive_design.leader_terminator](../../d5/d4f/classautomotive__design_1_1leader__terminator.html#a1ca5e19116c0e49ef4914cd46ea8eab6),
+[automotive_design.annotation_subfigure_occurrence](../../d2/df6/classautomotive__design_1_1annotation__subfigure__occurrence.html#a5a53a1426b232c9c8fe4aadfc19a7ae9),
+[automotive_design.draughting_annotation_occurrence](../../d6/d4b/classautomotive__design_1_1draughting__annotation__occurrence.html#acbf44c99018ea6474afd704d0e25d07e),
+[automotive_design.dimension_curve_terminator](../../d8/d02/classautomotive__design_1_1dimension__curve__terminator.html#a28f4e7e1479454418453a5641f038596),
+[automotive_design.annotation_plane](../../df/dcb/classautomotive__design_1_1annotation__plane.html#ad19475f567f313205f1412f9e01e5c5f),
+[automotive_design.leader_curve](../../dd/d24/classautomotive__design_1_1leader__curve.html#a2acb4f5befb39915f826f8bb5c0cef4a),
+and
+[automotive_design.dimension_curve](../../d1/d19/classautomotive__design_1_1dimension__curve.html#ab918ed2328a732795aee5421c50084c9).
+
+## ◆ wr2()
+
+def automotive_design.annotation_occurrence.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented in
+[automotive_design.annotation_subfigure_occurrence](../../d2/df6/classautomotive__design_1_1annotation__subfigure__occurrence.html#aa2e26db98d401861d47539d53a28ab48),
+[automotive_design.draughting_annotation_occurrence](../../d6/d4b/classautomotive__design_1_1draughting__annotation__occurrence.html#aa3b72d6e34dd2b8c224411c5342a1853),
+[automotive_design.annotation_plane](../../df/dcb/classautomotive__design_1_1annotation__plane.html#ac0d719a768e40f09fe7b37a8181fd614),
+and
+[automotive_design.dimension_curve](../../d1/d19/classautomotive__design_1_1dimension__curve.html#acadf676c845b15376b93e3c00e6bf505).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

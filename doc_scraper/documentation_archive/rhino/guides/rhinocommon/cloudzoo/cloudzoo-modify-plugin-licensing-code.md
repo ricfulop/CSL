@@ -1,0 +1,180 @@
+---
+url: https://developer.rhino3d.com/guides/rhinocommon/cloudzoo/cloudzoo-modify-plugin-licensing-code/
+scraped_at: 2025-09-08T15:37:00.917692
+title: Untitled
+---
+
+[RhinoDeveloper®](/)
+
+[design, model, present, analyze, realize...](/)
+
+[![Rhino Logo](https://developer.rhino3d.com/images/rhinodevlogo.png)](/)
+
+__
+
+[Guides](https://developer.rhino3d.com/guides)
+[Samples](https://developer.rhino3d.com/samples)
+[API](https://developer.rhino3d.com/api)
+[Videos](https://developer.rhino3d.com/videos)
+[Community](https://discourse.mcneel.com/c/rhino-developer) [my account
+](https://www.rhino3d.com/my-account/ "Manage your account, licenses, and
+teams")
+
+[Modify Plug-In licensing code to support Cloud
+Zoo](https://developer.rhino3d.com/guides/rhinocommon/cloudzoo/cloudzoo-
+modify-plugin-licensing-code/)
+
+  * Important Information
+  * Required Steps
+  * Implement OnLeaseChangedDelegate
+    * Example:
+  * Call GetLicense
+
+[Guides](https://developer.rhino3d.com/en/guides/) / [RhinoCommon
+Guides](https://developer.rhino3d.com/en/guides/rhinocommon/) /
+
+Modify Plug-In licensing code to support Cloud Zoo
+
+by [Andrés Jacobo (AJ) González](https://discourse.mcneel.com/u/aj1/) (Last
+updated: Tuesday, June 25, 2019)
+
+## Important Information
+
+Supporting Cloud Zoo within your plugin’s code is easy, but it is important to
+understand that Cloud Zoo licensing behaves differently from other licensing
+methods in Rhino. With Cloud Zoo, your plugin (and Rhino itself) will _not_
+receive a license key entered by the user or a local Zoo server, but rather a
+cryptographically verified token called a _License Lease_. The License Lease
+is authored by Cloud Zoo and handed to Rhino when a license for your plugin is
+first requested, and at regular intervals thereafter. A License Lease expires
+every few weeks, so Rhino will automatically negotiate a new lease with Cloud
+Zoo and hand it to your plugin so that the lease is always a few weeks from
+expiring.
+
+In addition, note that expiration is not the only way a license lease can
+voided. Rhino can inform your plugin that a lease has been voided for a
+variety of reasons (For example, the license was removed from Cloud Zoo by the
+user or the user starting Rhino on a different computer).
+
+## Required Steps
+
+To support Cloud Zoo in your plugin, the following must be done in your
+plugin’s code:
+
+  1. Implement `OnLeaseChangedDelegate` method.
+  2. Call `GetLicense` within your plugin.
+  3. [Digitally sign your plugin](https://developer.rhino3d.com/guides/rhinocommon/digitally-signing-plugins-for-zoo/).
+
+## Implement OnLeaseChangedDelegate
+
+This method is called by Rhino after a license lease changes. This can happen
+in the following situations:
+
+  * A license lease is successfully negotiated after you call `GetLicense`.
+  * A new license lease is negotiated automatically by Rhino to keep it from expiring.
+  * The current license lease expires (The lease received is null).
+  * The current license lease is voided by Cloud Zoo (The lease received is null).
+
+When `LicenseLeaseChangedEventArgs.Lease` is null, you should assume the user
+does not have a valid license and disable functionality accordingly.
+
+### Example:
+
+    
+    
+    	/// <summary>
+    	/// Called by Rhino to signal that a lease from Cloud Zoo has changed. 
+    	/// If LicenseLeaseChangedEventArgs.Lease is null, then the server has signaled
+    	/// that this product is no longer licensed. Your plug-in must change behavior 
+    	/// to behave appropriately.
+    	/// </summary>
+    	/// <param name="args">Data passed by Rhino when the lease changes</param>
+    	/// <param name="icon">Icon to be displayed in Tools > Options > Licenses for this lease.</param>
+    	private static void OnLeaseChanged(LicenseLeaseChangedEventArgs args, out System.Drawing.Icon icon)
+    	{
+    	  icon = ProductIcon;
+    	
+    	  // This sample does not support Rhino accounts.
+    	
+    	  if (null == args.Lease)
+    	  {
+    	    // Lease has been voided; this product should behave as if it has no
+    	    // license. It is up to the plug-in to determine what that looks like.
+    	  }
+    	
+    	  // Verify that args.Lease.ProductId is correct
+    	  // Verify that args.Lease.ProductEdition is correct
+    	  // Verify that args.Lease.ProductVersion is correct
+    	  // Verify thatargs.Lease.IsExpired() is false
+    	}
+    
+
+[See an example in GitHub](https://github.com/mcneel/rhino-developer-
+samples/blob/e24bb79e8e3954952826111185db4ce7f96ecd65/rhinocommon/cs/SampleCsWithLicense/SampleCsWithLicensePlugIn.cs#L166)
+
+## Call GetLicense
+
+Like other licensing methods, you should call `GetLicense` when your plugin is
+loaded. The only difference is that you must pass the `OnLeaseChanged`
+delegate you implemented in the previous step and add `SupportsRhinoAccounts`
+to the `LicenseCapabilities` argument so that Rhino can know that you support
+Cloud Zoo and so that Rhino can know which delegate to call when a license
+lease change occurs.
+
+__Note __
+
+If Rhino shows the _“The resource cannot be found."_ error message when trying
+to get a lease for your plug-in from Cloud Zoo, make sure you’ve [registered
+your product with Cloud
+Zoo](https://developer.rhino3d.com/guides/rhinocommon/cloudzoo/cloudzoo-add-
+products/) and that the product’s ID matches the plug-in’s GUID.
+
+__Another note!__
+
+When calling `GetLicense`, the `validatedProductKeyDelegate` argument cannot
+be null. If you only support Cloud Zoo licensing
+(`LicenseCapabilities.SupportsRhinoAccounts`), then use a dummy method, like
+below.
+
+    
+    
+    private static ValidateResult OnValidateProductKey(string licenseKey, out LicenseData licenseData)
+    {
+      // will not be called but must nonetheless be a valid delegate method
+      licenseData = null;
+      return ValidateResult.ErrorShowMessage;
+    }
+    
+
+Edit this page
+
+[ Edit on
+GitHub](https://github.com/mcneel/developer.rhino3d.com/edit/master/content/en/guides/rhinocommon/cloudzoo/cloudzoo-
+modify-plugin-licensing-code/index.md) [
+History](https://github.com/mcneel/developer.rhino3d.com/commits/master/content/en/guides/rhinocommon/cloudzoo/cloudzoo-
+modify-plugin-licensing-code/index.md) [
+Admin](https://developer.rhino3d.com/admin)
+
+[Find a Reseller](https://www.rhino3d.com/sales)
+
+[Shop online](https://www.rhino3d.com/store) or find a
+[Reseller](https://www.rhino3d.com/sales)
+
+[Find a Reseller](https://www.rhino3d.com/sales)
+
+[Privacy Policy](https://www.rhino3d.com/privacy) •
+[About](https://www.rhino3d.com/mcneel/about) • [Contact
+Us](https://www.rhino3d.com/mcneel/contact) • [
+Language](https://www.rhino3d.com/language "Change to a different region or
+language")
+
+[Copyright © 1993-2025 Robert McNeel & Associates. All Rights
+Reserved.](https://www.rhino3d.com/mcneel/about)
+
+[](https://www.facebook.com/McNeelRhinoceros/)
+[](https://twitter.com/bobmcneel) [](https://www.linkedin.com/groups/75313/)
+[](https://www.youtube.com/user/RhinoGuide/videos) [](https://vimeo.com/rhino)
+[![Blogger
+icon](https://developer.rhino3d.com/images/blogger.svg)](http://blog.rhino3d.com/)
+[![Food4Rhino](https://developer.rhino3d.com/images/f4r_icon_01.svg)](https://www.food4rhino.com)
+

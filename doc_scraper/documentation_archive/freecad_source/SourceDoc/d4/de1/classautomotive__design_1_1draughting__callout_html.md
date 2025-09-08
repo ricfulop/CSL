@@ -1,0 +1,103 @@
+---
+url: https://freecad.github.io/SourceDoc/d4/de1/classautomotive__design_1_1draughting__callout.html
+scraped_at: 2025-09-08T15:04:16.828168
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [draughting_callout](../../d4/de1/classautomotive__design_1_1draughting__callout.html)
+
+[List of all members](../../d1/d00/classautomotive__design_1_1draughting__callout-members.html) | Public Member Functions | Public Attributes
+
+automotive_design.draughting_callout Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [contents](../../d4/de1/classautomotive__design_1_1draughting__callout.html#acf617c2d544e2d30f0955d729b44621e) ()  
+def | [wr1](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a28ae66d147cee76341c7723dc97c5199) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.geometric_representation_item](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html)  
+def | [dim](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#aef245618450610e88788dcaea46ad742) ()  
+def | [wr1](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#a9677d2be5fc5c7c8ccb6819380198bbc) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+def | [name](../../d3/d20/classautomotive__design_1_1representation__item.html#a33b5812d92aa0d107b4fd4274c17b9d9) ()  
+def | [wr1](../../d3/d20/classautomotive__design_1_1representation__item.html#af350c19fc5e5763d4991494a99d979ed) (self)  
+  
+##  Public Attributes  
+  
+---  
+|
+[contents](../../d4/de1/classautomotive__design_1_1draughting__callout.html#a49273f8ccce6bae275a653e269e984fe)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation_item](../../d3/d20/classautomotive__design_1_1representation__item.html)  
+|
+[name](../../d3/d20/classautomotive__design_1_1representation__item.html#a3d48fe912053adaf5f187b606fa81c87)  
+  
+## Detailed Description
+
+    
+    
+    Entity draughting_callout definition.
+    
+        :param contents
+        :type contents:SET(1,None,'draughting_callout_element', scope = schema_scope)
+
+## Member Function Documentation
+
+## ◆ contents()
+
+def automotive_design.draughting_callout.contents  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.draughting_callout._contents,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.draughting_title._contents,
+automotive_design.draughting_callout._contents,
+automotive_design.draughting_title._contents, and
+ifc2x3.ifcdraughtingcallout._contents.
+
+## ◆ wr1()
+
+def automotive_design.draughting_callout.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.geometric_representation_item](../../de/d5e/classautomotive__design_1_1geometric__representation__item.html#a9677d2be5fc5c7c8ccb6819380198bbc).
+
+Reimplemented in
+[automotive_design.leader_directed_callout](../../d7/da1/classautomotive__design_1_1leader__directed__callout.html#a73681663d1b743fada7a58feb9717fb7),
+[automotive_design.leader_directed_dimension](../../db/d02/classautomotive__design_1_1leader__directed__dimension.html#a45b1d7f455b32b238444d696024610c3),
+[automotive_design.projection_directed_callout](../../da/d35/classautomotive__design_1_1projection__directed__callout.html#a6cfed8ea779db6c090ee07664929b513),
+[automotive_design.surface_condition_callout](../../d8/d77/classautomotive__design_1_1surface__condition__callout.html#a9679c0662f397cafcbee6fb6a2f33470),
+[automotive_design.dimension_curve_directed_callout](../../da/d13/classautomotive__design_1_1dimension__curve__directed__callout.html#a32cdef729f135be60a886e2113f923eb),
+[automotive_design.radius_dimension](../../d9/dbc/classautomotive__design_1_1radius__dimension.html#a4b9fd38152ae7326e7f4fd136fdf55a6),
+[automotive_design.dimension_callout](../../d8/dcb/classautomotive__design_1_1dimension__callout.html#a0c2969ae3658ab91be7617af2e9516e2),
+[automotive_design.draughting_elements](../../d3/d20/classautomotive__design_1_1draughting__elements.html#a893f6b5a787b0223ebff5fcdcbfca6cd),
+and
+[automotive_design.structured_dimension_callout](../../d9/d08/classautomotive__design_1_1structured__dimension__callout.html#a4c795da4cbfcb3ee17a6b67ab02a8ab3).
+
+## Member Data Documentation
+
+## ◆ contents
+
+automotive_design.draughting_callout.contents  
+---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

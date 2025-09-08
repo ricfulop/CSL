@@ -1,0 +1,114 @@
+---
+url: https://freecad.github.io/SourceDoc/d0/d7b/classautomotive__design_1_1visual__appearance__representation.html
+scraped_at: 2025-09-08T15:15:24.584327
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [visual_appearance_representation](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html)
+
+[List of all members](../../df/d04/classautomotive__design_1_1visual__appearance__representation-members.html) | Public Member Functions
+
+automotive_design.visual_appearance_representation Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#a268937af6383c1eb1da4bbf6ac41b611) (self)  
+def | [wr2](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#ac12546ed501e59e6178a44eb5eb35cb1) (self)  
+def | [wr3](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#a864189f3a6c4ff0125637125adc0fa2e) (self)  
+def | [wr4](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#ac175906d3d54651680f22fe976e4bee5) (self)  
+def | [wr5](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#a505e6ab0f7ec0f97cc48918133c756af) (self)  
+def | [wr6](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#a29e11ef9961b98c7cc6c4462735e6a00) (self)  
+def | [wr7](../../d0/d7b/classautomotive__design_1_1visual__appearance__representation.html#a507d91015d087b9ddc9435e8b4c2b41a) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.representation](../../d8/de0/classautomotive__design_1_1representation.html)  
+def | [context_of_items](../../d8/de0/classautomotive__design_1_1representation.html#a84aa53a72cb77281167d77185bedab5e) ()  
+def | [description](../../d8/de0/classautomotive__design_1_1representation.html#a1d35c39d45f16f922cf4360da4ec3778) ()  
+def | [id](../../d8/de0/classautomotive__design_1_1representation.html#a85343890335f87c91cff60e7988263d8) ()  
+def | [items](../../d8/de0/classautomotive__design_1_1representation.html#a84b16fedad2273190b6dd316673d9752) ()  
+def | [name](../../d8/de0/classautomotive__design_1_1representation.html#af640f954805b1a2b3d1a4a4ee9c55d24) ()  
+def | [wr1](../../d8/de0/classautomotive__design_1_1representation.html#a167ca694a87f2233508375472af08fb1) (self)  
+def | [wr2](../../d8/de0/classautomotive__design_1_1representation.html#ab3c63c6621183d774bb49cd3605f4358) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.representation](../../d8/de0/classautomotive__design_1_1representation.html)  
+|
+[context_of_items](../../d8/de0/classautomotive__design_1_1representation.html#aaf5fe9839e199ab5390651177efcc497)  
+|
+[items](../../d8/de0/classautomotive__design_1_1representation.html#aa8058fe959724be16897e4409e870128)  
+|
+[name](../../d8/de0/classautomotive__design_1_1representation.html#add191f3372f9224b28aa809871533b65)  
+  
+## Detailed Description
+
+    
+    
+    Entity visual_appearance_representation definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.visual_appearance_representation.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.representation](../../d8/de0/classautomotive__design_1_1representation.html#a167ca694a87f2233508375472af08fb1).
+
+References App::TransactionFactory.self, Py::PythonExtension< T >.self(),
+Py::PythonClass< T >.self(), Py::PythonExtensionBase.self(),
+Gui::AutoSaver.self, and Gui::Dialog::DownloadManager.self.
+
+## ◆ wr2()
+
+def automotive_design.visual_appearance_representation.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.representation](../../d8/de0/classautomotive__design_1_1representation.html#ab3c63c6621183d774bb49cd3605f4358).
+
+## ◆ wr3()
+
+def automotive_design.visual_appearance_representation.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr4()
+
+def automotive_design.visual_appearance_representation.wr4  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr5()
+
+def automotive_design.visual_appearance_representation.wr5  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr6()
+
+def automotive_design.visual_appearance_representation.wr6  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr7()
+
+def automotive_design.visual_appearance_representation.wr7  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

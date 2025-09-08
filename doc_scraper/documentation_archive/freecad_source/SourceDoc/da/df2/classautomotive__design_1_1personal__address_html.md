@@ -1,0 +1,373 @@
+---
+url: https://freecad.github.io/SourceDoc/da/df2/classautomotive__design_1_1personal__address.html
+scraped_at: 2025-09-08T15:09:25.086291
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [personal_address](../../da/df2/classautomotive__design_1_1personal__address.html)
+
+[List of all members](../../db/d56/classautomotive__design_1_1personal__address-members.html) | Public Member Functions | Public Attributes
+
+automotive_design.personal_address Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [description](../../da/df2/classautomotive__design_1_1personal__address.html#a40cd119252a524fc95a637c59c74e5ab) ()  
+def | [people](../../da/df2/classautomotive__design_1_1personal__address.html#aa939d2fc5099293707fc4d3b595cca43) ()  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.address](../../db/d9d/classautomotive__design_1_1address.html)  
+def | [country](../../db/d9d/classautomotive__design_1_1address.html#a51dfd232d518b481e4a1b3ea5d1202b2) ()  
+def | [electronic_mail_address](../../db/d9d/classautomotive__design_1_1address.html#a36020c8ace96b051169eb354a09a865e) ()  
+def | [facsimile_number](../../db/d9d/classautomotive__design_1_1address.html#a81daaffb6e6e91a3e723d14c1be2b868) ()  
+def | [internal_location](../../db/d9d/classautomotive__design_1_1address.html#a436a5adb27358cbd214afd2322aabce0) ()  
+def | [name](../../db/d9d/classautomotive__design_1_1address.html#a6d7b0ac5ccb98813fd50b4ffd4a669c2) ()  
+def | [postal_box](../../db/d9d/classautomotive__design_1_1address.html#a87b6c3b511266377e0cee949e9b71e42) ()  
+def | [postal_code](../../db/d9d/classautomotive__design_1_1address.html#a33db567a8fc6dbf2f807156df317d1af) ()  
+def | [region](../../db/d9d/classautomotive__design_1_1address.html#a59d4c8a8289c1436bc5c12ea213e1939) ()  
+def | [street](../../db/d9d/classautomotive__design_1_1address.html#a883337bdd44fa5504db93d378455fc37) ()  
+def | [street_number](../../db/d9d/classautomotive__design_1_1address.html#a15a58637c77296c4f20e472ab66ca37a) ()  
+def | [telephone_number](../../db/d9d/classautomotive__design_1_1address.html#ac35b610f676d3874073ba98a03207637) ()  
+def | [telex_number](../../db/d9d/classautomotive__design_1_1address.html#a4336c55393514e8527457d7bb2a4f325) ()  
+def | [town](../../db/d9d/classautomotive__design_1_1address.html#a53efa45bef6e758c7e79304b77638380) ()  
+def | [url](../../db/d9d/classautomotive__design_1_1address.html#ac356597ac2c81b2f431a6dcb28d7bea0) ()  
+def | [wr1](../../db/d9d/classautomotive__design_1_1address.html#af597aa69fcc605c7c3fc6a8a6af3d78f) (self)  
+  
+##  Public Attributes  
+  
+---  
+|
+[description](../../da/df2/classautomotive__design_1_1personal__address.html#a84e6642f12865b3b8e1ef6079f902892)  
+|
+[people](../../da/df2/classautomotive__design_1_1personal__address.html#ab90a4a1b5fc92a658845e73750265152)  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.address](../../db/d9d/classautomotive__design_1_1address.html)  
+|
+[country](../../db/d9d/classautomotive__design_1_1address.html#ae7e3f48c7145e79339941f20ffab27fc)  
+|
+[electronic_mail_address](../../db/d9d/classautomotive__design_1_1address.html#a7af73287318b76292c652e3191c7e22b)  
+|
+[facsimile_number](../../db/d9d/classautomotive__design_1_1address.html#aea7215bd7ca542b597ac2d2ead518860)  
+|
+[internal_location](../../db/d9d/classautomotive__design_1_1address.html#a94536106ae5a55da0e83c37d38303963)  
+|
+[postal_box](../../db/d9d/classautomotive__design_1_1address.html#a134464f4d57b94c7967c09480165b862)  
+|
+[postal_code](../../db/d9d/classautomotive__design_1_1address.html#ad577393839cb3550c4137bd6c39297a4)  
+|
+[region](../../db/d9d/classautomotive__design_1_1address.html#a045e31c25a805720ab7be29c6ffce34f)  
+|
+[street](../../db/d9d/classautomotive__design_1_1address.html#aa934ad257f9faac9904a514ee0e4753f)  
+|
+[street_number](../../db/d9d/classautomotive__design_1_1address.html#a1aee6cde9c81ea21cdf1f439a7762f8f)  
+|
+[telephone_number](../../db/d9d/classautomotive__design_1_1address.html#a2e1b2dd8dd176dd74e78b79fa7b74757)  
+|
+[telex_number](../../db/d9d/classautomotive__design_1_1address.html#acbfcdaa1b5e5a0c8f918115a937f8809)  
+|
+[town](../../db/d9d/classautomotive__design_1_1address.html#adf52cf66e29d5acc4e232c3451063c8a)  
+  
+## Detailed Description
+
+    
+    
+    Entity personal_address definition.
+    
+        :param people
+        :type people:SET(1,None,'person', scope = schema_scope)
+    
+        :param description
+        :type description:text
+
+## Member Function Documentation
+
+## ◆ description()
+
+def automotive_design.personal_address.description  | ( | | ) |   
+---|---|---|---|---  
+  
+References App::Metadata._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.characterized_object._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.representation_item_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.identification_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.functionally_defined_transformation._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.versioned_action_request._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.geometric_tolerance._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.general_property._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.representation_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.time_interval._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_directive._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.concept_feature_operator._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configuration_item_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.descriptive_representation_item._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_feature_association._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.group._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.shape_aspect._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_category._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.shape_aspect_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.uncertainty_qualifier._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organizational_address._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.data_environment._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.general_property_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.group_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.item_identified_representation_usage._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_formation_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.item_defined_transformation._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_formation._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.annotation_occurrence_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.event_occurrence_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.draughting_callout_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.uncertainty_measure_with_unit._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.event_occurrence_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.property_definition._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.presentation_layer_assignment._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.concept_feature_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.event_occurrence._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.configuration_item._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organization_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_method_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.contract_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.geometric_tolerance_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_feature._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.text_font_family._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_substitute._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.time_interval_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_method._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.externally_defined_item_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.effectivity_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organizational_project_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.text_font._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_context_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.property_definition_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_property._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document_product_association._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.classification_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.general_property_association._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_method_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.personal_address._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.external_source_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organizational_project._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.time_interval_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.attribute_value_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.contract_type._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.document_usage_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_concept_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organization._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.effectivity_context_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.certification_type._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.measure_qualification._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.product_definition_occurrence_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.object_role._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.approval_relationship._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.material_designation_characterization._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.action_property_representation._description,
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.organizational_project_role._description,
+automotive_design.characterized_object._description,
+automotive_design.identification_role._description,
+automotive_design.functionally_defined_transformation._description,
+automotive_design.versioned_action_request._description,
+automotive_design.geometric_tolerance._description,
+automotive_design.product_definition_relationship._description,
+automotive_design.action_resource._description,
+automotive_design.product_definition._description,
+automotive_design.resource_property_representation._description,
+automotive_design.time_interval._description,
+automotive_design.action_directive._description,
+automotive_design.event_occurrence_context_role._description,
+automotive_design.shape_aspect._description,
+automotive_design.shape_aspect_relationship._description,
+automotive_design.concept_feature_operator._description,
+automotive_design.property_definition._description,
+automotive_design.item_defined_transformation._description,
+automotive_design.product_concept_feature_association._description,
+automotive_design.general_property._description,
+automotive_design.product_category._description,
+automotive_design.uncertainty_qualifier._description,
+automotive_design.organizational_address._description,
+automotive_design.data_environment._description,
+automotive_design.product_concept._description,
+automotive_design.group_relationship._description,
+automotive_design.item_identified_representation_usage._description,
+automotive_design.product_definition_formation_relationship._description,
+automotive_design.representation_relationship._description,
+automotive_design.action._description,
+automotive_design.product_definition_formation._description,
+automotive_design.descriptive_representation_item._description,
+automotive_design.event_occurrence_role._description,
+automotive_design.draughting_callout_relationship._description,
+automotive_design.process_property_association._description,
+automotive_design.group._description,
+automotive_design.uncertainty_measure_with_unit._description,
+automotive_design.action_resource_requirement._description,
+automotive_design.presentation_layer_assignment._description,
+automotive_design.concept_feature_relationship._description,
+automotive_design.event_occurrence._description,
+automotive_design.configuration_item._description,
+automotive_design.organization_relationship._description,
+automotive_design.action_method._description,
+automotive_design.geometric_tolerance_relationship._description,
+automotive_design.product_concept_feature._description,
+automotive_design.product_definition_substitute._description,
+automotive_design.document._description,
+automotive_design.versioned_action_request_relationship._description,
+automotive_design.product_category_relationship._description,
+automotive_design.application_context_relationship._description,
+automotive_design.externally_defined_item_relationship._description,
+automotive_design.effectivity_relationship._description,
+automotive_design.organizational_project_relationship._description,
+automotive_design.product_definition_context_role._description,
+automotive_design.property_definition_relationship._description,
+automotive_design.action_property._description,
+automotive_design.document_product_association._description,
+automotive_design.product._description,
+automotive_design.classification_role._description,
+automotive_design.general_property_association._description,
+automotive_design.personal_address._description,
+automotive_design.document_relationship._description,
+automotive_design.resource_requirement_type._description,
+automotive_design.organizational_project._description,
+automotive_design.action_relationship._description,
+automotive_design.time_interval_role._description,
+automotive_design.action_method_relationship._description,
+automotive_design.attribute_value_role._description,
+automotive_design.contract_type._description,
+automotive_design.document_usage_role._description,
+automotive_design.resource_property._description,
+automotive_design.process_product_association._description,
+automotive_design.product_concept_relationship._description,
+automotive_design.organization._description,
+automotive_design.effectivity_context_role._description,
+automotive_design.certification_type._description,
+automotive_design.measure_qualification._description,
+automotive_design.annotation_occurrence_relationship._description,
+automotive_design.product_definition_occurrence_relationship._description,
+automotive_design.object_role._description,
+automotive_design.approval_relationship._description,
+automotive_design.general_property_relationship._description,
+automotive_design.material_designation_characterization._description,
+automotive_design.action_property_representation._description,
+automotive_design.organizational_project_role._description,
+config_control_design.functionally_defined_transformation._description,
+config_control_design.versioned_action_request._description,
+config_control_design.product_definition_relationship._description,
+config_control_design.action_directive._description,
+config_control_design.product_category._description,
+config_control_design.organizational_address._description,
+config_control_design.document._description,
+config_control_design.product_definition_formation._description,
+config_control_design.uncertainty_measure_with_unit._description,
+config_control_design.representation_relationship._description,
+config_control_design.property_definition._description,
+config_control_design.organization_relationship._description,
+config_control_design.configuration_item._description,
+config_control_design.item_defined_transformation._description,
+config_control_design.action_method._description,
+config_control_design.product_category_relationship._description,
+config_control_design.product._description,
+config_control_design.shape_aspect_relationship._description,
+config_control_design.personal_address._description,
+config_control_design.document_relationship._description,
+config_control_design.action._description,
+config_control_design.organizational_project._description,
+config_control_design.contract_type._description,
+config_control_design.product_concept._description,
+config_control_design.product_definition._description,
+config_control_design.organization._description,
+config_control_design.certification_type._description,
+config_control_design.shape_aspect._description,
+config_control_design.approval_relationship._description,
+ifc2x3.ifcroot._description, ifc2x3.ifcproperty._description,
+ifc2x3.ifcpropertyconstraintrelationship._description,
+ifc2x3.ifcshapeaspect._description,
+ifc2x3.ifcdocumentinformation._description, ifc2x3.ifcaddress._description,
+ifc2x3.ifcproductrepresentation._description,
+ifc2x3.ifcphysicalquantity._description, ifc2x3.ifcorganization._description,
+ifc2x3.ifcconstraint._description,
+ifc2x3.ifcpropertydependencyrelationship._description,
+ifc2x3.ifcappliedvalue._description,
+ifc2x3.ifcdraughtingcalloutrelationship._description,
+ifc2x3.ifcactorrole._description,
+ifc2x3.ifcextendedmaterialproperties._description,
+ifc2x3.ifcreferencesvaluedocument._description,
+ifc2x3.ifcconstraintrelationship._description,
+ifc2x3.ifcapproval._description, ifc2x3.ifctimeseries._description,
+ifc2x3.ifcorganizationrelationship._description,
+ifc2x3.ifcconstraintaggregationrelationship._description,
+ifc2x3.ifcapprovalrelationship._description,
+ifc2x3.ifcpresentationlayerassignment._description,
+ifc2x3.ifcappliedvaluerelationship._description, ifc4.ifcroot._description,
+ifc4.ifcresourcelevelrelationship._description, ifc4.ifcproperty._description,
+ifc4.ifcclassificationreference._description, ifc4.ifcmaterial._description,
+ifc4.ifcmaterialprofile._description, ifc4.ifcshapeaspect._description,
+ifc4.ifcdocumentinformation._description, ifc4.ifcaddress._description,
+ifc4.ifcproductrepresentation._description,
+ifc4.ifcmateriallayerset._description, ifc4.ifcphysicalquantity._description,
+ifc4.ifcorganization._description, ifc4.ifcconstraint._description,
+ifc4.ifcappliedvalue._description, ifc4.ifcmateriallayer._description,
+ifc4.ifcextendedproperties._description, ifc4.ifcclassification._description,
+ifc4.ifcactorrole._description, ifc4.ifcmaterialconstituent._description,
+ifc4.ifccoordinatereferencesystem._description, ifc4.ifcapproval._description,
+ifc4.ifclibraryreference._description, ifc4.ifctimeseries._description,
+ifc4.ifcmaterialconstituentset._description,
+ifc4.ifcdocumentreference._description,
+ifc4.ifcmaterialprofileset._description, ifc4.ifctablecolumn._description,
+ifc4.ifcpresentationlayerassignment._description, and
+ifc4.ifclibraryinformation._description.
+
+Referenced by
+[Addon.Addon.set_metadata()](../../d8/d91/classAddon_1_1Addon.html#a799523f4861c30f1516a59602d5b77cd),
+and
+[Addon.Addon.to_cache()](../../d8/d91/classAddon_1_1Addon.html#aba84dd320889a7cb37c99a8b8cdc87f5).
+
+## ◆ people()
+
+def automotive_design.personal_address.people  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.personal_address._people,
+automotive_design.personal_address._people, and
+config_control_design.personal_address._people.
+
+## Member Data Documentation
+
+## ◆ description
+
+automotive_design.personal_address.description  
+---  
+  
+Referenced by
+[Addon.Addon.set_metadata()](../../d8/d91/classAddon_1_1Addon.html#a799523f4861c30f1516a59602d5b77cd),
+and
+[Addon.Addon.to_cache()](../../d8/d91/classAddon_1_1Addon.html#aba84dd320889a7cb37c99a8b8cdc87f5).
+
+## ◆ people
+
+automotive_design.personal_address.people  
+---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

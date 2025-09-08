@@ -1,0 +1,118 @@
+---
+url: https://freecad.github.io/SourceDoc/db/dc4/classautomotive__design_1_1partial__circular__profile.html
+scraped_at: 2025-09-08T15:09:11.025019
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [partial_circular_profile](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html)
+
+[List of all members](../../d2/d05/classautomotive__design_1_1partial__circular__profile-members.html) | Public Member Functions
+
+automotive_design.partial_circular_profile Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#ae8be238bb8a5ad02394ba7922a01c912) (self)  
+def | [wr2](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#ab39e2f9a43d17cb3a027e44995ac735d) (self)  
+def | [wr3](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#a0591097c04d5a737bc6d9a99f178db95) (self)  
+def | [wr4](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#a272e1bee9750e1ebb81b08568effdb8e) (self)  
+def | [wr5](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#a8e45499b0ab8d5649e03f4f3b50b50e9) (self)  
+def | [wr6](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#a2bd9822a35363e03cd3c79f390ae2a80) (self)  
+def | [wr7](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#a30de3267647e1b92f89b26f02459d2ba) (self)  
+def | [wr8](../../db/dc4/classautomotive__design_1_1partial__circular__profile.html#aaa5d4711e155caa46c3cee5a22d1ede3) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html)  
+def | [description](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a2d3cbacdee4b4a23c48e6e8682be5097) ()  
+def | [id](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a908575200aa127fee70d8efefc5ff7b2) ()  
+def | [name](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a3497533cc144728ba5eaedf0d315ef72) ()  
+def | [of_shape](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a4369599788e3702c80ccf6a2ed9d81fc) ()  
+def | [product_definitional](../../d5/d43/classautomotive__design_1_1shape__aspect.html#ae2d34da10e91db476c7445b2525172d4) ()  
+def | [wr1](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afaf0ba0242d7b61388638ad5968f48f8) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html)  
+|
+[description](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afbfbbcdbba354ef8f47480a40487c967)  
+|
+[name](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a9f75336c7a542a886597e5c1f97e40a8)  
+|
+[of_shape](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a8968baa97d9b01370bd48e9b013a9b5f)  
+|
+[product_definitional](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a74f491d0f946e301a43bc04dc72dfd20)  
+  
+## Detailed Description
+
+    
+    
+    Entity partial_circular_profile definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.partial_circular_profile.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afaf0ba0242d7b61388638ad5968f48f8).
+
+References App::TransactionFactory.self, Py::PythonExtension< T >.self(),
+Py::PythonClass< T >.self(), Py::PythonExtensionBase.self(),
+Gui::AutoSaver.self, and Gui::Dialog::DownloadManager.self.
+
+## ◆ wr2()
+
+def automotive_design.partial_circular_profile.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr3()
+
+def automotive_design.partial_circular_profile.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr4()
+
+def automotive_design.partial_circular_profile.wr4  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr5()
+
+def automotive_design.partial_circular_profile.wr5  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr6()
+
+def automotive_design.partial_circular_profile.wr6  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr7()
+
+def automotive_design.partial_circular_profile.wr7  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr8()
+
+def automotive_design.partial_circular_profile.wr8  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

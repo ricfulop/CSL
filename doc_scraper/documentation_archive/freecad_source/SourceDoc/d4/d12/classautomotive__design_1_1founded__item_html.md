@@ -1,0 +1,106 @@
+---
+url: https://freecad.github.io/SourceDoc/d4/d12/classautomotive__design_1_1founded__item.html
+scraped_at: 2025-09-08T15:05:46.179788
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [founded_item](../../d4/d12/classautomotive__design_1_1founded__item.html)
+
+[List of all members](../../de/d0b/classautomotive__design_1_1founded__item-members.html) | Public Member Functions
+
+automotive_design.founded_item Class Reference
+
+ENTITY
+[founded_item](../../d4/d12/classautomotive__design_1_1founded__item.html
+"ENTITY founded_item #.") #.
+[More...](../../d4/d12/classautomotive__design_1_1founded__item.html#details)
+
+##  Public Member Functions  
+  
+---  
+def | [users](../../d4/d12/classautomotive__design_1_1founded__item.html#a0299c3fccdb8223cc8c9f590f7cee9a5) ()  
+def | [wr1](../../d4/d12/classautomotive__design_1_1founded__item.html#a0668b2127d1c208daa93b2d435855a7f) (self)  
+def | [wr2](../../d4/d12/classautomotive__design_1_1founded__item.html#a1ef4a4f4c94d46b616c25ec02609838f) (self)  
+  
+## Detailed Description
+
+ENTITY
+[founded_item](../../d4/d12/classautomotive__design_1_1founded__item.html
+"ENTITY founded_item #.") #.
+
+    
+    
+    Entity founded_item definition.
+    
+        :param users
+        :type users:SET(0,None,'founded_item_select', scope = schema_scope)
+
+## Member Function Documentation
+
+## ◆ users()
+
+def automotive_design.founded_item.users  | ( | | ) |   
+---|---|---|---|---  
+  
+References
+[automotive_design.using_items()](../../d4/ddf/namespaceautomotive__design.html#a64aa5c13e3ab5bc46406a8e5e29df9bf).
+
+Referenced by
+[automotive_design.founded_item.wr1()](../../d4/d12/classautomotive__design_1_1founded__item.html#a0668b2127d1c208daa93b2d435855a7f),
+and
+[automotive_design.founded_item.wr2()](../../d4/d12/classautomotive__design_1_1founded__item.html#a1ef4a4f4c94d46b616c25ec02609838f).
+
+## ◆ wr1()
+
+def automotive_design.founded_item.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented in
+[automotive_design.fill_area_style](../../d0/da5/classautomotive__design_1_1fill__area__style.html#af3b5025ecd70078dae7328a6afbb6fe7),
+[automotive_design.composite_curve_segment](../../d2/df7/classautomotive__design_1_1composite__curve__segment.html#a5631b696b5b2510fe9352894238be183),
+[automotive_design.reparametrised_composite_curve_segment](../../da/dcf/classautomotive__design_1_1reparametrised__composite__curve__segment.html#adcfb57154b0c2d04f5d91d6a6b659a25),
+[automotive_design.text_style_with_box_characteristics](../../d2/d04/classautomotive__design_1_1text__style__with__box__characteristics.html#a768020fd7d66238d50f7313198e7161c),
+[automotive_design.presentation_style_assignment](../../de/def/classautomotive__design_1_1presentation__style__assignment.html#a4a5d8383a2efc7ab51aa8e498270b2ca),
+[automotive_design.approximation_tolerance_deviation](../../df/d31/classautomotive__design_1_1approximation__tolerance__deviation.html#ae9565e1b8624f080e5b538f71fae2fad),
+[automotive_design.box_domain](../../d9/d47/classautomotive__design_1_1box__domain.html#a8054d03e651707ab91c682852c2a57f3),
+[automotive_design.approximation_tolerance_parameter](../../d8/d1d/classautomotive__design_1_1approximation__tolerance__parameter.html#a2c713e149568a524d2383a6341277e05),
+[automotive_design.surface_patch](../../d6/d5c/classautomotive__design_1_1surface__patch.html#a92d8eabe436aad643e3e71cff32af6da),
+[automotive_design.surface_style_parameter_line](../../df/d19/classautomotive__design_1_1surface__style__parameter__line.html#a813639993fd4a4daa3063b580edc8d27),
+and
+[automotive_design.surface_side_style](../../d6/d9d/classautomotive__design_1_1surface__side__style.html#a00c8d3a217c3b4558edfee22f8282775).
+
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.founded_item.users(),
+and
+[automotive_design.founded_item.users()](../../d4/d12/classautomotive__design_1_1founded__item.html#a0299c3fccdb8223cc8c9f590f7cee9a5).
+
+## ◆ wr2()
+
+def automotive_design.founded_item.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented in
+[automotive_design.presentation_style_assignment](../../de/def/classautomotive__design_1_1presentation__style__assignment.html#a31c788709bf96a884427a6a7e2a90c4f).
+
+References
+ap203_configuration_controlled_3d_design_of_mechanical_parts_and_assemblies_mim_lf.founded_item.users(),
+and
+[automotive_design.founded_item.users()](../../d4/d12/classautomotive__design_1_1founded__item.html#a0299c3fccdb8223cc8c9f590f7cee9a5).
+
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+

@@ -1,0 +1,118 @@
+---
+url: https://freecad.github.io/SourceDoc/da/d43/classautomotive__design_1_1rectangular__closed__profile.html
+scraped_at: 2025-09-08T15:11:35.626291
+title: Untitled
+---
+
+  * [ ![](https://www.freecad.org/svg/logo-freecad.svg) ](https://freecadweb.org "FreeCAD")
+  * [Index](../../index.html "Index")
+  * [Modules](../../modules.html "Modules list")
+  * [Classes](../../annotated.html "Annotated list")
+
+  * [automotive_design](../../d4/ddf/namespaceautomotive__design.html)
+  * [rectangular_closed_profile](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html)
+
+[List of all members](../../db/db5/classautomotive__design_1_1rectangular__closed__profile-members.html) | Public Member Functions
+
+automotive_design.rectangular_closed_profile Class Reference
+
+##  Public Member Functions  
+  
+---  
+def | [wr1](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a8da86ee39ccb3bef9318248bcd0b2ecd) (self)  
+def | [wr2](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a242f7b3f0fcc4644fa158077125e26a9) (self)  
+def | [wr3](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a668ffb3c4ccf02d7d41a3a5d9353898e) (self)  
+def | [wr4](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#ae2e296e9cc6de6188ab49e7e1b47d97d) (self)  
+def | [wr5](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a4fc953918ac8e576aeac0f8882910389) (self)  
+def | [wr6](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a4b272f9a6e67cc8722d018e8351a396f) (self)  
+def | [wr7](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#aa61c4eb991a31dfaad3fee82fdf696a8) (self)  
+def | [wr8](../../da/d43/classautomotive__design_1_1rectangular__closed__profile.html#a5c33d1b2d8c3216474c2e519f492bdc4) (self)  
+![-](../../closed.png) Public Member Functions inherited from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html)  
+def | [description](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a2d3cbacdee4b4a23c48e6e8682be5097) ()  
+def | [id](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a908575200aa127fee70d8efefc5ff7b2) ()  
+def | [name](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a3497533cc144728ba5eaedf0d315ef72) ()  
+def | [of_shape](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a4369599788e3702c80ccf6a2ed9d81fc) ()  
+def | [product_definitional](../../d5/d43/classautomotive__design_1_1shape__aspect.html#ae2d34da10e91db476c7445b2525172d4) ()  
+def | [wr1](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afaf0ba0242d7b61388638ad5968f48f8) (self)  
+  
+##  Additional Inherited Members  
+  
+---  
+![-](../../closed.png) Public Attributes inherited from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html)  
+|
+[description](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afbfbbcdbba354ef8f47480a40487c967)  
+|
+[name](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a9f75336c7a542a886597e5c1f97e40a8)  
+|
+[of_shape](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a8968baa97d9b01370bd48e9b013a9b5f)  
+|
+[product_definitional](../../d5/d43/classautomotive__design_1_1shape__aspect.html#a74f491d0f946e301a43bc04dc72dfd20)  
+  
+## Detailed Description
+
+    
+    
+    Entity rectangular_closed_profile definition.
+
+## Member Function Documentation
+
+## ◆ wr1()
+
+def automotive_design.rectangular_closed_profile.wr1  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+Reimplemented from
+[automotive_design.shape_aspect](../../d5/d43/classautomotive__design_1_1shape__aspect.html#afaf0ba0242d7b61388638ad5968f48f8).
+
+References App::TransactionFactory.self, Py::PythonExtension< T >.self(),
+Py::PythonClass< T >.self(), Py::PythonExtensionBase.self(),
+Gui::AutoSaver.self, and Gui::Dialog::DownloadManager.self.
+
+## ◆ wr2()
+
+def automotive_design.rectangular_closed_profile.wr2  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr3()
+
+def automotive_design.rectangular_closed_profile.wr3  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr4()
+
+def automotive_design.rectangular_closed_profile.wr4  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr5()
+
+def automotive_design.rectangular_closed_profile.wr5  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr6()
+
+def automotive_design.rectangular_closed_profile.wr6  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr7()
+
+def automotive_design.rectangular_closed_profile.wr7  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+## ◆ wr8()
+
+def automotive_design.rectangular_closed_profile.wr8  | ( |  | _self_| ) |   
+---|---|---|---|---|---  
+  
+* * *
+
+The documentation for this class was generated from the following file:
+
+  * FreeCAD/src/Mod/Import/App/automotive_design.py
+
+* * *
+
+Generated by
+[![doxygen](../../doxygen.svg)](https://www.doxygen.org/index.html) 1.9.4
+
