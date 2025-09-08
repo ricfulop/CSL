@@ -1,0 +1,241 @@
+# Documentation Scraper Configuration
+# Add your credentials and customize settings for each site
+
+# Output directory for downloaded documentation
+output_dir: documentation_archive
+
+# Rate limiting (seconds between requests)
+rate_limit: 1.0
+
+# Authentication credentials (KEEP THIS FILE SECURE!)
+authentication:
+  autodesk:
+    type: oauth
+    # Get token from: https://aps.autodesk.com/en/docs/oauth/v2/tutorials/get-3-legged-token/
+    token: "YOUR_AUTODESK_TOKEN"
+    client_id: "YOUR_CLIENT_ID"
+    client_secret: "YOUR_CLIENT_SECRET"
+  
+  solidworks:
+    type: form
+    login_url: "https://my.solidworks.com/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+    username_field: "username"
+    password_field: "password"
+  
+  siemens:
+    type: form
+    login_url: "https://support.sw.siemens.com/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+  
+  catia:
+    type: form
+    login_url: "https://dsxclient.3ds.com/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+  
+  onshape:
+    type: oauth
+    # API keys from: https://dev-portal.onshape.com/keys
+    access_key: "YOUR_ACCESS_KEY"
+    secret_key: "YOUR_SECRET_KEY"
+  
+  ptc_creo:
+    type: form
+    login_url: "https://support.ptc.com/appserver/auth/it/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+  
+  altium:
+    type: form
+    login_url: "https://www.altium.com/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+  
+  cadence:
+    type: selenium  # Complex JS authentication
+    login_url: "https://support.cadence.com/login"
+    username: "YOUR_USERNAME"
+    password: "YOUR_PASSWORD"
+    username_field: "username"
+    password_field: "password"
+    submit_selector: "button[type='submit']"
+
+# Site-specific configurations
+sites:
+  # CAD Systems
+  fusion360:
+    enabled: true
+    start_url: "https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-A92A4B10-3781-4925-94C6-47DA85A4F65A"
+    max_depth: 5
+    max_pages: 5000
+    url_patterns:
+      - "help.autodesk.com/view/fusion360"
+      - "aps.autodesk.com/developer.*fusion"
+    exclude_patterns:
+      - "/login"
+      - "/download"
+      - "\.pdf$"
+  
+  fusion360_api:
+    enabled: true
+    start_url: "https://aps.autodesk.com/developer/overview/autodesk-fusion-api"
+    max_depth: 5
+    max_pages: 2000
+    url_patterns:
+      - "aps.autodesk.com/.*fusion"
+    
+  inventor:
+    enabled: true
+    start_url: "https://aps.autodesk.com/developer/overview/inventor"
+    max_depth: 5
+    max_pages: 2000
+    url_patterns:
+      - "aps.autodesk.com/.*inventor"
+  
+  solidworks:
+    enabled: true
+    start_url: "https://help.solidworks.com/2025/english/api/sldworksapiprogguide/Welcome.htm"
+    max_depth: 6
+    max_pages: 10000
+    url_patterns:
+      - "help.solidworks.com/.*/api/"
+    exclude_patterns:
+      - "\.pdf$"
+      - "/search/"
+  
+  nx:
+    enabled: true
+    start_url: "https://docs.plm.automation.siemens.com/data_services/resources/nx/"
+    max_depth: 5
+    max_pages: 5000
+    use_selenium: false  # May need for some sections
+    url_patterns:
+      - "docs.plm.automation.siemens.com/.*/nx"
+  
+  catia:
+    enabled: false  # Requires login
+    start_url: "https://dsxclient.3ds.com/documentation"
+    max_depth: 5
+    max_pages: 5000
+    use_selenium: true
+  
+  onshape:
+    enabled: true
+    start_url: "https://cad.onshape.com/FsDoc/"
+    max_depth: 6
+    max_pages: 3000
+    url_patterns:
+      - "cad.onshape.com/FsDoc"
+    
+  onshape_rest:
+    enabled: true  
+    start_url: "https://cad.onshape.com/glassworks/explorer"
+    max_depth: 4
+    max_pages: 1000
+    use_selenium: true  # API explorer needs JS
+    
+  creo:
+    enabled: false  # Requires login
+    start_url: "https://support.ptc.com/help/creo/"
+    max_depth: 5
+    max_pages: 5000
+    url_patterns:
+      - "support.ptc.com/help/creo"
+  
+  freecad:
+    enabled: true
+    start_url: "https://wiki.freecad.org/Api"
+    max_depth: 4
+    max_pages: 2000
+    url_patterns:
+      - "wiki.freecad.org"
+    exclude_patterns:
+      - "action=edit"
+      - "Special:"
+      - "Talk:"
+  
+  freecad_source:
+    enabled: true
+    start_url: "https://freecad.github.io/SourceDoc/index.html"
+    max_depth: 6
+    max_pages: 10000
+    url_patterns:
+      - "freecad.github.io/SourceDoc"
+  
+  blender:
+    enabled: true
+    start_url: "https://docs.blender.org/api/current/"
+    max_depth: 6
+    max_pages: 5000
+    url_patterns:
+      - "docs.blender.org/api"
+  
+  # EDA/Electronics
+  kicad:
+    enabled: true
+    start_url: "https://docs.kicad.org/doxygen-python/"
+    max_depth: 5
+    max_pages: 3000
+    url_patterns:
+      - "docs.kicad.org"
+  
+  altium:
+    enabled: false  # Requires login
+    start_url: "https://www.altium.com/documentation/altium-365/requirements-systems-portal/rest-python-api-documentation"
+    max_depth: 4
+    max_pages: 2000
+    url_patterns:
+      - "altium.com/documentation"
+  
+  # BIM/Architecture
+  revit:
+    enabled: true
+    start_url: "https://help.autodesk.com/view/RVT/2024/ENU/?guid=GUID-API-Home"
+    max_depth: 6
+    max_pages: 5000
+    url_patterns:
+      - "help.autodesk.com/view/RVT"
+  
+  autocad:
+    enabled: true
+    start_url: "https://help.autodesk.com/view/ACD/2024/ENU/?guid=GUID-API-Home"
+    max_depth: 6
+    max_pages: 5000
+    url_patterns:
+      - "help.autodesk.com/view/ACD"
+  
+  rhino:
+    enabled: true
+    start_url: "https://developer.rhino3d.com/api/RhinoCommon/"
+    max_depth: 6
+    max_pages: 10000
+    url_patterns:
+      - "developer.rhino3d.com"
+  
+  grasshopper:
+    enabled: true
+    start_url: "https://developer.rhino3d.com/api/grasshopper/"
+    max_depth: 6
+    max_pages: 3000
+    url_patterns:
+      - "developer.rhino3d.com/api/grasshopper"
+  
+  # Game Engines (for geometry crossover)
+  unreal:
+    enabled: false  # Very large
+    start_url: "https://docs.unrealengine.com/5.3/en-US/API/"
+    max_depth: 5
+    max_pages: 20000
+    url_patterns:
+      - "docs.unrealengine.com"
+  
+  unity:
+    enabled: false  # Very large
+    start_url: "https://docs.unity3d.com/ScriptReference/"
+    max_depth: 5
+    max_pages: 20000
+    url_patterns:
+      - "docs.unity3d.com/ScriptReference"
