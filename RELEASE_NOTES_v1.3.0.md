@@ -1,145 +1,68 @@
-# CSL v1.3.0 Release Notes
+## CSL v1.3.0 – Release Highlights
 
-## 🎉 Major Release: Triple Lindy Real-time Control System
+### 🎉 Major Addition: Complete FreeCAD Backend Implementation
 
-### Overview
-CSL v1.3.0 introduces the **Triple Lindy real-time control system** for CAD automation, along with advanced surface modeling, sheet metal operations, and enhanced assembly capabilities. This release establishes the foundation for multi-CAD platform support beyond Fusion 360.
+- **100% Feature Coverage**: Full implementation of all CSL v1.3 features in FreeCAD
+- **FreeCAD Workbench**: Custom workbench with file watcher for live updates
+- **Cross-Platform Support**: CSL now supports both Fusion 360 and FreeCAD backends
 
-## ✨ Key Highlights
+### Core CSL v1.3 Features
 
-### 🚀 Triple Lindy Real-time Control
-- **Production-ready** real-time control for Fusion 360
-- **File-based protocol** for reliable CAD communication
-- **Universal client** that works across all backends
-- **Query system** for debugging and state inspection
-- **Direct API** and **CSL transpilation** modes
-- **Comprehensive error reporting** - no silent failures
+- Surface ops: patch/extend/trim/knit
+- Patterns: per‑instance controls via `instances`
+- Constraints: construction geometry, reference dims, equal‑length arrays; curvature continuity diag
+- Loft: continuity/orientation options; rails/centerline
+- Export: STL tessellation controls
+- Capabilities: refined JSON
 
-### 🏗️ Multi-CAD Architecture
-- **Backend interface** for all CAD platforms
-- **Fusion 360 backend** - fully implemented with CSL v1.0-1.3 support
-- **FreeCAD backend** - placeholder ready for implementation
-- **Onshape backend** - placeholder with REST API structure
-- Extensible design for SolidWorks, NX, Blender, etc.
+Backward compatible with v1.2; new fields are optional.
 
-### 📐 Advanced Modeling Features
-- **Surface operations**: patch, extend, trim, knit with explicit queries
-- **Pattern enhancements**: per-instance controls via `instances[]`
-- **Constraint improvements**: construction geometry, reference dimensions, equal-length arrays
-- **Loft enhancements**: G0/G1/G2 continuity, orientation options, rails/centerline
-- **Export controls**: STL tessellation parameters for quality control
+### New Features
+- Surface operations with explicit queries and options:
+  - `patch { edges_query|loop_query, tangent?, merge? }`
+  - `extend { faces_query|face_query, distance, side? }`
+  - `trim { target_query|faces_query, tool_query|plane_query, keep? }`
+  - `knit { faces_query|surfaces_query, tolerance, to_solid? }`
+- Pattern per‑instance controls via `instances[]` or `table[]` with per‑occ translation `dx/dy/dz` and optional rotation.
+- Constraints quality of life:
+  - Construction entity flags
+  - Driven/reference dimensions
+  - Equal‑length arrays
+  - Curvature continuity diagnostics (E1205/E1205I)
+- Loft enhancements:
+  - Continuity `G0|G1|G2`, per‑section continuity array
+  - Orientation `perpendicular|fixed_normal|binormal`
+  - Rails/centerline via queries
+- Export (STL) tessellation controls: `deviation`, `normal_deviation_deg`, `aspect_ratio`, `max_edge`, units and resolution.
+- Capabilities JSON refined and versioned; `make publish-caps` archives `out/capabilities/archive/<version>/`.
 
-## 🔧 Technical Improvements
+### Backend Implementations
 
-### Backend Fixes
-- Fixed critical profile resolution bug in extrude operations
-- Added missing `_feature_operation()` method
-- Improved entity-to-sketch mapping for all entity types
-- Enhanced error reporting throughout the backend
+#### FreeCAD Backend (NEW!)
+- **Complete implementation** of all CSL v1.3 features
+- **Native Python integration** via `triple_lindy.transpilers.freecad_backend`
+- **FreeCAD Workbench** with GUI toolbar and file watcher
+- **Full feature support**:
+  - All sketch entities and constraints
+  - All 3D features (extrude, revolve, loft, sweep, etc.)
+  - Fillets, chamfers with edge/face queries
+  - Boolean operations, patterns, mirrors
+  - Export to STEP, IGES, STL, BREP
+- **Test suite** with comprehensive examples
 
-### API Enhancements
-```python
-# New backend interface
-class BackendAdapter:
-    def realize(csl_ir: Dict) -> Dict[str, str]
-    def query_state() -> Dict[str, Any]
-    def get_capabilities() -> Dict[str, Any]
-```
+#### Fusion 360 Backend
+- Best‑effort implementations with capability gating and diagnostics when the API lacks a direct control.
+- Assemblies stubs improved (mate connector basis tagging, pattern per‑occ tagging) remain optional.
 
-## 📦 Installation
+### Compatibility
+- v1.3 is backward compatible with v1.2; older IR continues to validate and execute.
+- Unknown fields are ignored by adapters per spec; schema enforces new fields only when present.
 
-### Fusion 360 with Triple Lindy
-```bash
-# Install the add-in
-cp -r triple_lindy_fusion_stable "$HOME/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/"
+### Conformance & Examples
+- Conformance suite expanded with v1.3 cases for patterns per‑instance, loft continuity/orientation, constraints updates, and STL export controls.
+- See `CSL_v1_3/USER_GUIDE_v1_3.md` for quick examples.
 
-# Test real-time control
-python3 triple_lindy_daemon/file_client.py ping
-python3 triple_lindy_daemon/file_client.py query
-python3 triple_lindy_daemon/file_client.py file --file design.json
-```
+### Migration
+- No breaking changes expected; follow diagnostics to strengthen queries and selections where needed.
 
-## 🔄 Migration from v1.2
 
-CSL v1.3 is **fully backward compatible** with v1.2. All new fields are optional:
-- Surface operations are additive features
-- Pattern `instances[]` is optional (defaults to count-based)
-- Loft continuity defaults to G0 if not specified
-- Export controls use sensible defaults
-
-## 📊 Capabilities
-
-The backend now reports detailed capabilities:
-```json
-{
-  "backend": "fusion360",
-  "csl_versions": ["1.0", "1.1", "1.2", "1.3"],
-  "features": {
-    "surface_ops": true,
-    "patterns_per_instance": true,
-    "loft_continuity": true,
-    "export_stl_controls": true
-  }
-}
-```
-
-## 🐛 Bug Fixes
-- Fixed sketch plane resolution in realize()
-- Fixed profile selection for extrude features
-- Fixed entity ID tracking across sketches
-- Improved error handling to prevent silent failures
-
-## 📚 Documentation
-- New `TRIPLE_LINDY_README.md` for the control system
-- Updated examples with v1.3 features
-- Enhanced user guide with surface modeling
-- Added backend development guide
-
-## 🔮 Future Roadmap
-- [ ] FreeCAD backend implementation
-- [ ] Onshape REST API integration
-- [ ] SolidWorks COM bridge
-- [ ] Web-based control interface
-- [ ] AI agent integration
-
-## 💡 Examples
-
-### Surface Patch
-```json
-{
-  "kind": "patch",
-  "edges_query": {"type": "loop", "index": 0},
-  "tangent": true
-}
-```
-
-### Pattern with Instances
-```json
-{
-  "kind": "pattern",
-  "type": "rectangular",
-  "instances": [
-    {"dx": "0", "dy": "0"},
-    {"dx": "10mm", "dy": "0"},
-    {"dx": "20mm", "dy": "5mm"}
-  ]
-}
-```
-
-### Loft with Continuity
-```json
-{
-  "kind": "loft",
-  "profiles": ["prof1", "prof2"],
-  "continuity": "G2",
-  "rails_query": {"type": "edges", "tag": "guide"}
-}
-```
-
-## 🙏 Acknowledgments
-Special thanks to all contributors and testers who helped make CSL v1.3.0 the most robust release yet!
-
----
-**Version**: 1.3.0  
-**Release Date**: September 7, 2024  
-**Status**: Production Ready (Fusion 360)
